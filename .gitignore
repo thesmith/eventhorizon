@@ -1,0 +1,6 @@
+.manager
+.settings
+.project
+target
+*.swp
+jpaweb.*
