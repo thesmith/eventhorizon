@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm
+        http://java.sun.com/xml/ns/persistence/orm_1_0.xsd" version="1.0">
+
+  <package>thesmith.dotinfo.model</package>
+
+  <!-- <entity class="Account" metadata-complete="false">
+    <table>
+      <unique-constraint>
+        <column-name>person_id</column-name>
+        <column-name>domain</column-name>
+      </unique-constraint>
+    </table>
+  </entity>
+
+  <entity class="Info" metadata-complete="false">
+    <table>
+      <unique-constraint>
+        <column-name>person_id</column-name>
+        <column-name>domain</column-name>
+        <column-name>ago</column-name>
+      </unique-constraint>
+    </table>
+  </entity> -->
+
+</entity-mappings>
