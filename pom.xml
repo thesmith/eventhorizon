@@ -1,5 +1,6 @@
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>thesmith.eventhorizon</groupId>
   <artifactId>event-horizon</artifactId>
@@ -42,9 +43,9 @@
       <version>${scala.version}</version>
     </dependency>
     <dependency>
-    	<groupId>joda-time</groupId>
-    	<artifactId>joda-time</artifactId>
-    	<version>1.6</version>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
     </dependency>
     <dependency>
       <groupId>net.liftweb</groupId>
@@ -91,22 +92,27 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-tools-sdk</artifactId>
-      <version>1.2.1</version>
+      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-stubs</artifactId>
-      <version>1.2.1</version>
+      <artifactId>appengine-api-1.0-stubs</artifactId>
+      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-local-runtime</artifactId>
-      <version>1.2.1</version>
+      <artifactId>appengine-api-1.0-labs</artifactId>
+      <version>1.2.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-runtime</artifactId>
+      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -116,7 +122,7 @@
     <dependency>
       <groupId>javax.jdo</groupId>
       <artifactId>jdo2-api</artifactId>
-      <version>2.3-ea</version>
+      <version>2.3-eb</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -126,18 +132,18 @@
     <dependency>
       <groupId>com.google.appengine.orm</groupId>
       <artifactId>datanucleus-appengine</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
       <artifactId>datanucleus-core</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
       <artifactId>datanucleus-jpa</artifactId>
-      <version>1.1.4</version>
+      <version>1.1.5</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -150,10 +156,10 @@
       <artifactId>hibernate-entitymanager</artifactId>
       <version>3.3.2.GA</version>
       <exclusions>
-	<exclusion>
-	  <groupId>javax.transaction</groupId>
-	  <artifactId>jta</artifactId>
-	</exclusion>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>asm</groupId>
           <artifactId>asm</artifactId>
@@ -191,6 +197,18 @@
         <configuration>
           <contextPath>/</contextPath>
           <scanIntervalSeconds>5</scanIntervalSeconds>
+        </configuration>
+      </plugin>
+      <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <optimize>true</optimize>
+          <debug>true</debug>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       <plugin>
@@ -236,6 +254,7 @@
           <mappingIncludes>**/*.class</mappingIncludes>
           <api>JPA</api>
           <verbose>true</verbose>
+          <fork>false</fork>
         </configuration>
         <executions>
           <execution>
