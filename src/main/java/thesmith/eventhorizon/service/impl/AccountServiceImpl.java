@@ -3,6 +3,7 @@ package thesmith.eventhorizon.service.impl;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Service;
@@ -24,7 +25,15 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public void create(Account account) {
-    em.persist(account);
+    if (null == this.find(account.getPersonId(), account.getDomain()))
+      em.persist(account);
+  }
+  
+  public void createOrUpdate(Account account) {
+    if (null == this.find(account.getPersonId(), account.getDomain()))
+      em.persist(account);
+    else 
+      em.merge(account);
   }
 
   /** {@inheritDoc} */
@@ -36,21 +45,23 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public Account find(String personId, String domain) {
-    return (Account) em
-        .createQuery(
-            "select a from Account a where a.personId = :personId and a.domain = :domain")
-        .setParameter("personId", personId).setParameter("domain", domain)
-        .getSingleResult();
+    try {
+      return (Account) em
+          .createQuery(
+              "select a from Account a where a.personId = :personId and a.domain = :domain")
+          .setParameter("personId", personId).setParameter("domain", domain)
+          .getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public List<Account> list(String personId) {
-    List<Account> accounts = em.createQuery(
+    return em.createQuery(
         "select a from Account a where a.personId = :personId").setParameter(
         "personId", personId).getResultList();
-    accounts.size();
-    return accounts;
   }
 
   /** {@inheritDoc} */

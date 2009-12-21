@@ -10,9 +10,7 @@ import com.google.appengine.api.datastore.Key;
  * snippet object
  */
 @Entity
-@Table(name = "account", uniqueConstraints = {
-    @UniqueConstraint(columnNames = { "person_id", "domain" }),
-    @UniqueConstraint(columnNames = { "domain", "username", "user_id" }) })
+@Table(name = "account")
 public class Account implements Serializable {
   private static final long serialVersionUID = -1071691679726356019L;
 
