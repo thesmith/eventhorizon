@@ -21,7 +21,6 @@ public class AccountServiceImplTest extends AppBaseTest {
     account.setDomain("domain");
     account.setPersonId("id"+Math.random());
     account.setUserId("id");
-    account.setUsername("name");
     account.setTemplate("template");
   }
   
@@ -31,7 +30,7 @@ public class AccountServiceImplTest extends AppBaseTest {
     assertNotNull(account.getId());
     
     Account acc = service.find(account.getPersonId(), account.getDomain());
-    assertEquals(account.getUsername(), acc.getUsername());
+    assertEquals(account.getUserId(), acc.getUserId());
     
     assertEquals(1, service.list(account.getPersonId()).size());
     

@@ -31,10 +31,6 @@ public class Account implements Serializable {
   protected String userId;
 
   @Basic
-  @Column(name = "username", length = 255)
-  protected String username;
-
-  @Basic
   @Column(name = "person_id", length = 255)
   private String personId;
   
@@ -72,14 +68,6 @@ public class Account implements Serializable {
 
   public void setUserId(String userId) {
     this.userId = userId;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
   }
 
   public String getTemplate() {

@@ -1,8 +1,11 @@
 package thesmith.eventhorizon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,11 @@ import thesmith.eventhorizon.service.AccountService;
 public class AccountsController {
   @Autowired
   private AccountService service;
+  
+  @InitBinder
+  public void initBinder(WebDataBinder binder) {
+    binder.registerCustomEditor(String.class, new StringTrimmerEditor(false)); 
+  }
 
   @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
   public String list(@PathVariable("personId") String personId, ModelMap model) {
