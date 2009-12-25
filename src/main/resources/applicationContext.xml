@@ -23,6 +23,7 @@
     class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
   <bean id="accountService" class="thesmith.eventhorizon.service.impl.AccountServiceImpl" />
+  <bean id="userService" class="thesmith.eventhorizon.service.impl.UserServiceImpl" />
 
   <context:component-scan base-package="thesmith.eventhorizon.controller" />
   <tx:annotation-driven />

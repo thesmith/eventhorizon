@@ -6,9 +6,6 @@ import javax.persistence.*;
 
 import com.google.appengine.api.datastore.Key;
 
-/**
- * snippet object
- */
 @Entity
 @Table(name = "account")
 public class Account implements Serializable {
