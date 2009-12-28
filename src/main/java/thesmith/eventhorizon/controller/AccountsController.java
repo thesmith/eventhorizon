@@ -1,56 +1,58 @@
 package thesmith.eventhorizon.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import thesmith.eventhorizon.model.Account;
-import thesmith.eventhorizon.service.AccountService;
+import thesmith.eventhorizon.model.User;
 
 @Controller
-@RequestMapping(value = "/accounts")
-public class AccountsController {
-  @Autowired
-  private AccountService service;
-  
-  @InitBinder
-  public void initBinder(WebDataBinder binder) {
-    binder.registerCustomEditor(String.class, new StringTrimmerEditor(false)); 
-  }
+public class AccountsController extends BaseController {
 
-  @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
-  public String list(@PathVariable("personId") String personId, ModelMap model) {
-    model.addAttribute("accounts", service.list(personId));
+  @RequestMapping(value = "/accounts", method = RequestMethod.GET)
+  public String list(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+    User user = this.auth(request, response);
+    if (null == user)
+      return "redirect:/users/login";
+
+    model.addAttribute("accounts", accountService.list(user.getUsername()));
 
     return "accounts/list";
   }
 
-  @RequestMapping(value = "/{personId}/{domain}/", method = RequestMethod.GET)
-  public String find(@PathVariable("personId") String personId,
-      @PathVariable("domain") String domain, ModelMap model) {
-    Account account = service.find(personId, domain);
+  @RequestMapping(value = "/accounts/{domain}", method = RequestMethod.GET)
+  public String find(@PathVariable("domain") String domain, ModelMap model, HttpServletRequest request,
+      HttpServletResponse response) {
+    User user = this.auth(request, response);
+    if (null == user)
+      return "redirect:/users/login";
+
+    Account account = accountService.find(user.getUsername(), domain);
     if (null != account)
-      model.addAttribute("account", service.find(personId, domain));
+      model.addAttribute("account", account);
     else
       model.addAttribute("account", new Account());
-    
+
     return "accounts/find";
   }
 
-  @RequestMapping(value = "/{personId}/{domain}/", method = RequestMethod.POST)
-  public String update(@PathVariable("personId") String personId,
-      @PathVariable("domain") String domain,
-      @ModelAttribute("account") Account account, ModelMap model) {
-    account.setPersonId(personId);
+  @RequestMapping(value = "/accounts/{domain}", method = RequestMethod.POST)
+  public String update(@PathVariable("domain") String domain, @ModelAttribute("account") Account account,
+      ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+    User user = this.auth(request, response);
+    if (null == user)
+      return "redirect:/users/login";
+
+    account.setPersonId(user.getUsername());
     account.setDomain(domain);
-    service.createOrUpdate(account);
+    accountService.createOrUpdate(account);
 
     return "accounts/find";
   }

@@ -24,6 +24,10 @@
 
   <bean id="accountService" class="thesmith.eventhorizon.service.impl.AccountServiceImpl" />
   <bean id="userService" class="thesmith.eventhorizon.service.impl.UserServiceImpl" />
+  <bean id="statusService" class="thesmith.eventhorizon.service.impl.StatusServiceImpl" />
+
+  <bean id="loginValidator" class="thesmith.eventhorizon.validator.LoginValidator" />
+  <bean id="registerValidator" class="thesmith.eventhorizon.validator.RegisterValidator" />
 
   <context:component-scan base-package="thesmith.eventhorizon.controller" />
   <tx:annotation-driven />
@@ -52,7 +56,20 @@
     <property name="cache" value="false" />
     <property name="prefix" value="" />
     <property name="suffix" value=".ftl" />
-    <!-- if you want to use the Spring FreeMarker macros, set this property to true -->
-    <property name="exposeSpringMacroHelpers" value="true"/>
+    <!--
+      if you want to use the Spring FreeMarker macros, set this property
+      to true
+    -->
+    <property name="exposeSpringMacroHelpers" value="true" />
+  </bean>
+
+  <bean id="messageSource"
+    class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>messages</value>
+        <value>errors</value>
+      </list>
+    </property>
   </bean>
 </beans>

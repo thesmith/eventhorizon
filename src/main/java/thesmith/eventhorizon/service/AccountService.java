@@ -48,4 +48,11 @@ public interface AccountService {
    * @return
    */
   public List<Account> list(String personId);
+  
+  /**
+   * Retrieve a distinct list of domains that a person has registered with
+   * @param personId
+   * @return
+   */
+  public List<String> domains(String personId);
 }

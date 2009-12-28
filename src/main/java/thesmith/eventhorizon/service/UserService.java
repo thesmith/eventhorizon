@@ -34,7 +34,21 @@ public interface UserService {
    * @param password
    * @return
    */
-  public User authn(String username, String password) throws NoResultException, SecurityException;
+  public User authn(User unauthUser) throws NoResultException, SecurityException;
+  
+  /**
+   * Authenticate a user by a cookie token
+   * @param unauthToken
+   * @return
+   */
+  public User authn(String unauthToken);
+  
+  /**
+   * Return a user token for cookies and such
+   * @param user
+   * @return
+   */
+  public String token(User user);
   
   /**
    * Generate hashed version of password
@@ -42,5 +56,5 @@ public interface UserService {
    * @return
    * @throws SecurityException
    */
-  public String hashPassword(String password);
+  public String hash(String string);
 }

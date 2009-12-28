@@ -25,14 +25,15 @@ import com.google.appengine.repackaged.com.google.common.util.Base64;
 @Service
 public class UserServiceImpl implements UserService {
   private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
-
+  private static final String DELIMITOR = "|";
+  
   @PersistenceContext
   private EntityManager em;
 
   /** {@inheritDoc} */
   public void create(User user) {
     if (null == this.find(user.getUsername())) {
-      user.setPassword( this.hashPassword(user.getPassword()) );
+      user.setPassword( this.hash(user.getPassword()) );
       em.persist(user);
     }
   }
@@ -55,21 +56,42 @@ public class UserServiceImpl implements UserService {
   }
 
   /** {@inheritDoc} */
-  public User authn(String username, String password) throws NoResultException, SecurityException {
-    User user = this.find(username);
+  public User authn(User unauthUser) throws NoResultException, SecurityException {
+    User user = this.find(unauthUser.getUsername());
     if (null == user)
-      throw new NoResultException("Unable to find user: " + username);
+      throw new NoResultException("Unable to find user: " + unauthUser.getUsername());
 
-    if (null == password || !this.hashPassword(password).equals(user.getPassword()))
+    if (null == unauthUser.getPassword() || !this.hash(unauthUser.getPassword()).equals(user.getPassword()))
       throw new SecurityException("Invalid Password");
 
     return user;
   }
+  
+  /** {@inheritDoc} */
+  public User authn(String unauthToken) {
+    if (null == unauthToken) return null;
+    
+    String[] values = unauthToken.split("\\"+DELIMITOR, 2);
+    if (values.length < 1) return null;
+    
+    User user = this.find(values[0]);
+    if (null == user) return null;
+    String token = this.token(user);
+    
+    if (!token.equalsIgnoreCase(unauthToken)) return null;
+    return user;
+  }
+  
+  /** {@inheritDoc} */
+  public String token(User user) {
+    if (null == user) return null;
+    return user.getUsername()+DELIMITOR+this.hash(user.getUsername()+DELIMITOR+user.getPassword());
+  }
 
   /** {@inheritDoc} */
-  public String hashPassword(String password) {
+  public String hash(String string) {
     try {
-    return this.calculateRFC2104HMAC(password, "eventhorizonsalt");
+    return this.calculateRFC2104HMAC(string, "eventhorizonsalt");
     } catch (SignatureException e) {
       throw new RuntimeException(e);
     }

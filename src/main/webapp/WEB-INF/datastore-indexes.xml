@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="true">
+  <datastore-index kind="User" ancestor="false">
+    <property name="username" direction="asc" />
+  </datastore-index>
+
+  <datastore-index kind="Account" ancestor="false">
+    <property name="personId" direction="asc" />
+    <property name="domain" direction="asc" />
+  </datastore-index>
+
+  <datastore-index kind="Status" ancestor="false">
+    <property name="personId" direction="asc" />
+    <property name="domain" direction="asc" />
+    <property name="from" direction="desc" />
+  </datastore-index>
+</datastore-indexes>

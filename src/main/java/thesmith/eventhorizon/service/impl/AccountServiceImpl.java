@@ -28,11 +28,11 @@ public class AccountServiceImpl implements AccountService {
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
   }
-  
+
   public void createOrUpdate(Account account) {
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
-    else 
+    else
       em.merge(account);
   }
 
@@ -44,13 +44,17 @@ public class AccountServiceImpl implements AccountService {
   }
 
   /** {@inheritDoc} */
+  @SuppressWarnings("unchecked")
+  public List<String> domains(String personId) {
+    return em.createQuery("select distinct domain from Account a where a.personId = :personId").setParameter(
+        "personId", personId).getResultList();
+  }
+
+  /** {@inheritDoc} */
   public Account find(String personId, String domain) {
     try {
-      return (Account) em
-          .createQuery(
-              "select a from Account a where a.personId = :personId and a.domain = :domain")
-          .setParameter("personId", personId).setParameter("domain", domain)
-          .getSingleResult();
+      return (Account) em.createQuery("select a from Account a where a.personId = :personId and a.domain = :domain")
+          .setParameter("personId", personId).setParameter("domain", domain).getSingleResult();
     } catch (NoResultException e) {
       return null;
     }
@@ -59,9 +63,8 @@ public class AccountServiceImpl implements AccountService {
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public List<Account> list(String personId) {
-    return em.createQuery(
-        "select a from Account a where a.personId = :personId").setParameter(
-        "personId", personId).getResultList();
+    return em.createQuery("select a from Account a where a.personId = :personId").setParameter("personId", personId)
+        .getResultList();
   }
 
   /** {@inheritDoc} */
