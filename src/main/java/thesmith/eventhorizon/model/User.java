@@ -14,7 +14,7 @@ import javax.persistence.Version;
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-@Table(name = "account")
+@Table(name = "user")
 public class User implements Serializable {
   private static final long serialVersionUID = -1071691679726356018L;
 

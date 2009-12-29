@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.AccountService;
+import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
 public class BaseController {
@@ -21,6 +22,9 @@ public class BaseController {
 
   @Autowired
   protected AccountService accountService;
+  
+  @Autowired
+  protected StatusService statusService;
   
   @InitBinder
   public void initBinder(WebDataBinder binder) {
@@ -53,5 +57,9 @@ public class BaseController {
   
   public void setAccountService(AccountService accountService) {
     this.accountService = accountService;
+  }
+  
+  public void setStatusService(StatusService statusService) {
+    this.statusService = statusService;
   }
 }

@@ -3,7 +3,7 @@
 
 <ul>
   <#list statuses as status>
-    <li>${status.status}</li>
+    <li>${status.domain} - ${status.status}</li>
   </#list>
 </ul>
 
