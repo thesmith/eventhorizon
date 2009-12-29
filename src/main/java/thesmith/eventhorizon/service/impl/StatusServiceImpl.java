@@ -32,7 +32,7 @@ public class StatusServiceImpl implements StatusService {
   public Status find(String personId, String domain, Date from) {
     List<Status> statuses = em
         .createQuery(
-            "select s from Status s where s.personId = :personId and s.domain = :domain and s.created >= :from order by s.created desc")
+            "select s from Status s where s.personId = :personId and s.domain = :domain and s.created <= :from order by s.created desc")
         .setParameter("personId", personId).setParameter("domain", domain).setParameter("from", from).setMaxResults(1)
         .getResultList();
     if (null != statuses && statuses.size() > 0)
