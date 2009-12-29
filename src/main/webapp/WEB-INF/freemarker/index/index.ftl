@@ -1,4 +1,4 @@
-<#import "/spring.ftl" as spring />
+<@layout.layout>
 <h1>${personId} - ${from?datetime}</h1>
 
 <ul>
@@ -6,4 +6,5 @@
     <li>${status.domain} - ${status.status}</li>
   </#list>
 </ul>
+</@layout.layout>
 

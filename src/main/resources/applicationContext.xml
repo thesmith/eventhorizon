@@ -48,12 +48,13 @@
   <bean id="freemarkerConfig"
     class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
     <property name="templateLoaderPath" value="/WEB-INF/freemarker/" />
+    <property name="configLocation" value="classpath:freemarker.properties" />
   </bean>
 
 
   <bean id="viewResolver"
     class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-    <property name="cache" value="false" />
+    <property name="cache" value="true" />
     <property name="prefix" value="" />
     <property name="suffix" value=".ftl" />
     <!--
