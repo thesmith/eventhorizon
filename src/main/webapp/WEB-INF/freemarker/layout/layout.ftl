@@ -2,15 +2,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <link rel="stylesheet" type="text/css" media="all" href="/css/css.css" /> 
+    <link rel="stylesheet" type="text/css" media="all" href="/css/icons.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Content-Language" content="en-GB" />
+    <meta name="author" content="Ben Smith" /> 
+    <meta name="description" content="Event Horizon" /> 
+    <meta name="keywords" content="Ben Smith, Ben, Smith, information, event horizon, event, horizon" /> 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>${title}</title>
   </head>
   <body>
-    <h1>Event Horizon</h1>
-    <div id="content">
-      <#nested/>
+    <div id="container"> 
+      <div id="primary" class="full"> 
+        <div id="mast"> 
+          <h1>${title}</h1> 
+        </div>
+        <#nested/>
+      </div>
     </div>
   </body>
 </html>

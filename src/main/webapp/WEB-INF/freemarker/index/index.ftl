@@ -1,10 +1,10 @@
-<@layout.layout>
-<h1>${personId} - ${from?datetime}</h1>
-
+<@layout.layout "Event Horizon | ${personId}">
+<p>This was ${personId} at ${from}</p>
 <ul>
   <#list statuses as status>
-    <li>${status.domain} - ${status.status}</li>
+    <li class="${status.domain}">${status.status}</li>
   </#list>
+  <li>And so on..</li>
 </ul>
 </@layout.layout>
 
