@@ -89,17 +89,20 @@ public class StatusServiceImpl implements StatusService {
   }
 
   private String ago(Date created) {
-    Period period = new Interval(new DateTime(created.getTime()), new DateTime()).toPeriod();
+    DateTime now = new DateTime();
+    DateTime then = new DateTime(created.getTime());
+    Period period = new Interval(then, now).toPeriod();
     int mins = period.getMinutes();
 
     StringBuffer ago = new StringBuffer();
     ago.append(printPeriod(period.getYears(), "year"));
     ago.append(printPeriod(period.getMonths(), "month"));
+    ago.append(printPeriod(period.getWeeks(), "week"));
     ago.append(printPeriod(period.getDays(), "day"));
     ago.append(printPeriod(period.getHours(), "hour"));
 
     if (ago.length() > 0)
-      ago.append(ago.substring(0, ago.length() - 2));
+      ago = new StringBuffer(ago.substring(0, ago.length() - 2));
 
     if (mins > 0) {
       if (ago.length() > 0)

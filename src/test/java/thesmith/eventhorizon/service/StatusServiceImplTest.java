@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,23 @@ public class StatusServiceImplTest extends AppBaseTest {
     
     Date date = new Date(status.getCreated().getTime()+50L);
     stat = service.find(status.getPersonId(), status.getDomain(), date);
+  }
+  
+  @Test
+  public void testShouldGetStatusFromWeekAgo() throws Exception {
+    Calendar created = Calendar.getInstance();
+    created.add(Calendar.DAY_OF_MONTH, -7);
+    
+    Status status = new Status();
+    status.setDomain("domain");
+    status.setPersonId("id"+Math.random());
+    status.setCreated(created.getTime());
+    status.setStatus("some status");
+    service.create(status);
+    
+    Status stat = service.find(status.getPersonId(), status.getDomain(), created.getTime());
+    assertEquals(status.getStatus(), stat.getStatus());
+    assertEquals(status.getCreated(), stat.getCreated());
   }
   
   @Test
