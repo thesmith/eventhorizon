@@ -1,6 +1,7 @@
 package thesmith.eventhorizon.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.service.AccountService;
 
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
+
 /**
  * Implementation of the AccountService
  * 
@@ -20,16 +23,26 @@ import thesmith.eventhorizon.service.AccountService;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
+  private static final Map<String, String> defaults = Maps.newHashMap();
+  static {
+    defaults.put("twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'");
+  }
+  
   @PersistenceContext
   private EntityManager em;
 
   /** {@inheritDoc} */
   public void create(Account account) {
-    if (null == this.find(account.getPersonId(), account.getDomain()))
+    if (null == this.find(account.getPersonId(), account.getDomain())) {
+      if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
+        account.setTemplate(defaults.get(account.getDomain()));
       em.persist(account);
+    }
   }
 
   public void createOrUpdate(Account account) {
+    if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
+      account.setTemplate(defaults.get(account.getDomain()));
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
     else

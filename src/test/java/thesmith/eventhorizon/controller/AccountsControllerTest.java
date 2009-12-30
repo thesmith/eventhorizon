@@ -2,8 +2,11 @@ package thesmith.eventhorizon.controller;
 
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -16,8 +19,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.ui.ModelMap;
 
 import thesmith.eventhorizon.model.Account;
+import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.AccountService;
+import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
@@ -26,6 +31,7 @@ public class AccountsControllerTest {
   private AccountsController controller;
   private UserService userService;
   private AccountService accountService;
+  private StatusService statusService;
   
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
@@ -44,9 +50,11 @@ public class AccountsControllerTest {
     replay(userService);
     
     accountService = createMock(AccountService.class);
+    statusService = createMock(StatusService.class);
     controller = new AccountsController();
     controller.setUserService(userService);
     controller.setAccountService(accountService);
+    controller.setStatusService(statusService);
     
     request = new MockHttpServletRequest();
     Cookie cookie = new Cookie(AccountsController.COOKIE, token);
@@ -79,7 +87,9 @@ public class AccountsControllerTest {
     account.setDomain("domain");
     
     EasyMock.expect(accountService.find(user.getUsername(), account.getDomain())).andReturn(account);
-    replay(accountService);
+    List<Status> statuses = Lists.newArrayList();
+    EasyMock.expect(statusService.list(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(statuses);
+    replay(accountService, statusService);
     
     ModelMap model = new ModelMap();
     String view = controller.find(account.getDomain(), model, request, response);

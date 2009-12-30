@@ -24,7 +24,16 @@
 
   <bean id="accountService" class="thesmith.eventhorizon.service.impl.AccountServiceImpl" />
   <bean id="userService" class="thesmith.eventhorizon.service.impl.UserServiceImpl" />
-  <bean id="statusService" class="thesmith.eventhorizon.service.impl.StatusServiceImpl" />
+  <bean id="statusService" class="thesmith.eventhorizon.service.impl.StatusServiceImpl">
+    <constructor-arg>
+      <map>
+        <entry key="twitter" value-ref="twitterEventService" />
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="twitterEventService"
+    class="thesmith.eventhorizon.service.impl.TwitterEventServiceImpl" />
 
   <bean id="loginValidator" class="thesmith.eventhorizon.validator.LoginValidator" />
   <bean id="registerValidator" class="thesmith.eventhorizon.validator.RegisterValidator" />

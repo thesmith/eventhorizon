@@ -1,6 +1,7 @@
 package thesmith.eventhorizon.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,10 +39,15 @@ public class AccountsController extends BaseController {
       return "redirect:/users/login";
 
     Account account = accountService.find(user.getUsername(), domain);
-    if (null != account)
+    if (null != account) {
+      List<Status> statuses = statusService.list(account, new Date());
+      for (Status status: statuses) {
+        statusService.create(status);
+      }
       model.addAttribute("account", account);
-    else
+    } else {
       model.addAttribute("account", new Account());
+    }
 
     return "accounts/find";
   }
