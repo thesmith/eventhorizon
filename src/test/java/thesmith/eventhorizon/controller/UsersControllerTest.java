@@ -86,6 +86,7 @@ public class UsersControllerTest {
     returnUser.setPassword("fjkdlsjfklds");
     EasyMock.expect(userService.authn(EasyMock.isA(User.class))).andReturn(returnUser);
     EasyMock.expect(userService.token(EasyMock.isA(User.class))).andReturn(token);
+    EasyMock.expect(userService.find(EasyMock.matches(user.getUsername()))).andReturn(returnUser);
     replay(userService);
     
     BindingResult result = new BeanPropertyBindingResult(user, "user");

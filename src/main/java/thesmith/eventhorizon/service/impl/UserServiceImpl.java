@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import com.google.appengine.repackaged.com.google.common.util.Base64;
 public class UserServiceImpl implements UserService {
   private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
   private static final String DELIMITOR = "|";
+  private final Log logger = LogFactory.getLog(this.getClass());
   
   @PersistenceContext
   private EntityManager em;
@@ -72,19 +75,29 @@ public class UserServiceImpl implements UserService {
     if (null == unauthToken) return null;
     
     String[] values = unauthToken.split("\\"+DELIMITOR, 2);
+    if (logger.isInfoEnabled())
+      logger.info("Split cookie token "+unauthToken+" into: "+values+" with "+values.length+" elements");
     if (values.length < 1) return null;
     
+    if (logger.isInfoEnabled())
+      logger.info("Retrieving user for "+values[0]);
     User user = this.find(values[0]);
     if (null == user) return null;
     String token = this.token(user);
+    if (logger.isInfoEnabled())
+      logger.info("Getting expected token for "+user.getUsername()+": "+token);
     
     if (!token.equalsIgnoreCase(unauthToken)) return null;
+    if (logger.isInfoEnabled())
+      logger.info("Successfully authenticated "+user.getUsername());
     return user;
   }
   
   /** {@inheritDoc} */
   public String token(User user) {
     if (null == user) return null;
+    if (logger.isDebugEnabled())
+      logger.debug("Token for username: "+user.getUsername()+" and password: "+user.getPassword());
     return user.getUsername()+DELIMITOR+this.hash(user.getUsername()+DELIMITOR+user.getPassword());
   }
 

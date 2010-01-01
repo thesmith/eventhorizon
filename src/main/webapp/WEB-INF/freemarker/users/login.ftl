@@ -8,5 +8,6 @@
       <@spring.formPasswordInput "user.password", ""/>
       <@spring.showErrors "<br>"/>
       </p>
+      <input type="submit" name="submit" value="Submit" />
 </form>
 </@layout.layout>

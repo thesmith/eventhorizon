@@ -18,6 +18,8 @@ public class LoginValidator extends BaseValidator implements Validator {
     if (null != user.getUsername() && null != user.getPassword()) {
       try {
         user = service.authn(user);
+        if (null == user)
+          errors.rejectValue("password", "password.error");
       } catch (Exception e) {
         errors.rejectValue("password", "password.invalid");
       }

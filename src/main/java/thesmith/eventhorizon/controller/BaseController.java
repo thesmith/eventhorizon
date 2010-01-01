@@ -4,6 +4,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -16,16 +18,17 @@ import thesmith.eventhorizon.service.UserService;
 
 public class BaseController {
   public static final String COOKIE = "eventhorizon";
+  protected final Log logger = LogFactory.getLog(this.getClass());
 
   @Autowired
   protected UserService userService;
 
   @Autowired
   protected AccountService accountService;
-  
+
   @Autowired
   protected StatusService statusService;
-  
+
   @InitBinder
   public void initBinder(WebDataBinder binder) {
     binder.registerCustomEditor(String.class, new StringTrimmerEditor(false));
@@ -36,29 +39,30 @@ public class BaseController {
     if (null != cookies) {
       for (Cookie cookie : cookies) {
         if (COOKIE.equalsIgnoreCase(cookie.getName())) {
+          if (logger.isInfoEnabled())
+            logger.info("Authenticating cookie: " + cookie.getValue());
+
           User user = userService.authn(cookie.getValue());
-          if (null != user)
+          if (null != user) {
+            if (logger.isInfoEnabled())
+              logger.info("Cookie authenticated as user: " + user.getUsername());
             return user;
-          
-          cookie.setValue("");
-          cookie.setMaxAge(0);
-          cookie.setPath("/");
-          response.addCookie(cookie);
+          }
         }
       }
     }
 
     return null;
   }
-  
+
   public void setUserService(UserService userService) {
     this.userService = userService;
   }
-  
+
   public void setAccountService(AccountService accountService) {
     this.accountService = accountService;
   }
-  
+
   public void setStatusService(StatusService statusService) {
     this.statusService = statusService;
   }

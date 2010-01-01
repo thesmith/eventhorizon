@@ -25,7 +25,10 @@ public class UsersController extends BaseController {
   private RegisterValidator registerValidator;
 
   @RequestMapping(value = "/login", method = RequestMethod.GET)
-  public String loginForm(ModelMap model) {
+  public String loginForm(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+    User user = this.auth(request, response);
+    if (null != user)
+      return "redirect:/users/logout";
     model.addAttribute("user", new User());
 
     return "users/login";
@@ -37,7 +40,7 @@ public class UsersController extends BaseController {
     if (result.hasErrors())
       return "users/login";
 
-    this.setCookie(response, user);
+    this.setCookie(response, userService.find(user.getUsername()));
     return "redirect:/" + user.getUsername() + "/";
   }
 
@@ -45,13 +48,17 @@ public class UsersController extends BaseController {
   public String logout(HttpServletResponse response) {
     Cookie cookie = new Cookie(COOKIE, "empty");
     cookie.setMaxAge(0);
+    cookie.setPath("/");
     response.addCookie(cookie);
 
     return "redirect:/users/login";
   }
 
   @RequestMapping(value = "/register", method = RequestMethod.GET)
-  public String registerForm(ModelMap model) {
+  public String registerForm(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+    User user = this.auth(request, response);
+    if (null != user)
+      return "redirect:/users/logout";
     model.addAttribute("user", new User());
 
     return "users/register";
@@ -82,13 +89,15 @@ public class UsersController extends BaseController {
     Cookie cookie = new Cookie(COOKIE, userService.token(user));
     cookie.setPath("/");
     cookie.setMaxAge(60 * 60 * 24 * 30);
+    if (logger.isInfoEnabled())
+      logger.info("Setting cookie for user " + user.getUsername() + ": " + cookie.getValue());
     response.addCookie(cookie);
   }
-  
+
   public void setLoginValidator(LoginValidator loginValidator) {
     this.loginValidator = loginValidator;
   }
-  
+
   public void setRegisterValidator(RegisterValidator registerValidator) {
     this.registerValidator = registerValidator;
   }

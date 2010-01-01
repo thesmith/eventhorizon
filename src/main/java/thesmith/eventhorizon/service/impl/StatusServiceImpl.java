@@ -55,8 +55,12 @@ public class StatusServiceImpl implements StatusService {
         .getResultList();
     if (null != statuses && statuses.size() > 0) {
       Status status = statuses.get(0);
-      status.setStatus(status.getStatus().replaceAll("\\{ago\\}", this.ago(status.getCreated())));
-      return status;
+      Status returnStatus = new Status();
+      returnStatus.setCreated(status.getCreated());
+      returnStatus.setDomain(status.getDomain());
+      returnStatus.setPersonId(status.getPersonId());
+      returnStatus.setStatus(status.getStatus().replaceAll("\\{ago\\}", this.ago(status.getCreated())));
+      return returnStatus;
     }
     return null;
   }

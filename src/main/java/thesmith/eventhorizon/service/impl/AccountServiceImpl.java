@@ -26,6 +26,7 @@ public class AccountServiceImpl implements AccountService {
   private static final Map<String, String> defaults = Maps.newHashMap();
   static {
     defaults.put("twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'");
+    defaults.put("lastfm", "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
   }
   
   @PersistenceContext

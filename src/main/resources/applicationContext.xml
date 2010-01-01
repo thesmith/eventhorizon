@@ -28,12 +28,17 @@
     <constructor-arg>
       <map>
         <entry key="twitter" value-ref="twitterEventService" />
+        <entry key="lastfm" value-ref="lastfmEventService" />
       </map>
     </constructor-arg>
   </bean>
 
   <bean id="twitterEventService"
     class="thesmith.eventhorizon.service.impl.TwitterEventServiceImpl" />
+  <bean id="lastfmEventService"
+    class="thesmith.eventhorizon.service.impl.LastfmEventServiceImpl">
+    <constructor-arg ref="lastfmCache"/>
+  </bean>
 
   <bean id="loginValidator" class="thesmith.eventhorizon.validator.LoginValidator" />
   <bean id="registerValidator" class="thesmith.eventhorizon.validator.RegisterValidator" />
@@ -82,4 +87,6 @@
       </list>
     </property>
   </bean>
+
+  <bean id="lastfmCache" class="thesmith.eventhorizon.cache.AppEngineCache" />
 </beans>
