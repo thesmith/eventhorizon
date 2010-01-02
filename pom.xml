@@ -256,19 +256,14 @@
       <version>20070829</version>
     </dependency>
     <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.9.1</version>
-    </dependency>
-    <dependency>
       <groupId>lastfm</groupId>
       <artifactId>lastfm</artifactId>
       <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>net.homeip.yusuke</groupId>
+      <artifactId>twitter4j</artifactId>
+      <version>[2.0,)</version>
     </dependency>
   </dependencies>
 
