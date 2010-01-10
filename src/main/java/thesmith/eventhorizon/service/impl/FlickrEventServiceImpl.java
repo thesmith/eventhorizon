@@ -1,0 +1,73 @@
+package thesmith.eventhorizon.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import thesmith.eventhorizon.model.Account;
+import thesmith.eventhorizon.model.Event;
+import thesmith.eventhorizon.service.EventService;
+
+import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.REST;
+import com.aetrion.flickr.people.PeopleInterface;
+import com.aetrion.flickr.people.User;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.urls.UrlsInterface;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
+
+public class FlickrEventServiceImpl implements EventService {
+  private static final int PAGE = 100;
+  private static final String DOMAIN_URL = "http://flickr.com";
+  private static final String KEY = "caf56542180f49cf50019be3a0e290b0";
+  private static final String SECRET = "2383b862e64597be";
+
+  public List<Event> events(Account account, Date from) {
+    if (!"flickr".equals(account.getDomain()))
+      throw new RuntimeException("You can only get events for the flickr domain");
+
+    Flickr flickr;
+    try {
+      flickr = new Flickr(KEY, SECRET, new REST());
+    } catch (ParserConfigurationException e) {
+      throw new RuntimeException(e);
+    }
+    List<Event> events = Lists.newArrayList();
+    PeopleInterface people = flickr.getPeopleInterface();
+    UrlsInterface urls = flickr.getUrlsInterface();
+
+    try {
+      String url = "";
+      try {
+        url = urls.getUserProfile(account.getUserId());
+      } catch (FlickrException fe) {
+        if ("1".equals(fe.getErrorCode())) {
+          User user = people.findByUsername(account.getUserId());
+          account.setUserId(user.getId());
+          url = urls.getUserProfile(account.getUserId());
+        } else {
+          throw new RuntimeException(fe);
+        }
+      }
+      PhotoList photos = people.getPublicPhotos(account.getUserId(), PAGE, 1);
+
+      for (int i = 0; i < photos.size(); i++) {
+        Photo photo = (Photo) photos.get(i);
+        Event event = new Event();
+        event.setCreated(photo.getDatePosted());
+        event.setDomainUrl(DOMAIN_URL);
+        event.setTitle(photo.getTitle());
+        event.setTitleUrl(photo.getUrl());
+        event.setUserUrl(url);
+        events.add(event);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return events;
+  }
+
+}

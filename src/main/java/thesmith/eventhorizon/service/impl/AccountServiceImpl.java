@@ -27,6 +27,7 @@ public class AccountServiceImpl implements AccountService {
   static {
     defaults.put("twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'");
     defaults.put("lastfm", "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
+    defaults.put("flickr", "The most recent picture <a href='{userUrl}' rel='me'>I</a> put on <a href='{domainUrl}'>flickr</a> was called '<a href='{titleUrl}'>{title}</a>'");
   }
   
   @PersistenceContext

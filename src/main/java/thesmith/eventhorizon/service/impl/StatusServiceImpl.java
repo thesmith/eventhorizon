@@ -93,40 +93,40 @@ public class StatusServiceImpl implements StatusService {
   }
 
   private String ago(Date created) {
+    if (null == created)
+      return "some time ago";
+    
     DateTime now = new DateTime();
     DateTime then = new DateTime(created.getTime());
     Period period = new Interval(then, now).toPeriod();
-    int mins = period.getMinutes();
+    int printed = 0;
 
     StringBuffer ago = new StringBuffer();
-    ago.append(printPeriod(period.getYears(), "year"));
-    ago.append(printPeriod(period.getMonths(), "month"));
-    ago.append(printPeriod(period.getWeeks(), "week"));
-    ago.append(printPeriod(period.getDays(), "day"));
-    ago.append(printPeriod(period.getHours(), "hour"));
-
-    if (ago.length() > 0)
-      ago = new StringBuffer(ago.substring(0, ago.length() - 2));
-
-    if (mins > 0) {
-      if (ago.length() > 0)
-        ago.append(" and ");
-      ago.append(mins);
-      ago.append(" minute");
-      if (mins != 1)
-        ago.append("s");
-    }
+    printed = printPeriod(ago, printed, period.getYears(), "year");
+    printed = printPeriod(ago, printed, period.getMonths(), "month");
+    printed = printPeriod(ago, printed, period.getWeeks(), "week");
+    printed = printPeriod(ago, printed, period.getDays(), "day");
+    printed = printPeriod(ago, printed, period.getHours(), "hour");
+    printed = printPeriod(ago, printed, period.getMinutes(), "minute");
+    
     ago.append(" ago");
     return ago.toString();
   }
 
-  private String printPeriod(int value, String desc) {
-    if (value > 1) {
-      return value + " " + desc + "s, ";
-    } else if (value == 1) {
-      return value + " " + desc + ", ";
-    } else {
-      return "";
+  private int printPeriod(StringBuffer ago, int printed, int value, String desc) {
+    if (printed > 1) {
+      return printed;
+    } else if (printed == 1) {
+      ago.append(" and ");
     }
+    
+    if (value > 1) {
+      ago.append(value + " " + desc + "s");
+    } else if (value == 1) {
+      ago.append(value + " " + desc);
+    } else {
+      return printed;
+    }
+    return printed+1;
   }
 }
