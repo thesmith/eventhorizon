@@ -68,7 +68,7 @@ public class StatusServiceImplTest extends AppBaseTest {
     account.setUserId("thesmith");
     account.setTemplate("{ago}, <a herf='{userUrl}'>I</a> <a href='{titleUrl}'>{title}</a>");
     
-    List<Status> statuses = service.list(account, new Date());
+    List<Status> statuses = service.list(account, 1);
     assertNotNull(statuses);
     assertTrue(statuses.size() > 0);
     Status stat = statuses.get(0);

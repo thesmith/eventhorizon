@@ -1,6 +1,5 @@
 package thesmith.eventhorizon.service.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import net.roarsoftware.lastfm.Caller;
@@ -23,7 +22,7 @@ public class LastfmEventServiceImpl implements EventService {
     this.cache = cache;
   }
 
-  public List<Event> events(Account account, Date from) {
+  public List<Event> events(Account account, int page) {
     if (!"lastfm".equals(account.getDomain()))
       throw new RuntimeException("You can only get events for the lastfm domain");
 

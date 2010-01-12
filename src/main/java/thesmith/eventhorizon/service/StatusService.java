@@ -30,8 +30,7 @@ public interface StatusService {
   /**
    * List all statuses retrieved for an account
    * @param account
-   * @param from
    * @return
    */
-  public List<Status> list(Account account, Date from);
+  public List<Status> list(Account account, int page);
 }

@@ -25,9 +25,9 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 public class AccountServiceImpl implements AccountService {
   private static final Map<String, String> defaults = Maps.newHashMap();
   static {
-    defaults.put("twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'");
+    defaults.put("twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
     defaults.put("lastfm", "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
-    defaults.put("flickr", "The most recent picture <a href='{userUrl}' rel='me'>I</a> put on <a href='{domainUrl}'>flickr</a> was called '<a href='{titleUrl}'>{title}</a>'");
+    defaults.put("flickr", "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
   }
   
   @PersistenceContext
@@ -35,20 +35,10 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public void create(Account account) {
-    if (null == this.find(account.getPersonId(), account.getDomain())) {
-      if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
-        account.setTemplate(defaults.get(account.getDomain()));
-      em.persist(account);
-    }
-  }
-
-  public void createOrUpdate(Account account) {
     if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
       account.setTemplate(defaults.get(account.getDomain()));
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
-    else
-      em.merge(account);
   }
 
   /** {@inheritDoc} */

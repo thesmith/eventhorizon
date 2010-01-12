@@ -1,6 +1,5 @@
 package thesmith.eventhorizon.service;
 
-import java.util.Date;
 import java.util.List;
 
 import thesmith.eventhorizon.model.Account;
@@ -11,5 +10,11 @@ import thesmith.eventhorizon.model.Event;
  * @author bens
  */
 public interface EventService {
-  public List<Event> events(Account account, Date from);
+  /**
+   * Retrieve a specific page of events
+   * @param account
+   * @param page
+   * @return
+   */
+  public List<Event> events(Account account, int page);
 }

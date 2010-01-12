@@ -14,13 +14,6 @@ public interface AccountService {
    * @param account
    */
   public void create(Account account);
-  
-  /**
-   * If an account exists, create it
-   * If not, update it
-   * @param account
-   */
-  public void createOrUpdate(Account account);
 
   /**
    * Delete an account

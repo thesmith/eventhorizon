@@ -36,10 +36,21 @@ public class AccountServiceImplTest extends AppBaseTest {
     assertEquals(account.getUserId(), acc.getUserId());
     
     assertEquals(1, service.list(account.getPersonId()).size());
-    
+
     service.delete(account.getPersonId(), account.getDomain());
-    
     assertEquals(0, service.list(account.getPersonId()).size());
+  }
+  
+  @Test
+  public void testShouldOnlyCreateAccountOnce() throws Exception {
+    String personId = "blah"+Math.random();
+    for (int i=0; i<5; i++) {
+      this.createAccount(personId, "somedomain");
+    }
+    
+    List<String> domains = service.domains(personId);
+    assertNotNull(domains);
+    assertEquals(1, domains.size());
   }
   
   private void createAccount(String personId, String domain) {

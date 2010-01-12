@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -19,7 +18,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.ui.ModelMap;
 
 import thesmith.eventhorizon.model.Account;
-import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.StatusService;
@@ -87,8 +85,6 @@ public class AccountsControllerTest {
     account.setDomain("domain");
     
     EasyMock.expect(accountService.find(user.getUsername(), account.getDomain())).andReturn(account);
-    List<Status> statuses = Lists.newArrayList();
-    EasyMock.expect(statusService.list(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(statuses);
     replay(accountService, statusService);
     
     ModelMap model = new ModelMap();
@@ -104,7 +100,7 @@ public class AccountsControllerTest {
     account.setPersonId(user.getUsername());
     account.setDomain("domain");
     
-    accountService.createOrUpdate(account);
+    accountService.create(account);
     EasyMock.expectLastCall();
     replay(accountService);
     

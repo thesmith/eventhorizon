@@ -3,6 +3,7 @@ package thesmith.eventhorizon.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -65,29 +66,31 @@ public class StatusServiceImpl implements StatusService {
     return null;
   }
 
-  public List<Status> list(Account account, Date from) {
+  public List<Status> list(Account account, int page) {
     EventService service = eventServices.get(account.getDomain());
     if (service == null)
       throw new RuntimeException("Unable to process events from domain: " + account.getDomain());
 
     List<Status> statuses = Lists.newArrayList();
-    for (Event event : service.events(account, from)) {
+    for (Event event : service.events(account, page)) {
       Status status = new Status();
       status.setPersonId(account.getPersonId());
       status.setDomain(account.getDomain());
       status.setCreated(event.getCreated());
 
       String text = account.getTemplate();
-      text = text.replaceAll("\\{title\\}", event.getTitle());
-      text = text.replaceAll("\\{titleUrl\\}", event.getTitleUrl());
-      text = text.replaceAll("\\{domain\\}", account.getDomain());
-      text = text.replaceAll("\\{domainUrl\\}", event.getDomainUrl());
-      text = text.replaceAll("\\{userUrl\\}", event.getUserUrl());
-      if (logger.isInfoEnabled())
-        logger.info(text);
+      text = text.replaceAll("\\{title\\}", Matcher.quoteReplacement(event.getTitle()));
+      text = text.replaceAll("\\{titleUrl\\}", Matcher.quoteReplacement(event.getTitleUrl()));
+      text = text.replaceAll("\\{domain\\}", Matcher.quoteReplacement(account.getDomain()));
+      text = text.replaceAll("\\{domainUrl\\}", Matcher.quoteReplacement(event.getDomainUrl()));
+      text = text.replaceAll("\\{userUrl\\}", Matcher.quoteReplacement(event.getUserUrl()));
+      if (logger.isDebugEnabled())
+        logger.debug(text);
       status.setStatus(text);
       statuses.add(status);
     }
+    if (logger.isInfoEnabled())
+      logger.info("Retrieved "+statuses.size()+" statuses for "+account.getDomain()+":"+account.getUserId()+" as page "+page);
     
     return statuses;
   }
