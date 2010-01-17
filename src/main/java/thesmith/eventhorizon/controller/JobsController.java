@@ -18,10 +18,10 @@ import thesmith.eventhorizon.model.Status;
 public class JobsController extends BaseController {
   public static final String PAGE = "page";
   public static final int LIMIT = 20;
-  
+
   @RequestMapping(value = "/accounts/{personId}/{domain}/latest")
   public String latest(@PathVariable("personId") String personId, @PathVariable("domain") String domain) {
-    queue.add(url("/jobs/accounts/"+personId+"/"+domain+"/").param(PAGE, "1"));
+    queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, "1"));
     return "jobs/index";
   }
 
@@ -38,23 +38,26 @@ public class JobsController extends BaseController {
         if (null != status.getCreated() && oldest.after(status.getCreated()))
           oldest = status.getCreated();
       }
-      
+
       if (statuses.size() > 0) {
-        Date d = new Date(oldest.getTime()-1L);
+        Date d = new Date(oldest.getTime() - 1L);
         Status status = statusService.find(personId, domain, d);
         if (null == status) {
-          queue.add(url("/jobs/accounts/"+personId+"/"+domain+"/").param(PAGE, String.valueOf(p+1)));
+          queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, String.valueOf(p + 1)));
         }
       }
     }
     return "jobs/index";
   }
-  
+
   @RequestMapping(value = "/accounts/process")
   public String process() {
     List<Account> accounts = accountService.toProcess(LIMIT);
-    for (Account account: accounts) {
-      queue.add(url("/jobs/accounts/"+account.getPersonId()+"/"+account.getDomain()+"/").param(PAGE, "1"));
+    if (logger.isInfoEnabled())
+      logger.info("Retrieved " + accounts.size() + " accounts to be processed");
+
+    for (Account account : accounts) {
+      queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE, "1"));
       account.setProcessed(new Date());
       accountService.update(account);
     }
