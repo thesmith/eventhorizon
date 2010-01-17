@@ -42,9 +42,17 @@ public class StatusServiceImpl implements StatusService {
     this.eventServices = eventServices;
   }
 
+  @SuppressWarnings("unchecked")
   public void create(Status status) {
-    if (null == this.find(status.getPersonId(), status.getDomain(), status.getCreated()))
+    List<Status> statuses = em.createQuery(
+        "select s from Status s where s.personId = :personId and s.domain = :domain and s.created = :from")
+        .setParameter("personId", status.getPersonId()).setParameter("domain", status.getDomain()).setParameter("from",
+            status.getCreated()).setMaxResults(1).getResultList();
+    if (null == statuses || statuses.size() < 1) {
       em.persist(status);
+      if (logger.isDebugEnabled())
+        logger.debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -96,7 +104,7 @@ public class StatusServiceImpl implements StatusService {
         oldest = status.getCreated();
 
       if (null == newest || (null != status.getCreated() && status.getCreated().after(newest)))
-        oldest = status.getCreated();
+        newest = status.getCreated();
     }
     if (logger.isInfoEnabled())
       logger.info("Retrieved " + statuses.size() + " statuses for " + account.getDomain() + ":" + account.getUserId()

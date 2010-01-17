@@ -47,39 +47,4 @@ public class JobsController extends BaseController {
     }
     return "jobs/index";
   }
-
-  @RequestMapping(value = "/accounts/{personId}/{domain}/all")
-  public String all(@PathVariable("personId") String personId, @PathVariable("domain") String domain) {
-    Account account = accountService.find(personId, domain);
-    if (null != account) {
-      Date oldest = new Date();
-      int page = 1;
-
-      while (true) {
-        List<Status> statuses = statusService.list(account, page);
-        if (1 > statuses.size()) {
-          if (logger.isInfoEnabled())
-            logger
-                .info("Retrieved 0 statuses for " + account.getDomain() + ":" + account.getUserId() + " page " + page);
-          break;
-        }
-
-        Date currentOldest = new Date();
-        for (Status status : statuses) {
-          statusService.create(status);
-          if (null != status.getCreated() && status.getCreated().before(currentOldest))
-            currentOldest = status.getCreated();
-        }
-
-        if (!currentOldest.before(oldest)) {
-          if (logger.isInfoEnabled())
-            logger.info("currentOldest: " + currentOldest + " not before oldest: " + oldest);
-          break;
-        }
-        oldest = currentOldest;
-        page++;
-      }
-    }
-    return "jobs/index";
-  }
 }
