@@ -16,6 +16,9 @@ import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+
 public class BaseController {
   public static final String COOKIE = "eventhorizon";
   protected final Log logger = LogFactory.getLog(this.getClass());
@@ -28,6 +31,8 @@ public class BaseController {
 
   @Autowired
   protected StatusService statusService;
+  
+  protected Queue queue = QueueFactory.getDefaultQueue();
 
   @InitBinder
   public void initBinder(WebDataBinder binder) {
@@ -65,5 +70,9 @@ public class BaseController {
 
   public void setStatusService(StatusService statusService) {
     this.statusService = statusService;
+  }
+
+  public void setQueue(Queue queue) {
+    this.queue = queue;
   }
 }

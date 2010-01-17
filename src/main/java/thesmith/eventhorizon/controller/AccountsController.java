@@ -1,5 +1,7 @@
 package thesmith.eventhorizon.controller;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,10 +58,12 @@ public class AccountsController extends BaseController {
     account.setPersonId(user.getUsername());
     account.setDomain(domain);
     accountService.create(account);
+    queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(
+        JobsController.PAGE, "1"));
 
     return "accounts/find";
   }
-  
+
   @RequestMapping(value = "/accounts/{domain}/status", method = RequestMethod.GET)
   public String statusForm(@PathVariable("domain") String domain, ModelMap model, HttpServletRequest request,
       HttpServletResponse response) {
@@ -72,8 +76,8 @@ public class AccountsController extends BaseController {
   }
 
   @RequestMapping(value = "/accounts/{domain}/status", method = RequestMethod.POST)
-  public String status(@PathVariable("domain") String domain, @ModelAttribute("status") Status status,
-      ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+  public String status(@PathVariable("domain") String domain, @ModelAttribute("status") Status status, ModelMap model,
+      HttpServletRequest request, HttpServletResponse response) {
     User user = this.auth(request, response);
     if (null == user)
       return "redirect:/users/login";
@@ -83,6 +87,6 @@ public class AccountsController extends BaseController {
     status.setCreated(new Date());
     statusService.create(status);
 
-    return "redirect:/"+user.getUsername()+"/";
+    return "redirect:/" + user.getUsername() + "/";
   }
 }

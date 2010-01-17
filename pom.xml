@@ -50,7 +50,6 @@
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-labs</artifactId>
       <version>1.2.8</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -254,11 +253,6 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20070829</version>
-    </dependency>
-    <dependency>
-      <groupId>lastfm</groupId>
-      <artifactId>lastfm</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>net.homeip.yusuke</groupId>

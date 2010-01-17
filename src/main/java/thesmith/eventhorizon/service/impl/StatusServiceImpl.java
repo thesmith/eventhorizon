@@ -35,7 +35,7 @@ public class StatusServiceImpl implements StatusService {
   @PersistenceContext
   private EntityManager em;
   private final Log logger = LogFactory.getLog(this.getClass());
-  
+
   private final Map<String, EventService> eventServices;
 
   public StatusServiceImpl(Map<String, EventService> eventServices) {
@@ -72,6 +72,9 @@ public class StatusServiceImpl implements StatusService {
       throw new RuntimeException("Unable to process events from domain: " + account.getDomain());
 
     List<Status> statuses = Lists.newArrayList();
+    Date oldest = null;
+    Date newest = null;
+
     for (Event event : service.events(account, page)) {
       Status status = new Status();
       status.setPersonId(account.getPersonId());
@@ -88,17 +91,24 @@ public class StatusServiceImpl implements StatusService {
         logger.debug(text);
       status.setStatus(text);
       statuses.add(status);
+
+      if (null == oldest || (null != status.getCreated() && status.getCreated().before(oldest)))
+        oldest = status.getCreated();
+
+      if (null == newest || (null != status.getCreated() && status.getCreated().after(newest)))
+        oldest = status.getCreated();
     }
     if (logger.isInfoEnabled())
-      logger.info("Retrieved "+statuses.size()+" statuses for "+account.getDomain()+":"+account.getUserId()+" as page "+page);
-    
+      logger.info("Retrieved " + statuses.size() + " statuses for " + account.getDomain() + ":" + account.getUserId()
+          + " as page " + page + " ranging from " + oldest + " to " + newest);
+
     return statuses;
   }
 
   private String ago(Date created) {
     if (null == created)
       return "some time ago";
-    
+
     DateTime now = new DateTime();
     DateTime then = new DateTime(created.getTime());
     Period period = new Interval(then, now).toPeriod();
@@ -111,7 +121,7 @@ public class StatusServiceImpl implements StatusService {
     printed = printPeriod(ago, printed, period.getDays(), "day");
     printed = printPeriod(ago, printed, period.getHours(), "hour");
     printed = printPeriod(ago, printed, period.getMinutes(), "minute");
-    
+
     ago.append(" ago");
     return ago.toString();
   }
@@ -122,7 +132,7 @@ public class StatusServiceImpl implements StatusService {
     } else if (printed == 1) {
       ago.append(" and ");
     }
-    
+
     if (value > 1) {
       ago.append(value + " " + desc + "s");
     } else if (value == 1) {
@@ -130,6 +140,6 @@ public class StatusServiceImpl implements StatusService {
     } else {
       return printed;
     }
-    return printed+1;
+    return printed + 1;
   }
 }

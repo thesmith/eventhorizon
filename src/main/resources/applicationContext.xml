@@ -37,9 +37,7 @@
   <bean id="twitterEventService"
     class="thesmith.eventhorizon.service.impl.TwitterEventServiceImpl" />
   <bean id="lastfmEventService"
-    class="thesmith.eventhorizon.service.impl.LastfmEventServiceImpl">
-    <constructor-arg ref="lastfmCache"/>
-  </bean>
+    class="thesmith.eventhorizon.service.impl.LastfmEventServiceImpl" />
   <bean id="flickrEventService"
     class="thesmith.eventhorizon.service.impl.FlickrEventServiceImpl" />
 
@@ -90,6 +88,4 @@
       </list>
     </property>
   </bean>
-
-  <bean id="lastfmCache" class="thesmith.eventhorizon.cache.AppEngineCache" />
 </beans>

@@ -23,6 +23,8 @@ import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 public class AccountsControllerTest {
@@ -30,6 +32,7 @@ public class AccountsControllerTest {
   private UserService userService;
   private AccountService accountService;
   private StatusService statusService;
+  private Queue queue;
   
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
@@ -49,10 +52,12 @@ public class AccountsControllerTest {
     
     accountService = createMock(AccountService.class);
     statusService = createMock(StatusService.class);
+    queue = createMock(Queue.class);
     controller = new AccountsController();
     controller.setUserService(userService);
     controller.setAccountService(accountService);
     controller.setStatusService(statusService);
+    controller.setQueue(queue);
     
     request = new MockHttpServletRequest();
     Cookie cookie = new Cookie(AccountsController.COOKIE, token);
@@ -100,9 +105,10 @@ public class AccountsControllerTest {
     account.setPersonId(user.getUsername());
     account.setDomain("domain");
     
+    EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
     accountService.create(account);
     EasyMock.expectLastCall();
-    replay(accountService);
+    replay(queue, accountService);
     
     ModelMap model = new ModelMap();
     String view = controller.update(account.getDomain(), account, model, request, response);

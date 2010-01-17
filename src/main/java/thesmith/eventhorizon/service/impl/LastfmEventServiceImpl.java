@@ -1,26 +1,26 @@
 package thesmith.eventhorizon.service.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
 
-import net.roarsoftware.lastfm.Caller;
-import net.roarsoftware.lastfm.Track;
-import net.roarsoftware.lastfm.User;
-import thesmith.eventhorizon.cache.AppEngineCache;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Event;
 import thesmith.eventhorizon.service.EventService;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.appengine.repackaged.org.joda.time.format.DateTimeFormat;
+import com.google.appengine.repackaged.org.joda.time.format.DateTimeFormatter;
 
 public class LastfmEventServiceImpl implements EventService {
   private static final String API_KEY = "b25b959554ed76058ac220b7b2e0a026";
   private static final String DOMAIN_URL = "http://last.fm";
-  
-  private final AppEngineCache cache;
-  
-  public LastfmEventServiceImpl(AppEngineCache cache) {
-    this.cache = cache;
-  }
+  private static final String API_URL = "http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=%s&api_key=%s&format=json&page=%s&limit=50";
+  private static final DateTimeFormatter formater = DateTimeFormat.forPattern("dd MMM yyyy, HH:mm");
 
   public List<Event> events(Account account, int page) {
     if (!"lastfm".equals(account.getDomain()))
@@ -28,19 +28,29 @@ public class LastfmEventServiceImpl implements EventService {
 
     try {
       List<Event> events = Lists.newArrayList();
-      Caller.getInstance().setCache(cache);
-      for (Track track: User.getRecentTracks(account.getUserId(), API_KEY)) {
+      URL url = new URL(String.format(API_URL, account.getPersonId(), API_KEY, String.valueOf(page)));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+      StringBuffer json = new StringBuffer();
+      String line;
+      while ((line = reader.readLine()) != null) {
+        json.append(line);
+      }
+      reader.close();
+
+      JSONArray tracks = (new JSONObject(json.toString())).getJSONObject("recenttracks").getJSONArray("track");
+      for (int i = 0; i < tracks.length(); i++) {
+        JSONObject track = tracks.getJSONObject(i);
         Event event = new Event();
-        event.setTitle(track.getArtist()+" - "+track.getName());
-        event.setTitleUrl(track.getUrl());
-        event.setCreated(track.getPlayedWhen());
+        event.setTitle(track.getJSONObject("artist").getString("#text") + " - " + track.getString("name"));
+        event.setTitleUrl(track.getString("url"));
+        event.setCreated(formater.parseDateTime(track.getJSONObject("date").getString("#text")).toDate());
         event.setDomainUrl(DOMAIN_URL);
-        event.setUserUrl(DOMAIN_URL+"/user/"+account.getUserId());
+        event.setUserUrl(DOMAIN_URL + "/user/" + account.getUserId());
         events.add(event);
       }
 
       return events;
-    } catch (IllegalArgumentException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
