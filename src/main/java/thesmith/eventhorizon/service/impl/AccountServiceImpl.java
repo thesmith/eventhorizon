@@ -1,5 +1,6 @@
 package thesmith.eventhorizon.service.impl;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,14 @@ public class AccountServiceImpl implements AccountService {
   public List<Account> list(String personId) {
     return em.createQuery("select a from Account a where a.personId = :personId").setParameter("personId", personId)
         .getResultList();
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Account> toProcess(int limit) {
+    Calendar by = Calendar.getInstance();
+    by.add(Calendar.HOUR, -12);
+    return em.createQuery("select a from Account a where a.processed < :processed order by a.processed desc")
+        .setParameter("processed", by.getTime()).setMaxResults(limit).getResultList();
   }
 
   /** {@inheritDoc} */

@@ -1,8 +1,18 @@
 package thesmith.eventhorizon.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -34,6 +44,10 @@ public class Account implements Serializable {
   @Basic
   @Column(name = "template", length = 511)
   private String template;
+  
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "processed")
+  private Date processed;
 
   public Key getId() {
     return id;
@@ -73,5 +87,13 @@ public class Account implements Serializable {
 
   public void setTemplate(String template) {
     this.template = template;
+  }
+
+  public Date getProcessed() {
+    return processed;
+  }
+
+  public void setProcessed(Date processed) {
+    this.processed = processed;
   }
 }

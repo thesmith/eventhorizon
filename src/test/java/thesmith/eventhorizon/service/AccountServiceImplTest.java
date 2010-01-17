@@ -1,8 +1,9 @@
 package thesmith.eventhorizon.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class AccountServiceImplTest extends AppBaseTest {
   public void testShouldOnlyCreateAccountOnce() throws Exception {
     String personId = "blah"+Math.random();
     for (int i=0; i<5; i++) {
-      this.createAccount(personId, "somedomain");
+      this.createAccount(personId, "somedomain", null);
     }
     
     List<String> domains = service.domains(personId);
@@ -53,12 +54,13 @@ public class AccountServiceImplTest extends AppBaseTest {
     assertEquals(1, domains.size());
   }
   
-  private void createAccount(String personId, String domain) {
+  private void createAccount(String personId, String domain, Date processed) {
     Account account = new Account();
     account.setDomain(domain);
     account.setPersonId(personId);
     account.setUserId("id");
     account.setTemplate("template");
+    account.setProcessed(processed);
     service.create(account);
   }
   
@@ -66,11 +68,27 @@ public class AccountServiceImplTest extends AppBaseTest {
   public void testShouldGetDomains() throws Exception {
     String personId = "blah"+Math.random();
     for (int i=0; i<5; i++) {
-      this.createAccount(personId, "somedomain"+i);
+      this.createAccount(personId, "somedomain"+i, null);
     }
     
     List<String> domains = service.domains(personId);
     assertNotNull(domains);
     assertEquals(5, domains.size());
+  }
+  
+  @Test
+  public void testShouldGetAccountsToProcess() throws Exception {
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DAY_OF_WEEK, 1);
+    
+    this.createAccount("someguy"+Math.random(), "somedomain", cal.getTime());
+    this.createAccount("someotherguy"+Math.random(), "somedomain", null);
+    this.createAccount("not", "not", new Date());
+    
+    List<Account> toProcess = service.toProcess(10);
+    assertNotNull(toProcess);
+    for (Account account: toProcess) {
+      assertNotSame("not", account.getPersonId());
+    }
   }
 }

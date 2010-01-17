@@ -17,6 +17,8 @@ import thesmith.eventhorizon.model.Status;
 @RequestMapping(value = "/jobs")
 public class JobsController extends BaseController {
   public static final String PAGE = "page";
+  public static final int LIMIT = 20;
+  
   @RequestMapping(value = "/accounts/{personId}/{domain}/latest")
   public String latest(@PathVariable("personId") String personId, @PathVariable("domain") String domain) {
     queue.add(url("/jobs/accounts/"+personId+"/"+domain+"/").param(PAGE, "1"));
@@ -44,6 +46,17 @@ public class JobsController extends BaseController {
           queue.add(url("/jobs/accounts/"+personId+"/"+domain+"/").param(PAGE, String.valueOf(p+1)));
         }
       }
+    }
+    return "jobs/index";
+  }
+  
+  @RequestMapping(value = "/accounts/process")
+  public String process() {
+    List<Account> accounts = accountService.toProcess(LIMIT);
+    for (Account account: accounts) {
+      queue.add(url("/jobs/accounts/"+account.getPersonId()+"/"+account.getDomain()+"/").param(PAGE, "1"));
+      account.setProcessed(new Date());
+      accountService.update(account);
     }
     return "jobs/index";
   }

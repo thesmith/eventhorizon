@@ -90,4 +90,21 @@ public class JobsControllerTest {
     
     controller.page(account.getPersonId(), account.getDomain(), "1");
   }
+  
+  @Test
+  public void shouldProcess() throws Exception {
+    Account account = new Account();
+    account.setPersonId("person");
+    account.setDomain("domain");
+    account.setUserId("userId");
+    List<Account> accounts = Lists.newArrayList(account);
+    
+    EasyMock.expect(accountService.toProcess(JobsController.LIMIT)).andReturn(accounts);
+    EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
+    accountService.update(account);
+    EasyMock.expectLastCall();
+    EasyMock.replay(accountService, queue);
+    
+    controller.process();
+  }
 }

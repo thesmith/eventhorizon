@@ -43,6 +43,13 @@ public interface AccountService {
   public List<Account> list(String personId);
   
   /**
+   * Retrieve a limited list of accounts that need processing
+   * @param limit
+   * @return
+   */
+  public List<Account> toProcess(int limit);
+  
+  /**
    * Retrieve a distinct list of domains that a person has registered with
    * @param personId
    * @return
