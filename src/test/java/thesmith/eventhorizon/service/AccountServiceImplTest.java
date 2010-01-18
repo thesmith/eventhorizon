@@ -89,6 +89,7 @@ public class AccountServiceImplTest extends AppBaseTest {
     assertNotNull(toProcess);
     for (Account account: toProcess) {
       assertNotSame("not", account.getPersonId());
+      service.delete(account.getPersonId(), account.getDomain());
     }
   }
 }

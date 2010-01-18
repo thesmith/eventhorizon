@@ -38,6 +38,12 @@ public class AccountServiceImpl implements AccountService {
   public void create(Account account) {
     if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
       account.setTemplate(defaults.get(account.getDomain()));
+    if (null == account.getProcessed()) {
+      Calendar agesago = Calendar.getInstance();
+      agesago.add(Calendar.DAY_OF_WEEK, -5);
+      account.setProcessed(agesago.getTime());
+    }
+    
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
   }

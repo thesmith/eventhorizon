@@ -3,6 +3,6 @@
   <cron>
     <url>/jobs/accounts/process</url>
     <description>Process accounts</description>
-    <schedule>every 10 minutes</schedule>
+    <schedule>every 5 minutes</schedule>
   </cron>
 </cronentries>
