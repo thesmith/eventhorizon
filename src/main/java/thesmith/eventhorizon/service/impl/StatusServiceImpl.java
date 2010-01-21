@@ -51,17 +51,29 @@ public class StatusServiceImpl implements StatusService {
     if (null == statuses || statuses.size() < 1) {
       em.persist(status);
       if (logger.isDebugEnabled())
-        logger.debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
+        logger
+            .debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
     }
+  }
+  
+  public Status find(String personId, String domain, Date from) {
+    return this.find(personId, domain, from, "<=", "desc");
+  }
+
+  public Status next(String personId, String domain, Date from) {
+    return this.find(personId, domain, from, ">", "asc");
+  }
+
+  public Status previous(String personId, String domain, Date from) {
+    return this.find(personId, domain, from, "<", "desc");
   }
 
   @SuppressWarnings("unchecked")
-  public Status find(String personId, String domain, Date from) {
-    List<Status> statuses = em
-        .createQuery(
-            "select s from Status s where s.personId = :personId and s.domain = :domain and s.created <= :from order by s.created desc")
-        .setParameter("personId", personId).setParameter("domain", domain).setParameter("from", from).setMaxResults(1)
-        .getResultList();
+  private Status find(String personId, String domain, Date from, String created, String order) {
+    List<Status> statuses = em.createQuery(
+        "select s from Status s where s.personId = :personId and s.domain = :domain and s.created " + created
+            + " :from order by s.created "+order).setParameter("personId", personId).setParameter("domain", domain)
+        .setParameter("from", from).setMaxResults(1).getResultList();
     if (null != statuses && statuses.size() > 0) {
       Status status = statuses.get(0);
       Status returnStatus = new Status();
@@ -112,7 +124,7 @@ public class StatusServiceImpl implements StatusService {
 
     return statuses;
   }
-
+  
   private String ago(Date created) {
     if (null == created)
       return "some time ago";

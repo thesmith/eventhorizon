@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
   @SuppressWarnings("unchecked")
   public List<Account> toProcess(int limit) {
     Calendar by = Calendar.getInstance();
-    by.add(Calendar.HOUR, -12);
+    by.add(Calendar.HOUR, -1);
     return em.createQuery("select a from Account a where a.processed < :processed order by a.processed desc")
         .setParameter("processed", by.getTime()).setMaxResults(limit).getResultList();
   }

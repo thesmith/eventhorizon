@@ -28,6 +28,24 @@ public interface StatusService {
   public Status find(String personId, String domain, Date from);
   
   /**
+   * Get the previous status update for a user
+   * @param personId
+   * @param domain
+   * @param from
+   * @return
+   */
+  public Status previous(String personId, String domain, Date from);
+  
+  /**
+   * Get the next status update for a user
+   * @param personId
+   * @param domain
+   * @param from
+   * @return
+   */
+  public Status next(String personId, String domain, Date from);
+  
+  /**
    * List all statuses retrieved for an account
    * @param account
    * @return

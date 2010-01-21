@@ -16,4 +16,10 @@
     <property name="person_id" direction="asc" />
     <property name="created" direction="desc" />
   </datastore-index>
+  
+  <datastore-index kind="status" ancestor="false">
+    <property name="domain" direction="asc" />
+    <property name="person_id" direction="asc" />
+    <property name="created" direction="asc" />
+  </datastore-index>
 </datastore-indexes>

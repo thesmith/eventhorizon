@@ -15,6 +15,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Text;
 
 @Entity
 @Table(name = "status")
@@ -38,8 +39,8 @@ public class Status implements Serializable {
   private String personId;
   
   @Basic
-  @Column(name = "status", length = 511)
-  private String status;
+  @Column(name = "status")
+  private Text status;
   
   @Basic
   @Column(name = "created")
@@ -71,11 +72,11 @@ public class Status implements Serializable {
   }
 
   public String getStatus() {
-    return status;
+    return status.getValue();
   }
 
   public void setStatus(String status) {
-    this.status = status;
+    this.status = new Text(status);
   }
 
   public Date getCreated() {

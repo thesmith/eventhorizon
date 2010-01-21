@@ -40,10 +40,45 @@ public class IndexController extends BaseController {
       model.addAttribute("from", from);
 
     } catch (ParseException e) {
-      e.printStackTrace();
+      if (logger.isWarnEnabled())
+        logger.warn(e);
       return "redirect:/error";
     }
     return "index/index";
+  }
+
+  @RequestMapping(value = "/{personId}/{year}/{month}/{day}/{hour}/{min}/{sec}/{domain}/previous", method = RequestMethod.GET)
+  public String previous(@PathVariable("personId") String personId, @PathVariable("year") int year,
+      @PathVariable("month") int month, @PathVariable("day") int day, @PathVariable("hour") int hour,
+      @PathVariable("min") int min, @PathVariable("sec") int sec, @PathVariable("domain") String domain) {
+    try {
+      Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
+      Status status = statusService.previous(personId, domain, from);
+      if (null == status)
+        status = statusService.find(personId, domain, from);
+      return String.format("redirect:/%s/%s/", personId, urlFormat.format(status.getCreated()));
+    } catch (ParseException e) {
+      if (logger.isWarnEnabled())
+        logger.warn(e);
+      return "redirect:/error";
+    }
+  }
+
+  @RequestMapping(value = "/{personId}/{year}/{month}/{day}/{hour}/{min}/{sec}/{domain}/next", method = RequestMethod.GET)
+  public String next(@PathVariable("personId") String personId, @PathVariable("year") int year,
+      @PathVariable("month") int month, @PathVariable("day") int day, @PathVariable("hour") int hour,
+      @PathVariable("min") int min, @PathVariable("sec") int sec, @PathVariable("domain") String domain) {
+    try {
+      Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
+      Status status = statusService.next(personId, domain, from);
+      if (null == status)
+        status = statusService.find(personId, domain, from);
+      return String.format("redirect:/%s/%s/", personId, urlFormat.format(status.getCreated()));
+    } catch (ParseException e) {
+      if (logger.isWarnEnabled())
+        logger.warn(e);
+      return "redirect:/error";
+    }
   }
 
   @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
