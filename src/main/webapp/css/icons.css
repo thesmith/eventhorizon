@@ -1,18 +1,31 @@
-li{ margin: 26px 0; list-style:none; padding-left: 26px; background-position: left 2px; background-repeat:no-repeat; background-color:transparent; }
+li{ list-style:none; height: 4em;}
+img { vertical-align: middle; }
 
-li.me{background-image:url('../gfx/london.png');}
-li.bbc{background-image:url('../gfx/id.png');}
-li.thing13{background-image:url('../gfx/thing13.png');}
-li.bookmark{background-image:url('../gfx/delicious.png');}
-li.flickr{background-image:url('../gfx/flickr.png');}
-li.lastfm{background-image:url('../gfx/lastfm.png');}
-li.twitter{background-image:url('../gfx/twitter.png');}
-li.later{background-image:url('../gfx/instapaper.png');}
-li.fb{background-image:url('../gfx/facebook.png');}
-li.guardian{background-image:url('../gfx/guardian.png');}
-li.greader{background-image:url('../gfx/greader.png');}
-li.pop{background-image:url('../gfx/radiopop.png');}
-li.dopplr{background-image:url('../gfx/dopplr.png');}
-li.tshirt{background-image:url('../gfx/tshirt.png');}
-li.iplayer{background-image:url('../gfx/iplayer.gif');}
-li.wordr{background-image:url('../gfx/wordr.png');}
+div.previous{ float: left; }
+div.status{ padding-left: 26px; background-repeat:no-repeat; background-color:transparent; float: left; width: 50em; margin-top: 7px;}
+div.next{ float: left; }
+
+a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
+a.image:hover { background: transparent; }
+
+div.today{ background-color: transparent; }
+div.week{ background-color: transparent; }
+div.month{ background-color: transparent; }
+div.yonks{ background-color: transparent; }
+
+div.me{background-image:url('../gfx/london.png');}
+div.bbc{background-image:url('../gfx/id.png');}
+div.thing13{background-image:url('../gfx/thing13.png');}
+div.bookmark{background-image:url('../gfx/delicious.png');}
+div.flickr{background-image:url('../gfx/flickr.png');}
+div.lastfm{background-image:url('../gfx/lastfm.png');}
+div.twitter{background-image:url('../gfx/twitter.png');}
+div.later{background-image:url('../gfx/instapaper.png');}
+div.fb{background-image:url('../gfx/facebook.png');}
+div.guardian{background-image:url('../gfx/guardian.png');}
+div.greader{background-image:url('../gfx/greader.png');}
+div.pop{background-image:url('../gfx/radiopop.png');}
+div.dopplr{background-image:url('../gfx/dopplr.png');}
+div.tshirt{background-image:url('../gfx/tshirt.png');}
+div.iplayer{background-image:url('../gfx/iplayer.gif');}
+div.wordr{background-image:url('../gfx/wordr.png');}

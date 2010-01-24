@@ -41,14 +41,11 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 
 /* ====================================================== */
 
-a { color: #3050be; text-decoration: none; padding: 1px 2px; }
-a:hover { background: #e4e8f6; }
+a { color: #3050be; text-decoration: none; padding: 1px 2px; border-bottom: 1px solid #e4e8f6; }
+a:hover { background: #e4e8f6; border-bottom: 1px solid #3050be; }
 
 em { font-style: italic; }
 strong {  font-weight: bold; }
-
-#primary a { border-bottom: 1px solid #e4e8f6; }
-#primary a:hover { border-bottom: 1px solid #3050be; }
 
 #primary .entry a:visited { color: #999; border-bottom: 1px solid #eee; } 
 #primary .entry a:visited:hover { background: #eee; border-bottom: 1px solid #999; }
@@ -56,7 +53,7 @@ strong {  font-weight: bold; }
 p { margin: 1em; }
 
 #primary ul { margin: 2em 1em 1em 2em; list-style-type: disc; list-style-position: outside; }
-#primary li { margin: 0 0 1em 0; }
+#primary li { margin: 0 0 0 0; }
 
 pre { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin: 0; padding: 0; }
 pre code { padding: 0.52em 1em; font-family: monaco, courier, sans-serif; font-size: 0.9em; line-height: 2em; display: block; background: #222; color: #fff; margin: 1px; }
