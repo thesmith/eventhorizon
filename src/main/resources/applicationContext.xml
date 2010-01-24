@@ -66,17 +66,40 @@
     <property name="configLocation" value="classpath:freemarker.properties" />
   </bean>
 
-
-  <bean id="viewResolver"
-    class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-    <property name="cache" value="true" />
-    <property name="prefix" value="" />
-    <property name="suffix" value=".ftl" />
-    <!--
-      if you want to use the Spring FreeMarker macros, set this property
-      to true
-    -->
-    <property name="exposeSpringMacroHelpers" value="true" />
+  <bean id="contentNegotiatingViewResolver"
+    class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+    <property name="order" value="1" />
+    <property name="defaultContentType" value="text/html" />
+    <property name="mediaTypes">
+      <map>
+        <entry key="ftl" value="text/html" />
+        <entry key="xml" value="application/xml" />
+        <entry key="json" value="application/json" />
+        <entry key="atom" value="application/atom+xml" />
+        <entry key="rss" value="application/rss+xml" />
+      </map>
+    </property>
+    <property name="defaultViews">
+      <list>
+        <bean
+          class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+          <property name="contentType" value="application/json" />
+        </bean>
+      </list>
+    </property>
+    <property name="viewResolvers">
+      <list>
+        <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+          <property name="contentType" value="text/html" />
+          <property name="order" value="2" />
+          <property name="cache" value="true" />
+          <property name="prefix" value="" />
+          <property name="suffix" value=".ftl" />
+          <property name="exposeSpringMacroHelpers" value="true" />
+        </bean>
+      </list>
+    </property>
   </bean>
 
   <bean id="messageSource"
