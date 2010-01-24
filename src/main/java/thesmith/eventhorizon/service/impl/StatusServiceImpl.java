@@ -81,6 +81,7 @@ public class StatusServiceImpl implements StatusService {
       returnStatus.setDomain(status.getDomain());
       returnStatus.setPersonId(status.getPersonId());
       returnStatus.setStatus(status.getStatus().replaceAll("\\{ago\\}", this.ago(status.getCreated())));
+      returnStatus.setPeriod(this.period(from, status.getCreated()));
       return returnStatus;
     }
     return null;
@@ -123,6 +124,19 @@ public class StatusServiceImpl implements StatusService {
           + " as page " + page + " ranging from " + oldest + " to " + newest);
 
     return statuses;
+  }
+  
+  private String period(Date from, Date created) {
+    DateTime now = new DateTime(from.getTime());
+    DateTime then = new DateTime(created.getTime());
+    Period period = new Interval(then, now).toPeriod();
+    if (period.getYears() > 0 || period.getMonths() > 0)
+      return "yonks";
+    else if (period.getWeeks() > 0)
+      return "month";
+    else if (period.getDays() > 0)
+      return "week";
+    return "today";
   }
   
   private String ago(Date created) {

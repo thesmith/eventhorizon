@@ -1,4 +1,4 @@
-<@layout.layout>
+<@layout.layout "Register">
 <form action="" method="POST">
       <p>Username:
       <@spring.formInput "user.username", ""/>

@@ -1,4 +1,4 @@
-<@layout.layout>
+<@layout.layout "Accounts">
 <ul>
   <#list accounts as account>
     <li><a href="/accounts/${account.domain}/">${account.domain}</a> - ${account.template}</li>

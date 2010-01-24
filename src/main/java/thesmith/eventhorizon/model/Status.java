@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import com.google.appengine.api.datastore.Key;
@@ -46,6 +47,9 @@ public class Status implements Serializable {
   @Column(name = "created")
   @Temporal(TemporalType.TIMESTAMP)
   protected Date created;
+  
+  @Transient
+  protected String period;
 
   public Key getId() {
     return id;
@@ -85,5 +89,13 @@ public class Status implements Serializable {
 
   public void setCreated(Date created) {
     this.created = created;
+  }
+
+  public String getPeriod() {
+    return period;
+  }
+
+  public void setPeriod(String period) {
+    this.period = period;
   }
 }

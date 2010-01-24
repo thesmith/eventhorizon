@@ -35,7 +35,7 @@ public class TwitterEventServiceImpl implements EventService {
       for (Status status : statuses) {
         Event event = new Event();
         event.setDomainUrl(DOMAIN_URL);
-        event.setTitle(status.getText());
+        event.setTitle(this.processTweet(status.getText()));
         event.setUserUrl(DOMAIN_URL + "/" + account.getUserId());
         event.setTitleUrl(DOMAIN_URL + "/" + account.getUserId() + "/" + status.getId());
         event.setCreated(status.getCreatedAt());
@@ -45,5 +45,10 @@ public class TwitterEventServiceImpl implements EventService {
       throw new RuntimeException(e);
     }
     return events;
+  }
+  
+  private String processTweet(String tweet) {
+    return tweet.replaceAll("@([a-zA-Z_-]+)", "<a href='http://www.twitter.com/$1'>@$1</a>")
+        .replaceAll("#([a-zA-Z_-]+)", "<a href='http://www.twitter.com/search?q=%23$1'>#$1</a>");
   }
 }

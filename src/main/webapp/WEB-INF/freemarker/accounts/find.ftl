@@ -1,4 +1,4 @@
-<@layout.layout>
+<@layout.layout "${domain}">
 <form action="" method="POST">
       <p>UserId:
       <@spring.formInput "account.userId", ""/>

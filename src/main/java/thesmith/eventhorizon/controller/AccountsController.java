@@ -44,6 +44,7 @@ public class AccountsController extends BaseController {
       model.addAttribute("account", account);
     else
       model.addAttribute("account", new Account());
+    model.addAttribute("domain", domain);
 
     return "accounts/find";
   }
@@ -60,6 +61,7 @@ public class AccountsController extends BaseController {
     accountService.create(account);
     queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(
         JobsController.PAGE, "1"));
+    model.addAttribute("domain", domain);
 
     return "accounts/find";
   }

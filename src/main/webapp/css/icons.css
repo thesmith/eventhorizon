@@ -8,10 +8,10 @@ div.next{ float: left; }
 a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }
 
-div.today{ background-color: transparent; }
-div.week{ background-color: transparent; }
-div.month{ background-color: transparent; }
-div.yonks{ background-color: transparent; }
+div.today{ opacity: 1; }
+div.week{ opacity: 0.75; }
+div.month{ opacity: 0.5; }
+div.yonks{ opacity: 0.25; }
 
 div.me{background-image:url('../gfx/london.png');}
 div.bbc{background-image:url('../gfx/id.png');}
@@ -29,3 +29,5 @@ div.dopplr{background-image:url('../gfx/dopplr.png');}
 div.tshirt{background-image:url('../gfx/tshirt.png');}
 div.iplayer{background-image:url('../gfx/iplayer.gif');}
 div.wordr{background-image:url('../gfx/wordr.png');}
+
+span.decorator { color: #808080; }

@@ -1,4 +1,4 @@
-<#macro layout title="Event Horizon">
+<#macro layout title="" heading=title>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -11,13 +11,13 @@
     <meta name="keywords" content="Ben Smith, Ben, Smith, information, event horizon, event, horizon" /> 
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <title>${title}</title>
+    <title>Event Horizon | ${title}</title>
   </head>
   <body>
     <div id="container"> 
       <div id="primary" class="full"> 
         <div id="mast"> 
-          <h1>${title}</h1> 
+          <h1>${heading}</h1> 
         </div>
         <#nested/>
       </div>
