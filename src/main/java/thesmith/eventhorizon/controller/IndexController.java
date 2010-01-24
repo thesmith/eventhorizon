@@ -18,6 +18,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
 public class IndexController extends BaseController {
+  public static final String FROM = "from";
   private static final DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
   private static final DateFormat urlFormat = new SimpleDateFormat("yyyy/MM/dd/kk/mm/ss");
 
@@ -28,17 +29,7 @@ public class IndexController extends BaseController {
 
     try {
       Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
-      List<String> domains = accountService.domains(personId);
-      List<Status> statuses = Lists.newArrayList();
-      for (String domain : domains) {
-        Status status = statusService.find(personId, domain, from);
-        if (null != status)
-          statuses.add(status);
-      }
-      model.addAttribute("statuses", statuses);
-      model.addAttribute("personId", personId);
-      model.addAttribute("from", from);
-
+      this.setModel(personId, from, model);
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
         logger.warn(e);
@@ -89,5 +80,18 @@ public class IndexController extends BaseController {
   @RequestMapping(value = "/error", method = RequestMethod.GET)
   public String error() {
     return "error";
+  }
+
+  private void setModel(String personId, Date from, ModelMap model) {
+    List<String> domains = accountService.domains(personId);
+    List<Status> statuses = Lists.newArrayList();
+    for (String domain : domains) {
+      Status status = statusService.find(personId, domain, from);
+      if (null != status)
+        statuses.add(status);
+    }
+    model.addAttribute("statuses", statuses);
+    model.addAttribute("personId", personId);
+    model.addAttribute("from", from);
   }
 }
