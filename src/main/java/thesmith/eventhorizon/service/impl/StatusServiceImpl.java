@@ -55,7 +55,7 @@ public class StatusServiceImpl implements StatusService {
             .debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
     }
   }
-  
+
   public Status find(String personId, String domain, Date from) {
     return this.find(personId, domain, from, "<=", "desc");
   }
@@ -72,7 +72,7 @@ public class StatusServiceImpl implements StatusService {
   private Status find(String personId, String domain, Date from, String created, String order) {
     List<Status> statuses = em.createQuery(
         "select s from Status s where s.personId = :personId and s.domain = :domain and s.created " + created
-            + " :from order by s.created "+order).setParameter("personId", personId).setParameter("domain", domain)
+            + " :from order by s.created " + order).setParameter("personId", personId).setParameter("domain", domain)
         .setParameter("from", from).setMaxResults(1).getResultList();
     if (null != statuses && statuses.size() > 0) {
       Status status = statuses.get(0);
@@ -125,20 +125,22 @@ public class StatusServiceImpl implements StatusService {
 
     return statuses;
   }
-  
+
   private String period(Date from, Date created) {
     DateTime now = new DateTime(from.getTime());
     DateTime then = new DateTime(created.getTime());
-    Period period = new Interval(then, now).toPeriod();
-    if (period.getYears() > 0 || period.getMonths() > 0)
-      return "yonks";
-    else if (period.getWeeks() > 0)
-      return "month";
-    else if (period.getDays() > 0)
-      return "week";
+    if (from.after(created)) {
+      Period period = new Interval(then, now).toPeriod();
+      if (period.getYears() > 0 || period.getMonths() > 0)
+        return "yonks";
+      else if (period.getWeeks() > 0)
+        return "month";
+      else if (period.getDays() > 0)
+        return "week";
+    }
     return "today";
   }
-  
+
   private String ago(Date created) {
     if (null == created)
       return "some time ago";
