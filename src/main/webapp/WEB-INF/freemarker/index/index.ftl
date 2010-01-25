@@ -1,18 +1,37 @@
-<@layout.layout "${personId} at ${from?string('kk:mm:ss')} on ${from?string('MMM d, yyyy')}" "${personId} <span class='decorator'>at</span> ${from?string('kk:mm:ss')} <span class='decorator'>on</span> ${from?string('MMM d, yyyy')}">
+<@layout.layout "${personId} at ${from?string('kk:mm:ss')} on ${from?string('MMM d, yyyy')}" "${personId} <span class='decorator'>at</span> <span class='title_time'>${from?string('kk:mm:ss')}</span> <span class='decorator'>on</span> <span class='title_date'>${from?string('MMM d, yyyy')}</span>">
+
+<script type="text/javascript">
+  eventhorizonFromDate = new Date('${from?datetime}');
+</script>
+
 <ul>
   <#list statuses as status>
     <script type="text/javascript">
       $(document).ready(function() {
         $("#${status.domain}").hover(
           function () {
-            $("#${status.domain} > div.previous").css("opacity", "0.9");
-            $("#${status.domain} > div.next").css("opacity", "0.9");
+            $("#${status.domain} .previous").css("opacity", "0.9");
+            $("#${status.domain} .next").css("opacity", "0.9");
           },
           function () {
-            $("#${status.domain} > div.previous").css("opacity", "0");
-            $("#${status.domain} > div.next").css("opacity", "0");
+            $("#${status.domain} .previous").css("opacity", "0");
+            $("#${status.domain} .next").css("opacity", "0");
           }
         );
+        
+        $("#${status.domain} .previous a").click(function() {
+          $.getJSON('/${status.personId}/${status.domain}/previous.json?from='+urlDate(eventhorizonFromDate),
+          function(data) {
+            $.each(data.statuses, function(i, status) {
+              $("#${status.domain} .status").html(status.status).
+                  removeClass('yonks month week today').addClass('${status.period}');
+            });
+            eventhorizonFromDate = new Date(data.from);
+            $(".title_date").html(titleDate(eventhorizonFromDate));
+            $(".title_time").html(titleTime(eventhorizonFromDate));
+          });
+          return false;
+        });
       });
     </script>
     <li id="${status.domain}">

@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import thesmith.eventhorizon.model.Status;
 
@@ -70,6 +71,48 @@ public class IndexController extends BaseController {
         logger.warn(e);
       return "redirect:/error";
     }
+  }
+
+  @RequestMapping(value = "/{personId}/{domain}/previous", method = RequestMethod.GET)
+  public String previous(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
+      @RequestParam("from") String from, ModelMap model) {
+    if (from.startsWith("/"))
+      from = from.substring(1);
+    if (from.endsWith("/"))
+      from = from.substring(0, from.length());
+
+    try {
+      Status status = statusService.previous(personId, domain, urlFormat.parse(from));
+      if (null != status)
+        this.setModel(personId, status.getCreated(), model);
+
+    } catch (ParseException e) {
+      if (logger.isWarnEnabled())
+        logger.warn(e);
+      return "redirect:/error";
+    }
+    return "index/index";
+  }
+
+  @RequestMapping(value = "/{personId}/{domain}/next", method = RequestMethod.GET)
+  public String next(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
+      @RequestParam("from") String from, ModelMap model) {
+    if (from.startsWith("/"))
+      from = from.substring(1);
+    if (from.endsWith("/"))
+      from = from.substring(0, from.length());
+
+    try {
+      Status status = statusService.next(personId, domain, urlFormat.parse(from));
+      if (null != status)
+        this.setModel(personId, status.getCreated(), model);
+
+    } catch (ParseException e) {
+      if (logger.isWarnEnabled())
+        logger.warn(e);
+      return "redirect:/error";
+    }
+    return "index/index";
   }
 
   @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
