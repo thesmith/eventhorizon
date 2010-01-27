@@ -43,6 +43,13 @@ public interface AccountService {
   public List<Account> list(String personId);
   
   /**
+   * Retrieve all of a person's accounts and empty ones for accounts they don't have
+   * @param personId
+   * @return
+   */
+  public List<Account> listAll(String personId);
+  
+  /**
    * Retrieve a limited list of accounts that need processing
    * @param limit
    * @return

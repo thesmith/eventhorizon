@@ -43,6 +43,22 @@ public class AccountServiceImplTest extends AppBaseTest {
   }
   
   @Test
+  public void testShouldListAll() throws Exception {
+    service.create(account);
+    assertNotNull(account.getId());
+    
+    List<Account> accounts = service.listAll(account.getPersonId());
+
+    Account twitter = null;
+    for (Account account: accounts) {
+      if ("twitter".equals(account.getDomain()))
+        twitter = account;
+    }
+    assertNotNull(twitter);
+    assertNull(twitter.getPersonId());
+  }
+  
+  @Test
   public void testShouldOnlyCreateAccountOnce() throws Exception {
     String personId = "blah"+Math.random();
     for (int i=0; i<5; i++) {

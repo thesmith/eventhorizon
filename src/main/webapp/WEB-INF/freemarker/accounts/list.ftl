@@ -1,7 +1,16 @@
-<@layout.layout "Accounts">
+<@layout.layout "Your Accounts">
 <ul>
-  <#list accounts as account>
-    <li><a href="/accounts/${account.domain}/">${account.domain}</a> - ${account.template}</li>
+  <#list domains as domain>
+    <li>
+      <form action="/accounts" method="post">
+        <label for="${domain}UserId"><div class="${domain}_title account_title">${domain}</div></label>
+        <div class="account_input">
+          <@spring.formInput "account_${domain}.userId", "id='${domain}UserId'" />
+          <@spring.formHiddenInput "account_${domain}.domain", "id='${domain}Domain'" />
+          <input type="submit" name="submit" value="Submit" />
+        </div>
+      </form>
+    </li>
   </#list>
 </ul>
 </@layout.layout>

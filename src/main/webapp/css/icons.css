@@ -9,9 +9,9 @@ a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }
 
 div.today{ opacity: 1; }
-div.week{ opacity: 0.75; }
-div.month{ opacity: 0.5; }
-div.yonks{ opacity: 0.25; }
+div.week{ opacity: 0.9; }
+div.month{ opacity: 0.75; }
+div.yonks{ opacity: 0.5; }
 
 div.me{background-image:url('../gfx/london.png');}
 div.bbc{background-image:url('../gfx/id.png');}
@@ -31,3 +31,9 @@ div.iplayer{background-image:url('../gfx/iplayer.gif');}
 div.wordr{background-image:url('../gfx/wordr.png');}
 
 span.decorator { color: #808080; }
+
+div.twitter_title{background-image:url('../gfx/twitter_full.png');}
+div.lastfm_title{background-image:url('../gfx/lastfm_full.png');}
+div.flickr_title{background-image:url('../gfx/flickr_full.png');}
+div.account_title{color: transparent; height: 45px; width: 145px; float:left; background-repeat:no-repeat; background-color:transparent;}
+div.account_input{float: left; padding-top: 10px; padding-left: 10px;}

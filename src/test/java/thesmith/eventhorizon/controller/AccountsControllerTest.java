@@ -72,47 +72,45 @@ public class AccountsControllerTest {
     Account account = new Account();
     account.setPersonId(user.getUsername());
     account.setDomain("domain");
+    accounts.add(account);
     
-    EasyMock.expect(accountService.list(user.getUsername())).andReturn(accounts);
+    Account twitter = new Account();
+    account.setPersonId(user.getUsername());
+    account.setDomain("twitter");
+    accounts.add(twitter);
+    
+    EasyMock.expect(accountService.listAll(user.getUsername())).andReturn(accounts);
     replay(accountService);
     
     ModelMap model = new ModelMap();
     String view = controller.list(model, request, response);
     assertEquals("accounts/list", view);
-    assertTrue(model.containsKey("accounts"));
-    assertEquals(accounts.size(), ((List<Account>) model.get("accounts")).size());
+    assertTrue(model.containsKey("account_"+account.getDomain()));
+    assertTrue(model.containsKey("account_"+twitter.getDomain()));
+    assertTrue(model.containsKey("domains"));
+    assertEquals(2, ((List<String>) model.get("domains")).size());
   }
   
-  @Test
-  public void shouldFindAccount() throws Exception {
-    Account account = new Account();
-    account.setPersonId(user.getUsername());
-    account.setDomain("domain");
-    
-    EasyMock.expect(accountService.find(user.getUsername(), account.getDomain())).andReturn(account);
-    replay(accountService, statusService);
-    
-    ModelMap model = new ModelMap();
-    String view = controller.find(account.getDomain(), model, request, response);
-    assertEquals("accounts/find", view);
-    assertTrue(model.containsKey("account"));
-    assertEquals(account.getPersonId(), ((Account) model.get("account")).getPersonId());
-  }
-  
+  @SuppressWarnings("unchecked")
   @Test
   public void shouldCreateAccount() throws Exception {
+    List<Account> accounts = Lists.newArrayList();
     Account account = new Account();
     account.setPersonId(user.getUsername());
     account.setDomain("domain");
+    accounts.add(account);
     
     EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
     accountService.create(account);
     EasyMock.expectLastCall();
+    EasyMock.expect(accountService.listAll(user.getUsername())).andReturn(accounts);
     replay(queue, accountService);
     
     ModelMap model = new ModelMap();
-    String view = controller.update(account.getDomain(), account, model, request, response);
-    assertEquals("accounts/find", view);
-    assertFalse(model.containsKey("account"));
+    String view = controller.update(account, model, request, response);
+    assertEquals("accounts/list", view);
+    assertTrue(model.containsKey("account_"+account.getDomain()));
+    assertTrue(model.containsKey("domains"));
+    assertEquals(1, ((List<String>) model.get("domains")).size());
   }
 }

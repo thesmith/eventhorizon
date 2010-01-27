@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.service.AccountService;
 
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 /**
@@ -24,12 +25,10 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
-  private static final Map<String, String> defaults = Maps.newHashMap();
-  static {
-    defaults.put("twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
-    defaults.put("lastfm", "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
-    defaults.put("flickr", "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
-  }
+  private static final Map<String, String> defaults = Maps.immutableMap(
+      "twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.",
+      "lastfm", "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.",
+      "flickr", "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
   
   @PersistenceContext
   private EntityManager em;
@@ -77,6 +76,27 @@ public class AccountServiceImpl implements AccountService {
   public List<Account> list(String personId) {
     return em.createQuery("select a from Account a where a.personId = :personId").setParameter("personId", personId)
         .getResultList();
+  }
+  
+  /** {@inheritDoc} */
+  public List<Account> listAll(String personId) {
+    List<Account> usersAccounts = this.list(personId);
+    List<Account> accounts = Lists.newArrayList(usersAccounts);
+    
+    for (String domain: defaults.keySet()) {
+      boolean found = false;
+      for (Account account: usersAccounts) {
+        if (domain.equals(account.getDomain()))
+          found = true;
+      }
+      
+      if (!found) {
+        Account account = new Account();
+        account.setDomain(domain);
+        accounts.add(account);
+      }
+    }
+    return accounts;
   }
   
   @SuppressWarnings("unchecked")

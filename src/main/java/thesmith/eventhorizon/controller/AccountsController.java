@@ -2,7 +2,7 @@ package thesmith.eventhorizon.controller;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
-import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import thesmith.eventhorizon.model.Account;
-import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.User;
+
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
 public class AccountsController extends BaseController {
@@ -27,68 +27,32 @@ public class AccountsController extends BaseController {
     if (null == user)
       return "redirect:/users/login";
 
-    model.addAttribute("accounts", accountService.list(user.getUsername()));
-
+    this.setupAccounts(user, model);
     return "accounts/list";
   }
 
-  @RequestMapping(value = "/accounts/{domain}", method = RequestMethod.GET)
-  public String find(@PathVariable("domain") String domain, ModelMap model, HttpServletRequest request,
-      HttpServletResponse response) {
-    User user = this.auth(request, response);
-    if (null == user)
-      return "redirect:/users/login";
-
-    Account account = accountService.find(user.getUsername(), domain);
-    if (null != account)
-      model.addAttribute("account", account);
-    else
-      model.addAttribute("account", new Account());
-    model.addAttribute("domain", domain);
-
-    return "accounts/find";
-  }
-
-  @RequestMapping(value = "/accounts/{domain}", method = RequestMethod.POST)
-  public String update(@PathVariable("domain") String domain, @ModelAttribute("account") Account account,
+  @RequestMapping(value = "/accounts", method = RequestMethod.POST)
+  public String update(@ModelAttribute("account") Account account,
       ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     User user = this.auth(request, response);
     if (null == user)
       return "redirect:/users/login";
 
     account.setPersonId(user.getUsername());
-    account.setDomain(domain);
     accountService.create(account);
     queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(
         JobsController.PAGE, "1"));
-    model.addAttribute("domain", domain);
-
-    return "accounts/find";
+    
+    this.setupAccounts(user, model);
+    return "accounts/list";
   }
-
-  @RequestMapping(value = "/accounts/{domain}/status", method = RequestMethod.GET)
-  public String statusForm(@PathVariable("domain") String domain, ModelMap model, HttpServletRequest request,
-      HttpServletResponse response) {
-    User user = this.auth(request, response);
-    if (null == user)
-      return "redirect:/users/login";
-    model.addAttribute("status", new Status());
-
-    return "accounts/status";
-  }
-
-  @RequestMapping(value = "/accounts/{domain}/status", method = RequestMethod.POST)
-  public String status(@PathVariable("domain") String domain, @ModelAttribute("status") Status status, ModelMap model,
-      HttpServletRequest request, HttpServletResponse response) {
-    User user = this.auth(request, response);
-    if (null == user)
-      return "redirect:/users/login";
-
-    status.setPersonId(user.getUsername());
-    status.setDomain(domain);
-    status.setCreated(new Date());
-    statusService.create(status);
-
-    return "redirect:/" + user.getUsername() + "/";
+  
+  private void setupAccounts(User user, ModelMap model) {
+    List<String> domains = Lists.newArrayList();
+    for (Account account: accountService.listAll(user.getUsername())) {
+      model.addAttribute("account_"+account.getDomain(), account);
+      domains.add(account.getDomain());
+    }
+    model.addAttribute("domains", domains);
   }
 }
