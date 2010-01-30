@@ -148,6 +148,7 @@ public class IndexController extends BaseController {
       for (String domain : domains) {
         statuses.add(defaultStatus(personId, domain, from));
       }
+      model.addAttribute("refresh", true);
     }
     model.addAttribute("statuses", statuses);
     model.addAttribute("personId", personId);

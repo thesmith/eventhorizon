@@ -1,5 +1,11 @@
 <@layout.layout "${personId} at ${from?string('kk:mm:ss')} on ${from?string('MMM d, yyyy')}" "${personId} <span class='decorator'>at</span> <span class='title_time'>${from?string('kk:mm:ss')}</span> <span class='decorator'>on</span> <span class='title_date'>${from?string('MMM d, yyyy')}</span>">
 
+<#if refresh??>
+  <noscript>
+    <meta http-equiv="refresh" content="0; URL=/${personId}/${(from)?string("yyyy/MM/dd/HH/mm/ss")}/" />
+  </noscript>
+</#if>
+
 <script type="text/javascript">
   eventhorizonFromDate = new Date('${from?datetime}');
   eventhorizonDates = new Object();
