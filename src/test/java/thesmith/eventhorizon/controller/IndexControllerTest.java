@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -39,17 +37,6 @@ public class IndexControllerTest {
     controller.setStatusService(statusService);
     controller.setAccountService(accountService);
     controller.setUserService(userService);
-  }
-  
-  @Test
-  public void shouldRedirectToNow() throws Exception {
-    Pattern pattern = Pattern.compile("redirect:\\/person\\/\\d+\\/\\d+\\/\\d+\\/\\d+\\/\\d+\\/\\d+\\/");
-    String personId = "person";
-    
-    String view = controller.start(personId);
-    assertNotNull(view);
-    Matcher matcher = pattern.matcher(view);
-    assertTrue(matcher.matches());
   }
   
   @SuppressWarnings("unchecked")

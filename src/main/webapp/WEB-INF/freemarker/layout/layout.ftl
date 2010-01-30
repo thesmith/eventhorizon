@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" media="all" href="/css/icons.css" />
     <script type="text/javascript" src="/js/jquery-1.4.min.js"></script> 
     <script type="text/javascript" src="/js/js.js"></script> 
+    <script type="text/javascript" src="/js/date.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta http-equiv="Content-Language" content="en-GB" />
     <meta name="author" content="Ben Smith" /> 

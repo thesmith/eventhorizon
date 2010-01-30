@@ -65,9 +65,7 @@ public class AccountServiceImplTest extends AppBaseTest {
       this.createAccount(personId, "somedomain", null);
     }
     
-    List<String> domains = service.domains(personId);
-    assertNotNull(domains);
-    assertEquals(1, domains.size());
+    service.find(personId, "somedomain");
   }
   
   private void createAccount(String personId, String domain, Date processed) {
@@ -78,18 +76,6 @@ public class AccountServiceImplTest extends AppBaseTest {
     account.setTemplate("template");
     account.setProcessed(processed);
     service.create(account);
-  }
-  
-  @Test
-  public void testShouldGetDomains() throws Exception {
-    String personId = "blah"+Math.random();
-    for (int i=0; i<5; i++) {
-      this.createAccount(personId, "somedomain"+i, null);
-    }
-    
-    List<String> domains = service.domains(personId);
-    assertNotNull(domains);
-    assertEquals(5, domains.size());
   }
   
   @Test

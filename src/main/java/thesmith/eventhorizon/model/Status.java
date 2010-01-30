@@ -26,7 +26,7 @@ public class Status implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Key id;
-  
+
   @Version
   @Column(name = "version")
   protected long version;
@@ -34,20 +34,20 @@ public class Status implements Serializable {
   @Basic
   @Column(name = "domain", length = 255)
   protected String domain;
-  
+
   @Basic
   @Column(name = "person_id", length = 255)
   private String personId;
-  
+
   @Basic
   @Column(name = "status")
   private Text status;
-  
+
   @Basic
   @Column(name = "created")
   @Temporal(TemporalType.TIMESTAMP)
   protected Date created;
-  
+
   @Transient
   protected String period;
 
@@ -97,5 +97,11 @@ public class Status implements Serializable {
 
   public void setPeriod(String period) {
     this.period = period;
+  }
+
+  @Override
+  public String toString() {
+    return "id: " + id + ", domain: " + domain + ", personId: " + personId + ", status: " + status.getValue() + ", created: "
+        + created + ", period: " + period;
   }
 }

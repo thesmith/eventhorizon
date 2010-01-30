@@ -1,19 +1,80 @@
-$(document).ready(function() {
-  $(".previous").css("opacity", "0");
-  $(".next").css("opacity", "0");
-});
+$(document).ready(
+    function() {
+      $(".previous").css("opacity", "0");
+      $(".next").css("opacity", "0");
+
+      var url = document.location.toString();
+      if (url.match("#")) {
+        var urlArray = url.split("#");
+        var user = getUser(urlArray[0]);
+        var anchor = urlArray[1];
+        updatePage(user + '/now', anchor);
+      } else {
+        var pathArray = window.location.pathname.split("/").clean("");
+        var host = window.location.host
+        var protocol = window.location.protocol
+
+        if (pathArray.length == 7) {
+          var currentUrl = urlBase(protocol, host, pathArray[0]) + "/#/" + (pathArray.slice(1, pathArray.length).join("/"));
+          window.location.replace(currentUrl);
+        } else if (pathArray.length == 1) {
+          var currentUrl = urlBase(protocol, host, pathArray[0]) + "/#/" + urlDate(new Date());
+          window.location.replace(currentUrl);
+        }
+      }
+    });
+
+function updatePage(urlAppend, from) {
+  $.getJSON('/' + urlAppend + '?from=' + from, function(data) {
+    var user = getUser(document.location.toString().split("#")[0]);
+    var host = window.location.host
+    var protocol = window.location.protocol
+    
+    $.each(data.statuses, function(i, status) {
+      eventhorizonDates[status.domain] = urlDate(new Date(status.created));
+      $("#" + status.domain + " .status").html(status.status).removeClass(
+          'yonks month week today').addClass(status.period);
+      $("#" + status.domain + " .previous a").attr("href", urlBase(protocol, host, user) 
+          + "/" + eventhorizonDates[status.domain] + "/" + status.domain + "/previous");
+      $("#" + status.domain + " .next a").attr("href", urlBase(protocol, host, user) 
+          + "/" + eventhorizonDates[status.domain] + "/" + status.domain + "/next");
+    });
+    eventhorizonFromDate = new Date(data.from);
+    $(".title_date").html(titleDate(eventhorizonFromDate));
+    $(".title_time").html(titleTime(eventhorizonFromDate));
+    
+    var currentUrl = urlBase(protocol, host, user) + "/#/" + urlDate(eventhorizonFromDate);
+    window.location.replace(currentUrl);
+  });
+}
+
+function urlBase(protocol, host, user) {
+  return protocol + "//" + host + "/" + user;
+}
 
 function urlDate(date) {
-  return date.format('Y/m/d/h/i/s');
+  return formatDate(date, "yyyy/MM/dd/HH/mm/ss");
 }
 
 function titleTime(date) {
-  return date.format('h:i:s');
+  return formatDate(date, "H:m:s");
 }
 
 function titleDate(date) {
-  return date.format('M d, Y');
+  return formatDate(date, 'NNN d, yyyy');
 }
 
-//Simulates PHP's date function
-Date.prototype.format=function(format){var returnStr='';var replace=Date.replaceChars;for(var i=0;i<format.length;i++){var curChar=format.charAt(i);if(replace[curChar]){returnStr+=replace[curChar].call(this);}else{returnStr+=curChar;}}return returnStr;};Date.replaceChars={shortMonths:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],longMonths:['January','February','March','April','May','June','July','August','September','October','November','December'],shortDays:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],longDays:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],d:function(){return(this.getDate()<10?'0':'')+this.getDate();},D:function(){return Date.replaceChars.shortDays[this.getDay()];},j:function(){return this.getDate();},l:function(){return Date.replaceChars.longDays[this.getDay()];},N:function(){return this.getDay()+1;},S:function(){return(this.getDate()%10==1&&this.getDate()!=11?'st':(this.getDate()%10==2&&this.getDate()!=12?'nd':(this.getDate()%10==3&&this.getDate()!=13?'rd':'th')));},w:function(){return this.getDay();},z:function(){return"Not Yet Supported";},W:function(){return"Not Yet Supported";},F:function(){return Date.replaceChars.longMonths[this.getMonth()];},m:function(){return(this.getMonth()<9?'0':'')+(this.getMonth()+1);},M:function(){return Date.replaceChars.shortMonths[this.getMonth()];},n:function(){return this.getMonth()+1;},t:function(){return"Not Yet Supported";},L:function(){return(((this.getFullYear()%4==0)&&(this.getFullYear()%100!=0))||(this.getFullYear()%400==0))?'1':'0';},o:function(){return"Not Supported";},Y:function(){return this.getFullYear();},y:function(){return(''+this.getFullYear()).substr(2);},a:function(){return this.getHours()<12?'am':'pm';},A:function(){return this.getHours()<12?'AM':'PM';},B:function(){return"Not Yet Supported";},g:function(){return this.getHours()%12||12;},G:function(){return this.getHours();},h:function(){return((this.getHours()%12||12)<10?'0':'')+(this.getHours()%12||12);},H:function(){return(this.getHours()<10?'0':'')+this.getHours();},i:function(){return(this.getMinutes()<10?'0':'')+this.getMinutes();},s:function(){return(this.getSeconds()<10?'0':'')+this.getSeconds();},e:function(){return"Not Yet Supported";},I:function(){return"Not Supported";},O:function(){return(-this.getTimezoneOffset()<0?'-':'+')+(Math.abs(this.getTimezoneOffset()/60)<10?'0':'')+(Math.abs(this.getTimezoneOffset()/60))+'00';},P:function(){return(-this.getTimezoneOffset()<0?'-':'+')+(Math.abs(this.getTimezoneOffset()/60)<10?'0':'')+(Math.abs(this.getTimezoneOffset()/60))+':'+(Math.abs(this.getTimezoneOffset()%60)<10?'0':'')+(Math.abs(this.getTimezoneOffset()%60));},T:function(){var m=this.getMonth();this.setMonth(0);var result=this.toTimeString().replace(/^.+ \(?([^\)]+)\)?$/,'$1');this.setMonth(m);return result;},Z:function(){return-this.getTimezoneOffset()*60;},c:function(){return this.format("Y-m-d")+"T"+this.format("H:i:sP");},r:function(){return this.toString();},U:function(){return this.getTime()/1000;}};
+function getUser(url) {
+  var urlArray = url.split('/').clean('');
+  return urlArray[urlArray.length - 1];
+}
+
+Array.prototype.clean = function(deleteValue) {
+  for ( var i = 0; i < this.length; i++) {
+    if (this[i] == deleteValue) {
+      this.splice(i, 1);
+      i--;
+    }
+  }
+  return this;
+};

@@ -70,6 +70,9 @@ public class StatusServiceImpl implements StatusService {
 
   @SuppressWarnings("unchecked")
   private Status find(String personId, String domain, Date from, String created, String order) {
+    if (logger.isDebugEnabled())
+      logger.debug("Finding for "+personId+" on "+domain+" from "+from+" as "+created+" by "+order);
+    
     List<Status> statuses = em.createQuery(
         "select s from Status s where s.personId = :personId and s.domain = :domain and s.created " + created
             + " :from order by s.created " + order).setParameter("personId", personId).setParameter("domain", domain)
@@ -82,6 +85,9 @@ public class StatusServiceImpl implements StatusService {
       returnStatus.setPersonId(status.getPersonId());
       returnStatus.setStatus(status.getStatus().replaceAll("\\{ago\\}", this.ago(status.getCreated())));
       returnStatus.setPeriod(this.period(from, status.getCreated()));
+      
+      if (logger.isDebugEnabled())
+        logger.debug("Retrieved: "+returnStatus);
       return returnStatus;
     }
     return null;

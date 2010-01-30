@@ -2,6 +2,7 @@
 
 <script type="text/javascript">
   eventhorizonFromDate = new Date('${from?datetime}');
+  eventhorizonDates = new Object();
 </script>
 
 <ul>
@@ -19,25 +20,21 @@
           }
         );
         
-        $("#${status.domain} .previous a").click(function() {
-          $.getJSON('/${status.personId}/${status.domain}/previous.json?from='+urlDate(eventhorizonFromDate),
-          function(data) {
-            $.each(data.statuses, function(i, status) {
-              $("#${status.domain} .status").html(status.status).
-                  removeClass('yonks month week today').addClass('${status.period}');
-            });
-            eventhorizonFromDate = new Date(data.from);
-            $(".title_date").html(titleDate(eventhorizonFromDate));
-            $(".title_time").html(titleTime(eventhorizonFromDate));
-          });
+        eventhorizonDates['${status.domain}'] = '${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}';
+        $("#${status.domain} .previous a").click(function(){ 
+          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}']);
+          return false;
+        });
+        $("#${status.domain} .next a").click(function(){ 
+          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}']);
           return false;
         });
       });
     </script>
     <li id="${status.domain}">
-      <div class="previous"><a href="/${status.personId}/${status.created?string("yyyy/MM/dd/kk/mm/ss")}/${status.domain}/previous" class="image"><img src="/gfx/previous.png" title="previous" /></a></div>
+      <div class="previous"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/previous" class="image"><img src="/gfx/previous.png" title="previous" /></a></div>
       <div class="status ${status.domain} ${status.period}">${status.status}</div>
-      <div class="next"><a href="/${status.personId}/${status.created?string("yyyy/MM/dd/kk/mm/ss")}/${status.domain}/next" class="image"><img src="/gfx/next.png" title="next" /></a></div>
+      <div class="next"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/next" class="image"><img src="/gfx/next.png" title="next" /></a></div>
     </li>
   </#list>
   <li>And so on..</li>

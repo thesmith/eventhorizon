@@ -76,13 +76,8 @@ public class IndexController extends BaseController {
   @RequestMapping(value = "/{personId}/{domain}/previous", method = RequestMethod.GET)
   public String previous(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
       @RequestParam("from") String from, ModelMap model) {
-    if (from.startsWith("/"))
-      from = from.substring(1);
-    if (from.endsWith("/"))
-      from = from.substring(0, from.length());
-
     try {
-      Status status = statusService.previous(personId, domain, urlFormat.parse(from));
+      Status status = statusService.previous(personId, domain, this.parseDate(from));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
 
@@ -97,13 +92,8 @@ public class IndexController extends BaseController {
   @RequestMapping(value = "/{personId}/{domain}/next", method = RequestMethod.GET)
   public String next(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
       @RequestParam("from") String from, ModelMap model) {
-    if (from.startsWith("/"))
-      from = from.substring(1);
-    if (from.endsWith("/"))
-      from = from.substring(0, from.length());
-
     try {
-      Status status = statusService.next(personId, domain, urlFormat.parse(from));
+      Status status = statusService.next(personId, domain, this.parseDate(from));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
 
@@ -115,9 +105,26 @@ public class IndexController extends BaseController {
     return "index/index";
   }
 
+  @RequestMapping(value = "/{personId}/now", method = RequestMethod.GET)
+  public String now(@PathVariable("personId") String personId, @RequestParam("from") String from, ModelMap model) {
+    if (null != from && from.length() > 0) {
+      try {
+        this.setModel(personId, this.parseDate(from), model);
+
+      } catch (ParseException e) {
+        if (logger.isWarnEnabled())
+          logger.warn(e);
+        return "redirect:/error";
+      }
+    }
+    return "index/index";
+  }
+
   @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
-  public String start(@PathVariable("personId") String personId) {
-    return String.format("redirect:/%s/%s/", personId, urlFormat.format(new Date()));
+  public String start(@PathVariable("personId") String personId, ModelMap model) {
+    this.setModel(personId, null, model);
+
+    return "index/index";
   }
 
   @RequestMapping(value = "/error", method = RequestMethod.GET)
@@ -128,13 +135,44 @@ public class IndexController extends BaseController {
   private void setModel(String personId, Date from, ModelMap model) {
     List<String> domains = accountService.domains(personId);
     List<Status> statuses = Lists.newArrayList();
-    for (String domain : domains) {
-      Status status = statusService.find(personId, domain, from);
-      if (null != status)
+    if (null != from) {
+      for (String domain : domains) {
+        Status status = statusService.find(personId, domain, from);
+        if (null == status) {
+          status = defaultStatus(personId, domain, from);
+        }
         statuses.add(status);
+      }
+    } else {
+      from = new Date();
+      for (String domain : domains) {
+        statuses.add(defaultStatus(personId, domain, from));
+      }
     }
     model.addAttribute("statuses", statuses);
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
+    
+    if (logger.isDebugEnabled())
+      logger.debug("Setting the model: "+model);
+  }
+  
+  private Status defaultStatus(String personId, String domain, Date from) {
+    Status status = new Status();
+    status.setDomain(domain);
+    status.setPersonId(personId);
+    status.setStatus("");
+    status.setCreated(from);
+    status.setPeriod("today");
+    return status;
+  }
+
+  private Date parseDate(String from) throws ParseException {
+    if (from.startsWith("/"))
+      from = from.substring(1);
+    if (from.endsWith("/"))
+      from = from.substring(0, from.length());
+
+    return urlFormat.parse(from);
   }
 }

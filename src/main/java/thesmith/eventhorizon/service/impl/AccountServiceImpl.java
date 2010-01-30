@@ -55,10 +55,10 @@ public class AccountServiceImpl implements AccountService {
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings("unchecked")
   public List<String> domains(String personId) {
-    return em.createQuery("select distinct domain from Account a where a.personId = :personId").setParameter(
-        "personId", personId).getResultList();
+//    return em.createQuery("select distinct domain from Account a where a.personId = :personId").setParameter(
+//        "personId", personId).getResultList();
+    return Lists.newArrayList(defaults.keySet());
   }
 
   /** {@inheritDoc} */
