@@ -35,8 +35,10 @@ function updatePage(urlAppend, from) {
     if (data.statuses) {
       $.each(data.statuses, function(i, status) {
         eventhorizonDates[status.domain] = urlDate(new Date(status.created));
-        $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(
-            status.period);
+        $("#" + status.domain + " .status").animate({"left": "+=50em"}, "slow", null function() {
+          $(this).html(status.status).removeClass('yonks month week today').addClass(status.period).animate({"right": "+=50em"}, "fast");
+        });
+        //.html(status.status).removeClass('yonks month week today').addClass(status.period);
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
                 + "/previous");
