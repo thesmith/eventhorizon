@@ -7,7 +7,7 @@ $(document).ready(function() {
     var urlArray = url.split("#");
     var user = getUser(urlArray[0]);
     var anchor = urlArray[1];
-    updatePage(user + '/now', anchor);
+    updatePage(user + '/now', anchor, 'start');
   } else {
     var pathArray = window.location.pathname.split("/").clean("");
     var host = window.location.host;
@@ -21,12 +21,12 @@ $(document).ready(function() {
       var dateAsUrl = urlDate(new Date());
       var currentUrl = urlBase(protocol, host, user) + "/#/" + dateAsUrl;
       window.location.replace(currentUrl);
-      updatePage(user + '/now', dateAsUrl);
+      updatePage(user + '/now', dateAsUrl, 'start');
     }
   }
 });
 
-function updatePage(urlAppend, from) {
+function updatePage(urlAppend, from, direction) {
   $.getJSON('/' + urlAppend + '?from=' + from, function(data) {
     var user = getUser(document.location.toString().split("#")[0]);
     var host = window.location.host
@@ -35,10 +35,21 @@ function updatePage(urlAppend, from) {
     if (data.statuses) {
       $.each(data.statuses, function(i, status) {
         eventhorizonDates[status.domain] = urlDate(new Date(status.created));
-        $("#" + status.domain + " .status").animate({"left": "+=50em"}, "slow", null function() {
-          $(this).html(status.status).removeClass('yonks month week today').addClass(status.period).animate({"right": "+=50em"}, "fast");
-        });
-        //.html(status.status).removeClass('yonks month week today').addClass(status.period);
+        var directionOut = '+50em';
+        var directionBack = '-100em';
+        if (direction == 'next') {
+          directionOut = '-50em';
+          directionBack = '+100em';
+        }
+        
+        if (direction == 'next' || direction == 'previous') {
+          $("#" + status.domain + " .status").animate({"left": directionOut}, "slow", null, function() {
+            $(this).html(status.status).removeClass('yonks month week today').addClass(status.period)
+                .css('left', directionBack).animate({"left": "+0em"}, "slow");
+          });
+        } else {
+          $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
+        }
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
                 + "/previous");

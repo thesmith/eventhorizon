@@ -28,18 +28,18 @@
         
         eventhorizonDates['${status.domain}'] = '${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}';
         $("#${status.domain} .previous a").click(function(){ 
-          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}']);
+          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}'], 'previous');
           return false;
         });
         $("#${status.domain} .next a").click(function(){ 
-          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}']);
+          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}'], 'next');
           return false;
         });
       });
     </script>
     <li id="${status.domain}">
       <div class="previous"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/previous" class="image"><img src="/gfx/previous.png" title="previous" /></a></div>
-      <div class="status ${status.domain} ${status.period}">${status.status}</div>
+      <div class="status_holder"><span class="status ${status.domain} ${status.period}">${status.status}</span></div>
       <div class="next"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/next" class="image"><img src="/gfx/next.png" title="next" /></a></div>
     </li>
   </#list>
