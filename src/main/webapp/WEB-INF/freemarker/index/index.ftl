@@ -28,11 +28,19 @@
         
         eventhorizonDates['${status.domain}'] = '${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}';
         $("#${status.domain} .previous a").click(function(){ 
-          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}'], 'previous');
+          var currentHtml = $(this).html();
+          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}'], 'previous', function() {
+            $("#${status.domain} .previous a").html(currentHtml);
+          });
+          $(this).html("<img src='/gfx/ajax-loader.gif' />");
           return false;
         });
         $("#${status.domain} .next a").click(function(){ 
-          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}'], 'next');
+          var currentHtml = $(this).html();
+          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}'], 'next', function() {
+            $("#${status.domain} .next a").html(currentHtml);
+          });
+          $(this).html("<img src='/gfx/ajax-loader.gif' />");
           return false;
         });
       });

@@ -7,7 +7,7 @@ $(document).ready(function() {
     var urlArray = url.split("#");
     var user = getUser(urlArray[0]);
     var anchor = urlArray[1];
-    updatePage(user + '/now', anchor, 'start');
+    updatePage(user + '/now', anchor, 'start', function() {return true;});
   } else {
     var pathArray = window.location.pathname.split("/").clean("");
     var host = window.location.host;
@@ -21,12 +21,12 @@ $(document).ready(function() {
       var dateAsUrl = urlDate(new Date());
       var currentUrl = urlBase(protocol, host, user) + "/#/" + dateAsUrl;
       window.location.replace(currentUrl);
-      updatePage(user + '/now', dateAsUrl, 'start');
+      updatePage(user + '/now', dateAsUrl, 'start', function() {return true;});
     }
   }
 });
 
-function updatePage(urlAppend, from, direction) {
+function updatePage(urlAppend, from, direction, callback) {
   $.getJSON('/' + urlAppend + '?from=' + from, function(data) {
     var user = getUser(document.location.toString().split("#")[0]);
     var host = window.location.host
@@ -63,6 +63,7 @@ function updatePage(urlAppend, from, direction) {
 
       var currentUrl = urlBase(protocol, host, user) + "/#/" + urlDate(eventhorizonFromDate);
       window.location.replace(currentUrl);
+      callback();
     }
   });
 }
