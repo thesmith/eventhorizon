@@ -10,6 +10,7 @@
   eventhorizonFromDate = new Date('${from?datetime}');
   eventhorizonDates = new Object();
 </script>
+<script type="text/javascript" src="/js/index.js"></script>
 
 <ul>
   <#list statuses as status>
@@ -28,19 +29,11 @@
         
         eventhorizonDates['${status.domain}'] = '${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}';
         $("#${status.domain} .previous a").click(function(){ 
-          var currentHtml = $(this).html();
-          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}'], 'previous', function() {
-            $("#${status.domain} .previous a").html(currentHtml);
-          });
-          $(this).html("<img src='/gfx/ajax-loader.gif' />");
+          updatePage("${status.personId}/${status.domain}/previous.json", eventhorizonDates['${status.domain}'], 'previous');
           return false;
         });
         $("#${status.domain} .next a").click(function(){ 
-          var currentHtml = $(this).html();
-          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}'], 'next', function() {
-            $("#${status.domain} .next a").html(currentHtml);
-          });
-          $(this).html("<img src='/gfx/ajax-loader.gif' />");
+          updatePage("${status.personId}/${status.domain}/next.json", eventhorizonDates['${status.domain}'], 'next');
           return false;
         });
       });
@@ -51,7 +44,7 @@
       <div class="next"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/next" class="image"><img src="/gfx/next.png" title="next" /></a></div>
     </li>
   </#list>
-  <li>And so on..</li>
+  <li id="dotdot">And so on..</li>
 </ul>
 </@layout.layout>
 

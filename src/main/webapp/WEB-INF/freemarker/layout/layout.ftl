@@ -4,7 +4,7 @@
   <head>
     <link rel="stylesheet" type="text/css" media="all" href="/css/css.css" /> 
     <link rel="stylesheet" type="text/css" media="all" href="/css/icons.css" />
-    <script type="text/javascript" src="/js/jquery-1.4.min.js"></script> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/js/js.js"></script> 
     <script type="text/javascript" src="/js/date.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
