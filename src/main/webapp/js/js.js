@@ -63,11 +63,11 @@ function urlDate(date) {
 }
 
 function titleTime(date) {
-  return formatDate(date, "H:m:s");
+  return formatDate(date, "HH:mm:ss");
 }
 
 function titleDate(date) {
-  return formatDate(date, 'NNN d, yyyy');
+  return formatDate(date, 'NNN dd, yyyy');
 }
 
 function getUser(url) {

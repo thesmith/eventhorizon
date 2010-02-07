@@ -48,7 +48,7 @@ public class TwitterEventServiceImpl implements EventService {
   }
   
   private String processTweet(String tweet) {
-    return tweet.replaceAll("@([a-zA-Z_-]+)", "<a href='http://www.twitter.com/$1'>@$1</a>")
-        .replaceAll("#([a-zA-Z_-]+)", "<a href='http://www.twitter.com/search?q=%23$1'>#$1</a>");
+    return tweet.replaceAll("@([a-zA-Z0-9_-]+)", "<a href='http://www.twitter.com/$1'>@$1</a>")
+        .replaceAll("#([a-zA-Z0-9_-]+)", "<a href='http://www.twitter.com/search?q=%23$1'>#$1</a>");
   }
 }

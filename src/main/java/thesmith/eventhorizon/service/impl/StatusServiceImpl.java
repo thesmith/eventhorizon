@@ -56,26 +56,26 @@ public class StatusServiceImpl implements StatusService {
     }
   }
 
-  public Status find(String personId, String domain, Date from) {
-    return this.find(personId, domain, from, "<=", "desc");
+  public Status find(Account account, Date from) {
+    return this.find(account, from, "<=", "desc");
   }
 
-  public Status next(String personId, String domain, Date from) {
-    return this.find(personId, domain, from, ">", "asc");
+  public Status next(Account account, Date from) {
+    return this.find(account, from, ">", "asc");
   }
 
-  public Status previous(String personId, String domain, Date from) {
-    return this.find(personId, domain, from, "<", "desc");
+  public Status previous(Account account, Date from) {
+    return this.find(account, from, "<", "desc");
   }
 
   @SuppressWarnings("unchecked")
-  private Status find(String personId, String domain, Date from, String created, String order) {
+  private Status find(Account account, Date from, String created, String order) {
     if (logger.isDebugEnabled())
-      logger.debug("Finding for "+personId+" on "+domain+" from "+from+" as "+created+" by "+order);
+      logger.debug("Finding for "+account.getPersonId()+" on "+account.getDomain()+" from "+from+" as "+created+" by "+order);
     
     List<Status> statuses = em.createQuery(
         "select s from Status s where s.personId = :personId and s.domain = :domain and s.created " + created
-            + " :from order by s.created " + order).setParameter("personId", personId).setParameter("domain", domain)
+            + " :from order by s.created " + order).setParameter("personId", account.getPersonId()).setParameter("domain", account.getDomain())
         .setParameter("from", from).setMaxResults(1).getResultList();
     if (null != statuses && statuses.size() > 0) {
       Status status = statuses.get(0);
@@ -83,8 +83,11 @@ public class StatusServiceImpl implements StatusService {
       returnStatus.setCreated(status.getCreated());
       returnStatus.setDomain(status.getDomain());
       returnStatus.setPersonId(status.getPersonId());
-      returnStatus.setStatus(status.getStatus().replaceAll("\\{ago\\}", this.ago(status.getCreated())));
+      returnStatus.setTitle(status.getTitle());
+      returnStatus.setTitleUrl(status.getTitleUrl());
       returnStatus.setPeriod(this.period(from, status.getCreated()));
+      if (null != account.getTemplate())
+        returnStatus.setStatus(this.status(account, returnStatus));
       
       if (logger.isDebugEnabled())
         logger.debug("Retrieved: "+returnStatus);
@@ -107,16 +110,8 @@ public class StatusServiceImpl implements StatusService {
       status.setPersonId(account.getPersonId());
       status.setDomain(account.getDomain());
       status.setCreated(event.getCreated());
-
-      String text = account.getTemplate();
-      text = text.replaceAll("\\{title\\}", Matcher.quoteReplacement(event.getTitle()));
-      text = text.replaceAll("\\{titleUrl\\}", Matcher.quoteReplacement(event.getTitleUrl()));
-      text = text.replaceAll("\\{domain\\}", Matcher.quoteReplacement(account.getDomain()));
-      text = text.replaceAll("\\{domainUrl\\}", Matcher.quoteReplacement(event.getDomainUrl()));
-      text = text.replaceAll("\\{userUrl\\}", Matcher.quoteReplacement(event.getUserUrl()));
-      if (logger.isDebugEnabled())
-        logger.debug(text);
-      status.setStatus(text);
+      status.setTitle(event.getTitle());
+      status.setTitleUrl(event.getTitleUrl());
       statuses.add(status);
 
       if (null == oldest || (null != status.getCreated() && status.getCreated().before(oldest)))
@@ -130,6 +125,22 @@ public class StatusServiceImpl implements StatusService {
           + " as page " + page + " ranging from " + oldest + " to " + newest);
 
     return statuses;
+  }
+  
+  private String status(Account account, Status status) {
+    if (null == status.getTitle() || null == status.getTitleUrl() || null == status.getCreated())
+      throw new RuntimeException("Unable to create status without appropriate info: "+status);
+    
+    String text = account.getTemplate();
+    text = text.replaceAll("\\{title\\}", Matcher.quoteReplacement(status.getTitle()));
+    text = text.replaceAll("\\{titleUrl\\}", Matcher.quoteReplacement(status.getTitleUrl()));
+    text = text.replaceAll("\\{domain\\}", Matcher.quoteReplacement(account.getDomain()));
+    text = text.replaceAll("\\{domainUrl\\}", Matcher.quoteReplacement(account.getDomainUrl()));
+    text = text.replaceAll("\\{userUrl\\}", Matcher.quoteReplacement(account.getUserUrl()));
+    text = text.replaceAll("\\{ago\\}", this.ago(status.getCreated()));
+    if (logger.isDebugEnabled())
+      logger.debug(text);
+    return text;
   }
 
   private String period(Date from, Date created) {

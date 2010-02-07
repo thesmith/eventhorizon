@@ -62,4 +62,12 @@ public interface AccountService {
    * @return
    */
   public List<String> domains(String personId);
+  
+  /**
+   * Create a new account object
+   * @param personId
+   * @param domain
+   * @return
+   */
+  public Account account(String personId, String domain);
 }

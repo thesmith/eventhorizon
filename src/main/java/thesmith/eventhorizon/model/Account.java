@@ -45,6 +45,14 @@ public class Account implements Serializable {
   @Column(name = "template", length = 511)
   private String template;
   
+  @Basic
+  @Column(name = "user_url", length = 255)
+  private String userUrl;
+  
+  @Basic
+  @Column(name = "domain_url", length = 255)
+  private String domainUrl;
+  
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "processed")
   private Date processed;
@@ -95,5 +103,21 @@ public class Account implements Serializable {
 
   public void setProcessed(Date processed) {
     this.processed = processed;
+  }
+
+  public String getUserUrl() {
+    return userUrl;
+  }
+
+  public void setUserUrl(String userUrl) {
+    this.userUrl = userUrl;
+  }
+
+  public String getDomainUrl() {
+    return domainUrl;
+  }
+
+  public void setDomainUrl(String domainUrl) {
+    this.domainUrl = domainUrl;
   }
 }

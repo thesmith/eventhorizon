@@ -39,9 +39,16 @@ public class Status implements Serializable {
   @Column(name = "person_id", length = 255)
   private String personId;
 
-  @Basic
-  @Column(name = "status")
+  @Transient
   private Text status;
+
+  @Basic
+  @Column(name = "title_url")
+  private String titleUrl;
+
+  @Basic
+  @Column(name = "title")
+  private String title;
 
   @Basic
   @Column(name = "created")
@@ -99,9 +106,25 @@ public class Status implements Serializable {
     this.period = period;
   }
 
+  public String getTitleUrl() {
+    return titleUrl;
+  }
+
+  public void setTitleUrl(String titleUrl) {
+    this.titleUrl = titleUrl;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
   @Override
   public String toString() {
-    return "id: " + id + ", domain: " + domain + ", personId: " + personId + ", status: " + status.getValue() + ", created: "
-        + created + ", period: " + period;
+    return "id: " + id + ", domain: " + domain + ", personId: " + personId + ", titleUrl: " + titleUrl + ", title: "
+        + title + ", created: " + created + ", period: " + period;
   }
 }

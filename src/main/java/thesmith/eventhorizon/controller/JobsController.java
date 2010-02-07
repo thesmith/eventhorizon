@@ -41,7 +41,7 @@ public class JobsController extends BaseController {
 
       if (statuses.size() > 0) {
         Date d = new Date(oldest.getTime() - 1L);
-        Status status = statusService.find(personId, domain, d);
+        Status status = statusService.find(account, d);
         if (null == status) {
           queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, String.valueOf(p + 1)));
         }

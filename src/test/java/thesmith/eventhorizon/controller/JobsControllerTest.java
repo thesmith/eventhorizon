@@ -82,8 +82,7 @@ public class JobsControllerTest {
     statusService.create(status);
     EasyMock.expectLastCall();
     
-    Date d = new Date(yesturday.getTimeInMillis()-1L);
-    EasyMock.expect(statusService.find(account.getPersonId(), account.getDomain(), d)).andReturn(null);
+    EasyMock.expect(statusService.find(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(null);
     
     EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
     EasyMock.replay(accountService, statusService, queue);

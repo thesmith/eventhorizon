@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import thesmith.eventhorizon.AppBaseTest;
 import thesmith.eventhorizon.model.Account;
+import thesmith.eventhorizon.service.impl.AccountServiceImpl;
 
 public class AccountServiceImplTest extends AppBaseTest {
   @Autowired
@@ -22,7 +23,7 @@ public class AccountServiceImplTest extends AppBaseTest {
   public void setUp() throws Exception {
     super.setUp();
     account = new Account();
-    account.setDomain("domain");
+    account.setDomain(AccountServiceImpl.DOMAIN.twitter.toString());
     account.setPersonId("id"+Math.random());
     account.setUserId("id");
     account.setTemplate("template");
@@ -49,20 +50,20 @@ public class AccountServiceImplTest extends AppBaseTest {
     
     List<Account> accounts = service.listAll(account.getPersonId());
 
-    Account twitter = null;
+    Account flickr = null;
     for (Account account: accounts) {
-      if ("twitter".equals(account.getDomain()))
-        twitter = account;
+      if ("lastfm".equals(account.getDomain()))
+        flickr = account;
     }
-    assertNotNull(twitter);
-    assertNull(twitter.getPersonId());
+    assertNotNull(flickr);
+    assertNull(flickr.getPersonId());
   }
   
   @Test
   public void testShouldOnlyCreateAccountOnce() throws Exception {
     String personId = "blah"+Math.random();
     for (int i=0; i<5; i++) {
-      this.createAccount(personId, "somedomain", null);
+      this.createAccount(personId, AccountServiceImpl.DOMAIN.flickr.toString(), null);
     }
     
     service.find(personId, "somedomain");
@@ -83,9 +84,9 @@ public class AccountServiceImplTest extends AppBaseTest {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.DAY_OF_WEEK, 1);
     
-    this.createAccount("someguy"+Math.random(), "somedomain", cal.getTime());
-    this.createAccount("someotherguy"+Math.random(), "somedomain", null);
-    this.createAccount("not", "not", new Date());
+    this.createAccount("someguy"+Math.random(), AccountServiceImpl.DOMAIN.flickr.toString(), cal.getTime());
+    this.createAccount("someotherguy"+Math.random(), AccountServiceImpl.DOMAIN.flickr.toString(), null);
+    this.createAccount("not", AccountServiceImpl.DOMAIN.flickr.toString(), new Date());
     
     List<Account> toProcess = service.toProcess(10);
     assertNotNull(toProcess);

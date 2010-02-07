@@ -2,7 +2,7 @@ li{ list-style:none; height: 4em; }
 img { vertical-align: middle; }
 
 div.previous{ float: left; }
-div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 51em; margin-top: 7px;}
+div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 7px;}
 div.next{ float: left; }
 
 span.status{ position: absolute; width: 50em; padding-left: 26px; background-repeat:no-repeat; background-color:transparent; }

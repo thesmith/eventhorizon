@@ -14,10 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import thesmith.eventhorizon.AppBaseTest;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
+import thesmith.eventhorizon.service.impl.AccountServiceImpl;
 
 public class StatusServiceImplTest extends AppBaseTest {
   @Autowired
   private StatusService service;
+  
+  @Autowired
+  private AccountService accountService;
   
   private Status status;
   
@@ -25,10 +29,11 @@ public class StatusServiceImplTest extends AppBaseTest {
   public void setUp() throws Exception {
     super.setUp();
     status = new Status();
-    status.setDomain("domain");
+    status.setDomain(AccountServiceImpl.DOMAIN.twitter.toString());
     status.setPersonId("id"+Math.random());
     status.setCreated(new Date());
-    status.setStatus("status");
+    status.setTitle("title");
+    status.setTitleUrl("titleUrl");
   }
   
   @Test
@@ -36,11 +41,14 @@ public class StatusServiceImplTest extends AppBaseTest {
     service.create(status);
     assertNotNull(status.getId());
     
-    Status stat = service.find(status.getPersonId(), status.getDomain(), status.getCreated());
-    assertEquals(status.getStatus(), stat.getStatus());
+    Account account = accountService.account(status.getPersonId(), status.getDomain());
+    account.setUserId("userId");
+    
+    Status stat = service.find(account, status.getCreated());
+    assertNotNull(stat.getStatus());
     
     Date date = new Date(status.getCreated().getTime()+50L);
-    stat = service.find(status.getPersonId(), status.getDomain(), date);
+    stat = service.find(account, date);
   }
   
   @Test
@@ -49,30 +57,31 @@ public class StatusServiceImplTest extends AppBaseTest {
     created.add(Calendar.DAY_OF_MONTH, -7);
     
     Status status = new Status();
-    status.setDomain("domain");
+    status.setDomain(AccountServiceImpl.DOMAIN.flickr.toString());
     status.setPersonId("id"+Math.random());
     status.setCreated(created.getTime());
-    status.setStatus("some status");
+    status.setTitle("title");
+    status.setTitleUrl("titleUrl");
     service.create(status);
     
-    Status stat = service.find(status.getPersonId(), status.getDomain(), created.getTime());
-    assertEquals(status.getStatus(), stat.getStatus());
+    Account account = accountService.account(status.getPersonId(), status.getDomain());
+    account.setUserId("userId");
+    
+    Status stat = service.find(account, created.getTime());
+    assertNotNull(stat.getStatus());
     assertEquals(status.getCreated(), stat.getCreated());
   }
   
   @Test
   public void testShouldCreateStatusesFromTwitter() throws Exception {
-    Account account = new Account();
-    account.setPersonId("thesmith"+Math.random());
-    account.setDomain("twitter");
+    Account account = accountService.account(status.getPersonId(), status.getDomain());
     account.setUserId("thesmith");
-    account.setTemplate("{ago}, <a herf='{userUrl}'>I</a> <a href='{titleUrl}'>{title}</a>");
     
     List<Status> statuses = service.list(account, 1);
     assertNotNull(statuses);
     assertTrue(statuses.size() > 0);
     Status stat = statuses.get(0);
     assertNotNull(stat);
-    assertNotNull(stat.getStatus());
+    assertNotNull(stat.getTitle());
   }
 }

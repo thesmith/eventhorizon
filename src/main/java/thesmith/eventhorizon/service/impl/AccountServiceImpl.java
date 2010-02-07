@@ -25,16 +25,31 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
+  public static enum DOMAIN {
+    twitter, lastfm, flickr;
+  }
+  
   private static final Map<String, String> defaults = Maps.immutableMap(
-      "twitter", "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.",
-      "lastfm", "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.",
-      "flickr", "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
+      DOMAIN.twitter.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.",
+      DOMAIN.lastfm.toString(), "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.",
+      DOMAIN.flickr.toString(), "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
+  
+  private static final Map<String, String> domainUrls = Maps.immutableMap(
+      DOMAIN.twitter.toString(), "http://twitter.com",
+      DOMAIN.lastfm.toString(), "http://last.fm",
+      DOMAIN.flickr.toString(), "http://flickr.com");
+  
+  private static final Map<String, String> userUrls = Maps.immutableMap(
+      DOMAIN.twitter.toString(), "http://twitter.com/%s",
+      DOMAIN.lastfm.toString(), "http://last.fm/user/%s",
+      DOMAIN.flickr.toString(), "http://flickr.com/people/%s");
   
   @PersistenceContext
   private EntityManager em;
 
   /** {@inheritDoc} */
   public void create(Account account) {
+    this.validate(account);
     if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
       account.setTemplate(defaults.get(account.getDomain()));
     if (null == account.getProcessed()) {
@@ -42,11 +57,24 @@ public class AccountServiceImpl implements AccountService {
       agesago.add(Calendar.DAY_OF_WEEK, -5);
       account.setProcessed(agesago.getTime());
     }
+    account.setDomainUrl(domainUrls.get(account.getDomain()));
+    if (null != account.getUserId())
+      account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
     
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
   }
-
+  
+  public Account account(String personId, String domain) {
+    Account account = new Account();
+    account.setPersonId(personId);
+    account.setDomain(domain);
+    account.setDomainUrl(domainUrls.get(account.getDomain()));
+    account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
+    account.setTemplate(defaults.get(account.getDomain()));
+    return account;
+  }
+  
   /** {@inheritDoc} */
   public void delete(String personId, String domain) {
     Account account = this.find(personId, domain);
@@ -110,5 +138,17 @@ public class AccountServiceImpl implements AccountService {
   /** {@inheritDoc} */
   public void update(Account account) {
     em.merge(account);
+  }
+  
+  private void validate(Account account) {
+    if (null == account)
+      throw new RuntimeException("You must pass an account");
+    if (null == account.getPersonId())
+      throw new RuntimeException("You must include a personId");
+    if (null == account.getDomain())
+      throw new RuntimeException("You must include a domain");
+    if (null == account.getUserId())
+      throw new RuntimeException("You must include a userId");
+    DOMAIN.valueOf(account.getDomain());
   }
 }

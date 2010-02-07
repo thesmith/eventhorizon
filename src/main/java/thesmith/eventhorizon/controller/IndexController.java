@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
@@ -45,9 +46,10 @@ public class IndexController extends BaseController {
       @PathVariable("min") int min, @PathVariable("sec") int sec, @PathVariable("domain") String domain) {
     try {
       Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
-      Status status = statusService.previous(personId, domain, from);
+      Account account = accountService.account(personId, domain);
+      Status status = statusService.previous(account, from);
       if (null == status)
-        status = statusService.find(personId, domain, from);
+        status = statusService.find(account, from);
       return String.format("redirect:/%s/%s/", personId, urlFormat.format(status.getCreated()));
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -62,9 +64,10 @@ public class IndexController extends BaseController {
       @PathVariable("min") int min, @PathVariable("sec") int sec, @PathVariable("domain") String domain) {
     try {
       Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
-      Status status = statusService.next(personId, domain, from);
+      Account account = accountService.account(personId, domain);
+      Status status = statusService.next(account, from);
       if (null == status)
-        status = statusService.find(personId, domain, from);
+        status = statusService.find(account, from);
       return String.format("redirect:/%s/%s/", personId, urlFormat.format(status.getCreated()));
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -77,7 +80,8 @@ public class IndexController extends BaseController {
   public String previous(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
       @RequestParam("from") String from, ModelMap model) {
     try {
-      Status status = statusService.previous(personId, domain, this.parseDate(from));
+      Account account = accountService.account(personId, domain);
+      Status status = statusService.previous(account, this.parseDate(from));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
 
@@ -93,7 +97,8 @@ public class IndexController extends BaseController {
   public String next(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
       @RequestParam("from") String from, ModelMap model) {
     try {
-      Status status = statusService.next(personId, domain, this.parseDate(from));
+      Account account = accountService.account(personId, domain);
+      Status status = statusService.next(account, this.parseDate(from));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
 
@@ -133,20 +138,20 @@ public class IndexController extends BaseController {
   }
 
   private void setModel(String personId, Date from, ModelMap model) {
-    List<String> domains = accountService.domains(personId);
+    List<Account> accounts = accountService.list(personId);
     List<Status> statuses = Lists.newArrayList();
     if (null != from) {
-      for (String domain : domains) {
-        Status status = statusService.find(personId, domain, from);
+      for (Account account : accounts) {
+        Status status = statusService.find(account, from);
         if (null == status) {
-          status = defaultStatus(personId, domain, from);
+          status = defaultStatus(personId, account.getDomain(), from);
         }
         statuses.add(status);
       }
     } else {
       from = new Date();
-      for (String domain : domains) {
-        statuses.add(defaultStatus(personId, domain, from));
+      for (Account account : accounts) {
+        statuses.add(defaultStatus(personId, account.getDomain(), from));
       }
       model.addAttribute("refresh", true);
     }
