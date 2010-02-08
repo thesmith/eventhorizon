@@ -1,13 +1,19 @@
 <@layout.layout "Login">
 <form action="" method="POST">
-      <p>Username:
-      <@spring.formInput "user.username", ""/>
-      <@spring.showErrors "<br>"/>
-      </p>
-      <p>Password:
-      <@spring.formPasswordInput "user.password", ""/>
-      <@spring.showErrors "<br>"/>
-      </p>
-      <input type="submit" name="submit" value="Submit" />
+  <div class="row">
+    <label for="username">Username</label>
+    <@spring.formInput "user.username", ""/>
+    <@spring.showErrors ",", "error"/>
+  </div>
+
+  <div class="row">
+    <label for="password">Password</label>
+    <@spring.formPasswordInput "user.password", ""/>
+    <@spring.showErrors ",", "error"/>
+  </div>
+  
+  <div class="row">
+    <input class="submit" type="submit" name="login" value="Login" />
+  </div>
 </form>
 </@layout.layout>

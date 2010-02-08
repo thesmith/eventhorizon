@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.User;
+import thesmith.eventhorizon.service.AccountService;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
-@RequestMapping(value="/accounts")
+@RequestMapping(value = "/accounts")
 public class AccountsController extends BaseController {
 
   @RequestMapping(method = RequestMethod.GET)
@@ -33,8 +34,8 @@ public class AccountsController extends BaseController {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public String update(@ModelAttribute("account") Account account,
-      ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+  public String update(@ModelAttribute("account") Account account, ModelMap model, HttpServletRequest request,
+      HttpServletResponse response) {
     User user = this.auth(request, response);
     if (null == user)
       return "redirect:/users/login";
@@ -43,16 +44,18 @@ public class AccountsController extends BaseController {
     accountService.create(account);
     queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(
         JobsController.PAGE, "1"));
-    
+
     this.setupAccounts(user, model);
     return "accounts/list";
   }
-  
+
   private void setupAccounts(User user, ModelMap model) {
     List<String> domains = Lists.newArrayList();
-    for (Account account: accountService.listAll(user.getUsername())) {
-      model.addAttribute("account_"+account.getDomain(), account);
-      domains.add(account.getDomain());
+    for (Account account : accountService.listAll(user.getUsername())) {
+      if (!AccountService.FREESTYLE_DOMAINS.contains(account.getDomain())) {
+        model.addAttribute("account_" + account.getDomain(), account);
+        domains.add(account.getDomain());
+      }
     }
     model.addAttribute("domains", domains);
   }
