@@ -120,4 +120,9 @@ public class Account implements Serializable {
   public void setDomainUrl(String domainUrl) {
     this.domainUrl = domainUrl;
   }
+  
+  @Override
+  public String toString() {
+    return "id: "+this.id+", personId: "+this.personId+", domain: "+this.domain+", userId: "+this.userId+", template: "+this.template+", userUrl: "+this.userUrl+", domainUrl: "+this.domainUrl;
+  }
 }

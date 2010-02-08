@@ -4,7 +4,14 @@
   <head>
     <link rel="stylesheet" type="text/css" media="all" href="/css/css.css" /> 
     <link rel="stylesheet" type="text/css" media="all" href="/css/icons.css" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
+    <link type="text/css" href="/css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+    <script src="http://www.google.com/jsapi?key=ABQIAAAAhiGdEXzHhdDNmDGsCDlyOhRJGDANg_M7ijjcDquvF9DF5eqohBSUACyW8I3yQjW8s7sG3ahS8KaMHg" type="text/javascript"></script>
+    <script language="Javascript" type="text/javascript">
+    //<![CDATA[
+      google.load("jquery", "1.4.1");
+      google.load("jqueryui", "1.7.2");
+    //]]>
+    </script>
     <script type="text/javascript" src="/js/js.js"></script> 
     <script type="text/javascript" src="/js/date.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

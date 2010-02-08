@@ -1,5 +1,10 @@
 li{ list-style:none; height: 4em; }
 img { vertical-align: middle; }
+input { -webkit-border-bottom-left-radius: 5px 5px; -webkit-border-bottom-right-radius: 5px 5px; -webkit-border-top-left-radius: 5px 5px; -webkit-border-top-right-radius: 5px 5px; border: 1px solid rgb(143, 143, 143); font-size: 1.3em; padding: 5px; width: 320px; }
+label { font-size: 1.3em; padding-top: 9px; float: left; width: 6em; }
+input.submit { margin-left: 6em; width: 10em; }
+div.row { padding: 2px; }
+span.error { font-size: 1.3em; padding-top: 9px; padding-left: 10px; color: #D00000; }
 
 div.previous{ float: left; }
 div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 7px;}

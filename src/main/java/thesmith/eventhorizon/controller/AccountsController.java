@@ -19,9 +19,10 @@ import thesmith.eventhorizon.model.User;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
+@RequestMapping(value="/accounts")
 public class AccountsController extends BaseController {
 
-  @RequestMapping(value = "/accounts", method = RequestMethod.GET)
+  @RequestMapping(method = RequestMethod.GET)
   public String list(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     User user = this.auth(request, response);
     if (null == user)
@@ -31,7 +32,7 @@ public class AccountsController extends BaseController {
     return "accounts/list";
   }
 
-  @RequestMapping(value = "/accounts", method = RequestMethod.POST)
+  @RequestMapping(method = RequestMethod.POST)
   public String update(@ModelAttribute("account") Account account,
       ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     User user = this.auth(request, response);

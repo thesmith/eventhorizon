@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import thesmith.eventhorizon.AppBaseTest;
 import thesmith.eventhorizon.model.Account;
-import thesmith.eventhorizon.service.impl.AccountServiceImpl;
 
 public class AccountServiceImplTest extends AppBaseTest {
   @Autowired
@@ -23,7 +22,7 @@ public class AccountServiceImplTest extends AppBaseTest {
   public void setUp() throws Exception {
     super.setUp();
     account = new Account();
-    account.setDomain(AccountServiceImpl.DOMAIN.twitter.toString());
+    account.setDomain(AccountService.DOMAIN.twitter.toString());
     account.setPersonId("id"+Math.random());
     account.setUserId("id");
     account.setTemplate("template");
@@ -63,7 +62,7 @@ public class AccountServiceImplTest extends AppBaseTest {
   public void testShouldOnlyCreateAccountOnce() throws Exception {
     String personId = "blah"+Math.random();
     for (int i=0; i<5; i++) {
-      this.createAccount(personId, AccountServiceImpl.DOMAIN.flickr.toString(), null);
+      this.createAccount(personId, AccountService.DOMAIN.flickr.toString(), null);
     }
     
     service.find(personId, "somedomain");
@@ -84,9 +83,9 @@ public class AccountServiceImplTest extends AppBaseTest {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.DAY_OF_WEEK, 1);
     
-    this.createAccount("someguy"+Math.random(), AccountServiceImpl.DOMAIN.flickr.toString(), cal.getTime());
-    this.createAccount("someotherguy"+Math.random(), AccountServiceImpl.DOMAIN.flickr.toString(), null);
-    this.createAccount("not", AccountServiceImpl.DOMAIN.flickr.toString(), new Date());
+    this.createAccount("someguy"+Math.random(), AccountService.DOMAIN.flickr.toString(), cal.getTime());
+    this.createAccount("someotherguy"+Math.random(), AccountService.DOMAIN.flickr.toString(), null);
+    this.createAccount("not", AccountService.DOMAIN.flickr.toString(), new Date());
     
     List<Account> toProcess = service.toProcess(10);
     assertNotNull(toProcess);

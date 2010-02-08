@@ -25,24 +25,22 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
-  public static enum DOMAIN {
-    twitter, lastfm, flickr;
-  }
-  
   private static final Map<String, String> defaults = Maps.immutableMap(
-      DOMAIN.twitter.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.",
-      DOMAIN.lastfm.toString(), "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.",
-      DOMAIN.flickr.toString(), "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
+      AccountService.DOMAIN.twitter.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.",
+      AccountService.DOMAIN.lastfm.toString(), "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.",
+      AccountService.DOMAIN.flickr.toString(), "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.",
+      AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>",
+      AccountService.DOMAIN.lives.toString(), "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}");
   
   private static final Map<String, String> domainUrls = Maps.immutableMap(
-      DOMAIN.twitter.toString(), "http://twitter.com",
-      DOMAIN.lastfm.toString(), "http://last.fm",
-      DOMAIN.flickr.toString(), "http://flickr.com");
+      AccountService.DOMAIN.twitter.toString(), "http://twitter.com",
+      AccountService.DOMAIN.lastfm.toString(), "http://last.fm",
+      AccountService.DOMAIN.flickr.toString(), "http://flickr.com");
   
   private static final Map<String, String> userUrls = Maps.immutableMap(
-      DOMAIN.twitter.toString(), "http://twitter.com/%s",
-      DOMAIN.lastfm.toString(), "http://last.fm/user/%s",
-      DOMAIN.flickr.toString(), "http://flickr.com/people/%s");
+      AccountService.DOMAIN.twitter.toString(), "http://twitter.com/%s",
+      AccountService.DOMAIN.lastfm.toString(), "http://last.fm/user/%s",
+      AccountService.DOMAIN.flickr.toString(), "http://flickr.com/people/%s");
   
   @PersistenceContext
   private EntityManager em;
@@ -70,7 +68,8 @@ public class AccountServiceImpl implements AccountService {
     account.setPersonId(personId);
     account.setDomain(domain);
     account.setDomainUrl(domainUrls.get(account.getDomain()));
-    account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
+    if (userUrls.containsKey(account.getDomain()))
+      account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
     account.setTemplate(defaults.get(account.getDomain()));
     return account;
   }
@@ -119,9 +118,7 @@ public class AccountServiceImpl implements AccountService {
       }
       
       if (!found) {
-        Account account = new Account();
-        account.setDomain(domain);
-        accounts.add(account);
+        accounts.add(account(personId, domain));
       }
     }
     return accounts;
@@ -149,6 +146,6 @@ public class AccountServiceImpl implements AccountService {
       throw new RuntimeException("You must include a domain");
     if (null == account.getUserId())
       throw new RuntimeException("You must include a userId");
-    DOMAIN.valueOf(account.getDomain());
+    AccountService.DOMAIN.valueOf(account.getDomain());
   }
 }

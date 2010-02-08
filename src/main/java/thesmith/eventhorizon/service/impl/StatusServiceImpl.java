@@ -44,6 +44,9 @@ public class StatusServiceImpl implements StatusService {
 
   @SuppressWarnings("unchecked")
   public void create(Status status) {
+    if (null == status.getTitle() || null == status.getTitleUrl() || null == status.getCreated())
+      throw new RuntimeException("Unable to create status without appropriate info: "+status);
+    
     List<Status> statuses = em.createQuery(
         "select s from Status s where s.personId = :personId and s.domain = :domain and s.created = :from")
         .setParameter("personId", status.getPersonId()).setParameter("domain", status.getDomain()).setParameter("from",
@@ -53,6 +56,11 @@ public class StatusServiceImpl implements StatusService {
       if (logger.isDebugEnabled())
         logger
             .debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
+    } else {
+      Status s = statuses.get(0);
+      s.setTitle(status.getTitle());
+      s.setTitleUrl(status.getTitleUrl());
+      em.merge(s);
     }
   }
 
@@ -135,8 +143,10 @@ public class StatusServiceImpl implements StatusService {
     text = text.replaceAll("\\{title\\}", Matcher.quoteReplacement(status.getTitle()));
     text = text.replaceAll("\\{titleUrl\\}", Matcher.quoteReplacement(status.getTitleUrl()));
     text = text.replaceAll("\\{domain\\}", Matcher.quoteReplacement(account.getDomain()));
-    text = text.replaceAll("\\{domainUrl\\}", Matcher.quoteReplacement(account.getDomainUrl()));
-    text = text.replaceAll("\\{userUrl\\}", Matcher.quoteReplacement(account.getUserUrl()));
+    if (null != account.getDomainUrl())
+      text = text.replaceAll("\\{domainUrl\\}", Matcher.quoteReplacement(account.getDomainUrl()));
+    if (null != account.getUserUrl())
+      text = text.replaceAll("\\{userUrl\\}", Matcher.quoteReplacement(account.getUserUrl()));
     text = text.replaceAll("\\{ago\\}", this.ago(status.getCreated()));
     if (logger.isDebugEnabled())
       logger.debug(text);
@@ -182,13 +192,15 @@ public class StatusServiceImpl implements StatusService {
   private int printPeriod(StringBuffer ago, int printed, int value, String desc) {
     if (printed > 1) {
       return printed;
-    } else if (printed == 1) {
-      ago.append(" and ");
     }
 
     if (value > 1) {
+      if (printed == 1)
+        ago.append(" and ");
       ago.append(value + " " + desc + "s");
     } else if (value == 1) {
+      if (printed == 1)
+        ago.append(" and ");
       ago.append(value + " " + desc);
     } else {
       return printed;

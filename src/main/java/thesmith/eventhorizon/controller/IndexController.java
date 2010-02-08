@@ -68,6 +68,7 @@ public class IndexController extends BaseController {
       Status status = statusService.next(account, from);
       if (null == status)
         status = statusService.find(account, from);
+      
       return String.format("redirect:/%s/%s/", personId, urlFormat.format(status.getCreated()));
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -84,6 +85,8 @@ public class IndexController extends BaseController {
       Status status = statusService.previous(account, this.parseDate(from));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
+      else
+        this.setModel(personId, this.parseDate(from), model);
 
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -101,6 +104,8 @@ public class IndexController extends BaseController {
       Status status = statusService.next(account, this.parseDate(from));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
+      else
+        this.setModel(personId, this.parseDate(from), model);
 
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -138,7 +143,10 @@ public class IndexController extends BaseController {
   }
 
   private void setModel(String personId, Date from, ModelMap model) {
-    List<Account> accounts = accountService.list(personId);
+    List<Account> accounts = accountService.listAll(personId);
+    if (logger.isDebugEnabled())
+      logger.debug("Retrieved accounts to be processed: "+accounts);
+    
     List<Status> statuses = Lists.newArrayList();
     if (null != from) {
       for (Account account : accounts) {

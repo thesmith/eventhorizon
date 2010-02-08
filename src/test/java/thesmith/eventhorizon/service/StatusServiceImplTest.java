@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import thesmith.eventhorizon.AppBaseTest;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
-import thesmith.eventhorizon.service.impl.AccountServiceImpl;
 
 public class StatusServiceImplTest extends AppBaseTest {
   @Autowired
@@ -29,7 +28,7 @@ public class StatusServiceImplTest extends AppBaseTest {
   public void setUp() throws Exception {
     super.setUp();
     status = new Status();
-    status.setDomain(AccountServiceImpl.DOMAIN.twitter.toString());
+    status.setDomain(AccountService.DOMAIN.twitter.toString());
     status.setPersonId("id"+Math.random());
     status.setCreated(new Date());
     status.setTitle("title");
@@ -57,7 +56,7 @@ public class StatusServiceImplTest extends AppBaseTest {
     created.add(Calendar.DAY_OF_MONTH, -7);
     
     Status status = new Status();
-    status.setDomain(AccountServiceImpl.DOMAIN.flickr.toString());
+    status.setDomain(AccountService.DOMAIN.flickr.toString());
     status.setPersonId("id"+Math.random());
     status.setCreated(created.getTime());
     status.setTitle("title");
