@@ -44,7 +44,7 @@ public class WordrEventServiceImpl implements EventService {
         Event event = new Event();
         event.setTitle(word.getString("message"));
         event.setDomainUrl(account.getDomainUrl());
-          event.setTitleUrl(STATUS_URL+word.getString("id"));
+        event.setTitleUrl(STATUS_URL+word.getString("id"));
         event.setUserUrl(account.getUserUrl());
         event.setCreated(formater.parseDateTime(word.getString("created_at")).toDate());
         

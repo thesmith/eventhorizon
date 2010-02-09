@@ -54,6 +54,9 @@ public class Status implements Serializable {
   @Column(name = "created")
   @Temporal(TemporalType.TIMESTAMP)
   protected Date created;
+  
+  @Transient
+  protected String created_at;
 
   @Transient
   protected String period;
@@ -120,6 +123,14 @@ public class Status implements Serializable {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+
+  public String getCreated_at() {
+    return created_at;
+  }
+
+  public void setCreated_at(String createdAt) {
+    created_at = createdAt;
   }
 
   @Override

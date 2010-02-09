@@ -45,10 +45,10 @@ public class JobsController extends BaseController {
         Date d = new Date(oldest.getTime() - 1L);
         Status status = statusService.find(account, d);
         if (null == status) {
-          int increment = 1;
+          p = p+1;
           if (AccountService.DOMAIN.wordr.toString().equals(domain))
-            increment = Integer.valueOf(statuses.get(statuses.size()-1).getTitleUrl().replace(WordrEventServiceImpl.STATUS_URL, ""));
-          queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, String.valueOf(p + increment)));
+            p = Integer.valueOf(statuses.get(statuses.size()-1).getTitleUrl().replace(WordrEventServiceImpl.STATUS_URL, ""));
+          queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, String.valueOf(p)));
         }
       }
     }

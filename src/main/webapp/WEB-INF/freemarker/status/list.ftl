@@ -4,7 +4,7 @@ $(function() {
   $(".datepicker").datepicker({
     changeMonth: true,
     changeYear: true,
-    dateFormat: 'yy/mm/dd',
+    dateFormat: "yy/mm/dd",
     yearRange: '1950:2010'
   });
 });
@@ -18,7 +18,7 @@ $(function() {
     
     <div class="row">
       <label for="birthCreated" class="long">And when was that?</label>
-      <input type="text" id="birthCreated" name="created" value="${status_birth.created?string("yyyy/MM/dd")}" class="datepicker" />
+      <input type="text" id="birthCreated" name="created_at" value="${status_birth.created?string("yyyy/MM/dd")}" class="datepicker" />
     </div>
     
     <div class="row">
@@ -36,7 +36,7 @@ $(function() {
     
     <div class="row">
       <label for="livesCreated" class="long">And when did you move there?</label>
-      <input type="text" id="livesCreated" name="created" value="${status_lives.created?string("yyyy/MM/dd")}" class="datepicker" />
+      <input type="text" id="livesCreated" name="created_at" value="${status_lives.created?string("yyyy/MM/dd")}" class="datepicker" />
     </div>
     
     <div class="row">

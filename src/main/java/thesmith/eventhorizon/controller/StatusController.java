@@ -1,5 +1,8 @@
 package thesmith.eventhorizon.controller;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -20,41 +23,50 @@ import thesmith.eventhorizon.service.AccountService;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
-@RequestMapping(value="/status")
+@RequestMapping(value = "/status")
 public class StatusController extends BaseController {
+  private final static DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+
   @RequestMapping(method = RequestMethod.GET)
   public String list(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     User user = this.auth(request, response);
     if (null == user)
       return "redirect:/users/login";
     this.statuses(user.getUsername(), model);
-    
+
     return "status/list";
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public String update(@ModelAttribute("status") Status status,
-      ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+  public String update(@ModelAttribute("status") Status status, ModelMap model, HttpServletRequest request,
+      HttpServletResponse response) {
     User user = this.auth(request, response);
     if (null == user)
       return "redirect:/users/login";
     status.setPersonId(user.getUsername());
+    try {
+      status.setCreated(df.parse(status.getCreated_at()));
+    } catch (ParseException e) {
+      throw new RuntimeException("Unable to parse created_at: "+status.getCreated_at());
+    }
+    status.setCreated_at(null);
+    
     if (null == status.getTitleUrl() && null != status.getTitle())
-      status.setTitleUrl("http://en.wikipedia.org/wiki/"+status.getTitle());
-    
+      status.setTitleUrl("http://en.wikipedia.org/wiki/" + status.getTitle());
+
     if (logger.isDebugEnabled())
-      logger.debug("Recieved request to create status: "+status);
-    
+      logger.debug("Recieved request to create status: " + status);
+
     statusService.create(status);
     this.statuses(user.getUsername(), model);
-    
+
     return "status/list";
   }
-  
+
   private List<Status> statuses(String personId, ModelMap model) {
     final List<Status> statuses = Lists.newArrayList();
-    
-    for (String domain: AccountService.FREESTYLE_DOMAINS) {
+
+    for (String domain : AccountService.FREESTYLE_DOMAINS) {
       Account account = accountService.account(personId, domain);
       Status status = statusService.find(account, new Date());
       if (null == status) {
@@ -63,11 +75,11 @@ public class StatusController extends BaseController {
         status.setPersonId(personId);
         status.setCreated(new Date());
       }
-      model.addAttribute("status_"+account.getDomain(), status);
+      model.addAttribute("status_" + account.getDomain(), status);
       if (logger.isDebugEnabled())
-        logger.debug("adding status to model: "+status);
+        logger.debug("adding status to model: " + status);
     }
-    
+
     return statuses;
   }
 }
