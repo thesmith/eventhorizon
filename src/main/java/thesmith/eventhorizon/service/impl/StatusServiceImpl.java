@@ -54,8 +54,7 @@ public class StatusServiceImpl implements StatusService {
     if (null == statuses || statuses.size() < 1) {
       em.persist(status);
       if (logger.isDebugEnabled())
-        logger
-            .debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
+        logger.debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
     } else {
       Status s = statuses.get(0);
       s.setTitle(status.getTitle());

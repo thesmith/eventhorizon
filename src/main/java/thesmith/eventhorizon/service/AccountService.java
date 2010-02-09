@@ -14,7 +14,7 @@ import thesmith.eventhorizon.model.Account;
 public interface AccountService {
   /** All available domains */
   public static enum DOMAIN {
-    twitter, lastfm, flickr, birth, lives;
+    twitter, lastfm, flickr, birth, lives, wordr;
   }
 
   /** Domains that are freestyle */

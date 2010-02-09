@@ -44,13 +44,13 @@ public class BaseController {
     if (null != cookies) {
       for (Cookie cookie : cookies) {
         if (COOKIE.equalsIgnoreCase(cookie.getName())) {
-          if (logger.isInfoEnabled())
-            logger.info("Authenticating cookie: " + cookie.getValue());
+          if (logger.isDebugEnabled())
+            logger.debug("Authenticating cookie: " + cookie.getValue());
 
           User user = userService.authn(cookie.getValue());
           if (null != user) {
-            if (logger.isInfoEnabled())
-              logger.info("Cookie authenticated as user: " + user.getUsername());
+            if (logger.isDebugEnabled())
+              logger.debug("Cookie authenticated as user: " + user.getUsername());
             return user;
           }
         }

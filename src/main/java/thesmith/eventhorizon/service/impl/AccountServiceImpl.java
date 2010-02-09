@@ -25,23 +25,28 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
-  private static final Map<String, String> defaults = Maps.immutableMap(
-      AccountService.DOMAIN.twitter.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.",
-      AccountService.DOMAIN.lastfm.toString(), "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.",
-      AccountService.DOMAIN.flickr.toString(), "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.",
-      AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>",
-      AccountService.DOMAIN.lives.toString(), "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}");
-  
+  private static final Map<String, String> defaults = Maps.newConcurrentMap();
+  static {
+    defaults.put(AccountService.DOMAIN.twitter.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
+    defaults.put(AccountService.DOMAIN.lastfm.toString(), "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
+    defaults.put(AccountService.DOMAIN.flickr.toString(), "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
+    defaults.put(AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>");
+    defaults.put(AccountService.DOMAIN.lives.toString(), "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}");
+    defaults.put(AccountService.DOMAIN.wordr.toString(), "And, {ago}, <a href='{userUrl}'>my</a> last <a href='domainUrl'>word</a> was <a href='{titleUrl}'>{title}</a>");
+  }
+
   private static final Map<String, String> domainUrls = Maps.immutableMap(
-      AccountService.DOMAIN.twitter.toString(), "http://twitter.com",
-      AccountService.DOMAIN.lastfm.toString(), "http://last.fm",
-      AccountService.DOMAIN.flickr.toString(), "http://flickr.com");
-  
+      AccountService.DOMAIN.twitter.toString(), "http://twitter.com", 
+      AccountService.DOMAIN.lastfm.toString(), "http://last.fm", 
+      AccountService.DOMAIN.flickr.toString(), "http://flickr.com",
+      AccountService.DOMAIN.wordr.toString(), "http://wordr.org");
+
   private static final Map<String, String> userUrls = Maps.immutableMap(
-      AccountService.DOMAIN.twitter.toString(), "http://twitter.com/%s",
+      AccountService.DOMAIN.twitter.toString(), "http://twitter.com/%s", 
       AccountService.DOMAIN.lastfm.toString(), "http://last.fm/user/%s",
-      AccountService.DOMAIN.flickr.toString(), "http://flickr.com/people/%s");
-  
+      AccountService.DOMAIN.flickr.toString(), "http://flickr.com/people/%s",
+      AccountService.DOMAIN.wordr.toString(), "http://wordr.org/users/%s");
+
   @PersistenceContext
   private EntityManager em;
 
@@ -58,11 +63,11 @@ public class AccountServiceImpl implements AccountService {
     account.setDomainUrl(domainUrls.get(account.getDomain()));
     if (null != account.getUserId())
       account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
-    
+
     if (null == this.find(account.getPersonId(), account.getDomain()))
       em.persist(account);
   }
-  
+
   public Account account(String personId, String domain) {
     Account account = new Account();
     account.setPersonId(personId);
@@ -73,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
     account.setTemplate(defaults.get(account.getDomain()));
     return account;
   }
-  
+
   /** {@inheritDoc} */
   public void delete(String personId, String domain) {
     Account account = this.find(personId, domain);
@@ -83,8 +88,9 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public List<String> domains(String personId) {
-//    return em.createQuery("select distinct domain from Account a where a.personId = :personId").setParameter(
-//        "personId", personId).getResultList();
+    // return
+    // em.createQuery("select distinct domain from Account a where a.personId = :personId").setParameter(
+    // "personId", personId).getResultList();
     return Lists.newArrayList(defaults.keySet());
   }
 
@@ -104,26 +110,26 @@ public class AccountServiceImpl implements AccountService {
     return em.createQuery("select a from Account a where a.personId = :personId").setParameter("personId", personId)
         .getResultList();
   }
-  
+
   /** {@inheritDoc} */
   public List<Account> listAll(String personId) {
     List<Account> usersAccounts = this.list(personId);
     List<Account> accounts = Lists.newArrayList(usersAccounts);
-    
-    for (String domain: defaults.keySet()) {
+
+    for (String domain : defaults.keySet()) {
       boolean found = false;
-      for (Account account: usersAccounts) {
+      for (Account account : usersAccounts) {
         if (domain.equals(account.getDomain()))
           found = true;
       }
-      
+
       if (!found) {
         accounts.add(account(personId, domain));
       }
     }
     return accounts;
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Account> toProcess(int limit) {
     Calendar by = Calendar.getInstance();
@@ -136,7 +142,7 @@ public class AccountServiceImpl implements AccountService {
   public void update(Account account) {
     em.merge(account);
   }
-  
+
   private void validate(Account account) {
     if (null == account)
       throw new RuntimeException("You must pass an account");

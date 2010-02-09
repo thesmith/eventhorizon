@@ -43,4 +43,9 @@ public class Event {
   public void setCreated(Date created) {
     this.created = created;
   }
+  
+  @Override
+  public String toString() {
+    return "title: "+title+", titleUrl: "+titleUrl+", userUrl: "+userUrl+", domainUrl: "+domainUrl+", created: "+created;
+  }
 }

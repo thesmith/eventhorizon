@@ -1,36 +1,48 @@
 <@layout.layout "Your Events">
-<ul>
-  <script type="text/javascript">
-  $(function() {
-    $(".datepicker").datepicker({
-      inline: true,
-      changeMonth: true,
-      changeYear: true,
-      dateFormat: 'yy/mm/dd',
-      yearRange: '1950:2010'
-    });
+<script type="text/javascript">
+$(function() {
+  $(".datepicker").datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: 'yy/mm/dd',
+    yearRange: '1950:2010'
   });
-  </script>
-  <li>
-    <form action="/status" method="post">
-      <label for="birthTitle">Where were you born?</label>
+});
+</script>
+<div class="form">
+  <form action="/status" method="post">
+    <div class="row">
+      <label for="birthTitle" class="long">Where were you born?</label>
       <@spring.formInput "status_birth.title", "id='birthTitle'" />
-      <label for="birthCreated">And when was that?</label>
+    </div>
+    
+    <div class="row">
+      <label for="birthCreated" class="long">And when was that?</label>
       <input type="text" id="birthCreated" name="created" value="${status_birth.created?string("yyyy/MM/dd")}" class="datepicker" />
+    </div>
+    
+    <div class="row">
       <@spring.formHiddenInput "status_birth.domain", "id='birth'" />
-      <input type="submit" name="submit" value="Submit" />
-    </form>
-  </li>
-  
-  <li>
-    <form action="/status" method="post">
-      <label for="livesTitle">Where do you live now?</label>
+      <input class="submit_long" type="submit" name="submit" value="Submit" />
+    </div>
+  </form>
+  </div>
+  <div class="form">
+  <form action="/status" method="post">
+    <div class="row">
+      <label for="livesTitle" class="long">Where do you live now?</label>
       <@spring.formInput "status_lives.title", "id='livesTitle'" />
-      <label for="livesCreated">And when did you move there?</label>
+    </div>
+    
+    <div class="row">
+      <label for="livesCreated" class="long">And when did you move there?</label>
       <input type="text" id="livesCreated" name="created" value="${status_lives.created?string("yyyy/MM/dd")}" class="datepicker" />
+    </div>
+    
+    <div class="row">
       <@spring.formHiddenInput "status_lives.domain", "id='lives'" />
-      <input type="submit" name="submit" value="Submit" />
-    </form>
-  </li>
-</ul>
+      <input class="submit_long" type="submit" name="submit" value="Submit" />
+    </div>
+  </form>
+</div>
 </@layout.layout>

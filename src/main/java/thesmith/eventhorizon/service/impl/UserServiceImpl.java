@@ -75,21 +75,21 @@ public class UserServiceImpl implements UserService {
     if (null == unauthToken) return null;
     
     String[] values = unauthToken.split("\\"+DELIMITOR, 2);
-    if (logger.isInfoEnabled())
-      logger.info("Split cookie token "+unauthToken+" into: "+values+" with "+values.length+" elements");
+    if (logger.isDebugEnabled())
+      logger.debug("Split cookie token "+unauthToken+" into: "+values+" with "+values.length+" elements");
     if (values.length < 1) return null;
     
-    if (logger.isInfoEnabled())
-      logger.info("Retrieving user for "+values[0]);
+    if (logger.isDebugEnabled())
+      logger.debug("Retrieving user for "+values[0]);
     User user = this.find(values[0]);
     if (null == user) return null;
     String token = this.token(user);
-    if (logger.isInfoEnabled())
-      logger.info("Getting expected token for "+user.getUsername()+": "+token);
+    if (logger.isDebugEnabled())
+      logger.debug("Getting expected token for "+user.getUsername()+": "+token);
     
     if (!token.equalsIgnoreCase(unauthToken)) return null;
-    if (logger.isInfoEnabled())
-      logger.info("Successfully authenticated "+user.getUsername());
+    if (logger.isDebugEnabled())
+      logger.debug("Successfully authenticated "+user.getUsername());
     return user;
   }
   
