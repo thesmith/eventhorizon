@@ -18,12 +18,16 @@
       $(document).ready(function() {
         $("#${status.domain}").hover(
           function () {
-            $("#${status.domain} .previous").css("opacity", "0.9");
-            $("#${status.domain} .next").css("opacity", "0.9");
+            if ($("#${status.domain} .status").html()) {
+              $("#${status.domain} .previous").css("opacity", "0.9");
+              $("#${status.domain} .next").css("opacity", "0.9");
+            }
           },
           function () {
-            $("#${status.domain} .previous").css("opacity", "0");
-            $("#${status.domain} .next").css("opacity", "0");
+            if ($("#${status.domain} .status").html()) {
+              $("#${status.domain} .previous").css("opacity", "0");
+              $("#${status.domain} .next").css("opacity", "0");
+            }
           }
         );
         
