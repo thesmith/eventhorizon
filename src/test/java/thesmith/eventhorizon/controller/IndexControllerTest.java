@@ -54,7 +54,7 @@ public class IndexControllerTest {
     account2.setPersonId("person");
     account2.setDomain("lastfm");
     accounts.add(account2);
-    EasyMock.expect(accountService.list("person")).andReturn(accounts);
+    EasyMock.expect(accountService.listAll("person")).andReturn(accounts);
     
     Status twitterStatus = new Status();
     twitterStatus.setDomain("twitter");

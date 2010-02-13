@@ -55,7 +55,7 @@ public class AccountServiceImplTest extends AppBaseTest {
         flickr = account;
     }
     assertNotNull(flickr);
-    assertNull(flickr.getPersonId());
+    assertNull(flickr.getUserId());
   }
   
   @Test
