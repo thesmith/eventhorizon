@@ -15,7 +15,7 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 #tertiary { width: 182px; margin: 0 0 13px -832px;}
 */
 
-#primary { width: 637px; margin: 0 13px 13px 0; }
+#primary { width: 637px; margin: 20px 13px 13px 0; }
 #secondary { width: 182px; margin: 0 0 13px 0; }
 #tertiary { width: 182px; margin: 0 0 13px -832px;}
 

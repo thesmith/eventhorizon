@@ -50,3 +50,12 @@ div.flickr_title{background-image:url('../gfx/flickr_full.png');}
 div.wordr_title{background-image:url('../gfx/wordr_full.png');}
 div.account_title{color: transparent; height: 45px; width: 145px; float:left; background-repeat:no-repeat; background-color:transparent;}
 div.account_input{float: left; padding-top: 10px; padding-left: 10px;}
+
+#svg { height: 500px; z-index: -1; }
+#slider { top: 0px; margin-top: 10px; width: 637px; position: absolute; }
+#title_username { top: 100px; left: 100; z-index: 99; }
+
+.ui-slider-horizontal { height: 0.2em; }
+.ui-widget-content { background: transparent; color: black; }
+.ui-slider-horizontal .ui-slider-handle { top: -0.5em; }
+.ui-slider .ui-slider-handle { height: 0.8em; z-index: 101; }
