@@ -1,11 +1,6 @@
 package thesmith.eventhorizon;
 
-import static org.junit.Assert.*;
-
-import com.google.appengine.tools.development.ApiProxyLocalImpl;
-import com.google.apphosting.api.ApiProxy;
-
-import java.io.File;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,12 +9,17 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.apphosting.api.ApiProxy;
+
 /**
  * local service test
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext.xml" })
 public class AppBaseTest {
+  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   /**
    * setup env
@@ -30,8 +30,7 @@ public class AppBaseTest {
   @Before
   public void setUp() throws Exception {
     ApiProxy.setEnvironmentForCurrentThread(new TestEnvironment());
-    ApiProxy.setDelegate(new ApiProxyLocalImpl(new File(".")) {
-    });
+    helper.setUp();
     System.setProperty("appengine.orm.disable.duplicate.emf.exception", "true");
   }
 
@@ -43,6 +42,7 @@ public class AppBaseTest {
    */
   @After
   public void tearDown() throws Exception {
+    helper.tearDown();
     ApiProxy.setDelegate(null);
     ApiProxy.setEnvironmentForCurrentThread(null);
   }
