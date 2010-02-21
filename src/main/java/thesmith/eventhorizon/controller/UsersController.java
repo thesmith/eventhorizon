@@ -89,9 +89,18 @@ public class UsersController extends BaseController {
     Cookie cookie = new Cookie(COOKIE, userService.token(user));
     cookie.setPath("/");
     cookie.setMaxAge(60 * 60 * 24 * 30);
+    if (isProduction())
+      cookie.setSecure(true);
     if (logger.isInfoEnabled())
       logger.info("Setting cookie for user " + user.getUsername() + ": " + cookie.getValue());
     response.addCookie(cookie);
+
+    Cookie username = new Cookie(USERNAME_COOKIE, user.getUsername());
+    username.setPath("/");
+    username.setMaxAge(60 * 60 * 24 * 30);
+    if (logger.isInfoEnabled())
+      logger.info("Setting cookie for user " + user.getUsername() + ": " + username.getValue());
+    response.addCookie(username);
   }
 
   public void setLoginValidator(LoginValidator loginValidator) {

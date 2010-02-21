@@ -21,6 +21,7 @@ import com.google.appengine.api.labs.taskqueue.QueueFactory;
 
 public class BaseController {
   public static final String COOKIE = "eventhorizon";
+  public static final String USERNAME_COOKIE = "eventhorizon-username";
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   @Autowired
@@ -58,6 +59,10 @@ public class BaseController {
     }
 
     return null;
+  }
+  
+  protected boolean isProduction() {
+    return ("Production".equals(System.getProperty("com.google.appengine.runtime.environment", "")));
   }
 
   public void setUserService(UserService userService) {
