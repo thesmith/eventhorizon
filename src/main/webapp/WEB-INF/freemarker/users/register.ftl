@@ -1,4 +1,4 @@
-<@layout.layout "Register" "Register" "${viewer!}">
+<@layout.layout "Register" "Register &raquo; <a href='/users/login'>Login</a>" "${viewer!}">
 <form action="" method="POST">
   <div class="row">
     <label for="username">Username</label>

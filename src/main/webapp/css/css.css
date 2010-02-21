@@ -4,9 +4,8 @@
 body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.5%; }
 
 #container { margin: 26px auto; width: 832px; text-align: left; font-size: 1.3em; }
-#mast { width: 832px; height: 52px; margin: 0; /* border-bottom: 1px solid #000; */ font-size: 2.6em; }
-
-#mast a { border: none; background: none; color: #000; }
+#mast { width: 832px; height: 52px; margin: 0; font-size: 2.6em; }
+#userbar { font-size: 1.5em; float: left; margin-top: 23px; position: absolute; right: 26px;}
 
 #primary, #secondary, #tertiary { float: left; display: inline; padding: 0; }
 

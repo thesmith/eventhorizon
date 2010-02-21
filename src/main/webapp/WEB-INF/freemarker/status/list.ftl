@@ -1,4 +1,4 @@
-<@layout.layout "Your Events" "Your Events" "${viewer!}">
+<@layout.layout "Your Events" "Your Events &raquo; <a href='/accounts'>Accounts</a>" "${viewer!}">
 <script type="text/javascript">
 $(function() {
   $(".datepicker").datepicker({
@@ -23,7 +23,7 @@ $(function() {
     
     <div class="row">
       <@spring.formHiddenInput "status_birth.domain", "id='birth'" />
-      <input class="submit_long" type="submit" name="submit" value="Submit" />
+      <input class="submit submit_long" type="submit" name="submit" value="Submit" />
     </div>
   </form>
   </div>
@@ -41,7 +41,7 @@ $(function() {
     
     <div class="row">
       <@spring.formHiddenInput "status_lives.domain", "id='lives'" />
-      <input class="submit_long" type="submit" name="submit" value="Submit" />
+      <input class="submit submit_long" type="submit" name="submit" value="Submit" />
     </div>
   </form>
 </div>

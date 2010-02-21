@@ -1,4 +1,4 @@
-<@layout.layout "Your Accounts" "Your Accounts" "${viewer!}">
+<@layout.layout "Your Accounts" "Your Accounts &raquo; <a href='/status'>Events</a>" "${viewer!}">
 <ul>
   <#list domains as domain>
     <li>
@@ -7,7 +7,7 @@
         <div class="account_input">
           <@spring.formInput "account_${domain}.userId", "id='${domain}UserId'" />
           <@spring.formHiddenInput "account_${domain}.domain", "id='${domain}Domain'" />
-          <input class="submit_inline" type="submit" name="submit" value="Submit" />
+          <input class="submit submit_inline" type="submit" name="submit" value="Submit" />
         </div>
       </form>
     </li>

@@ -50,6 +50,11 @@ public class UsersController extends BaseController {
     cookie.setMaxAge(0);
     cookie.setPath("/");
     response.addCookie(cookie);
+    
+    Cookie username = new Cookie(USERNAME_COOKIE, "empty");
+    username.setMaxAge(0);
+    username.setPath("/");
+    response.addCookie(username);
 
     return "redirect:/users/login";
   }
