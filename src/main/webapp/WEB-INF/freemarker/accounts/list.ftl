@@ -1,4 +1,4 @@
-<@layout.layout "Your Accounts" "Your Accounts &raquo; <a href='/status'>Events</a>" "${viewer!}">
+<@layout.layout "Your Accounts" "Your Accounts &raquo; <a href='/status'>Events</a>" "${viewer!}" "" "${userHost}">
 <ul>
   <#list domains as domain>
     <li>

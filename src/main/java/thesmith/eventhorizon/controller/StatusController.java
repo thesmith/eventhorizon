@@ -81,6 +81,7 @@ public class StatusController extends BaseController {
       if (logger.isDebugEnabled())
         logger.debug("adding status to model: " + status);
     }
+    model.addAttribute("userHost", userHost(personId));
 
     return statuses;
   }

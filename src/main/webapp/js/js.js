@@ -1,7 +1,11 @@
 function updatePage(urlAppend, from, direction) {
   $.getJSON('/' + urlAppend + '?from=' + from, function(data) {
-    var user = getUser(document.location.toString().split("#")[0]);
     var host = window.location.host
+    if (host.match(".eventhorizon.me")) {
+      var user = host.replace(".eventhorizon.me", "");
+    } else {
+      var user = getUser(document.location.toString().split("#")[0]);
+    }
     var protocol = window.location.protocol
 
     if (data.statuses) {
@@ -55,7 +59,11 @@ function periodSpeed(period) {
 }
 
 function urlBase(protocol, host, user) {
-  return protocol + "//" + host + "/" + user;
+  if (host.match(".eventhorizon.me")) {
+    return protocol + "//" + host;
+  } else {
+    return protocol + "//" + host + "/" + user;
+  }
 }
 
 function urlDate(date) {

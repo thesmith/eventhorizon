@@ -93,6 +93,8 @@ public class UsersController extends BaseController {
     Cookie username = new Cookie(USERNAME_COOKIE, user.getUsername());
     username.setPath("/");
     username.setMaxAge(60 * 60 * 24 * 30);
+    if (isProduction())
+      username.setDomain(HOST_POSTFIX);
     if (logger.isInfoEnabled())
       logger.info("Setting cookie for user " + user.getUsername() + ": " + username.getValue());
     response.addCookie(username);

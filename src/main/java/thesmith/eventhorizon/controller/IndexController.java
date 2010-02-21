@@ -1,5 +1,7 @@
 package thesmith.eventhorizon.controller;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -143,6 +145,26 @@ public class IndexController extends BaseController {
     return "index/index";
   }
 
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  public String startNoPath(ModelMap model, HttpServletRequest request) {
+    try {
+      URL url = new URL(request.getRequestURL().toString());
+      String host = url.getHost();
+      if (null != host && host.contains(HOST_POSTFIX)) {
+        String personId = host.replace(HOST_POSTFIX, "");
+        this.setModel(personId, null, model);
+
+        this.setViewer(request, model);
+        return "index/index";
+      }
+    } catch (MalformedURLException e) {
+      if (logger.isInfoEnabled())
+        logger.info("Unable to decode url from " + request.getRequestURL().toString());
+    }
+
+    return "index/front";
+  }
+
   @RequestMapping(value = "/error", method = RequestMethod.GET)
   public String error() {
     return "error";
@@ -172,6 +194,8 @@ public class IndexController extends BaseController {
     model.addAttribute("statuses", statuses);
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
+    model.addAttribute("secureHost", secureHost());
+    model.addAttribute("userHost", userHost(personId));
 
     if (logger.isDebugEnabled())
       logger.debug("Setting the model: " + model);

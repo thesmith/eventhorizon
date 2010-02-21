@@ -24,6 +24,8 @@ public class BaseController {
   public static final String VIEWER = "viewer";
   public static final String COOKIE = "eventhorizon";
   public static final String USERNAME_COOKIE = "eventhorizon-username";
+  public static final String HOST_POSTFIX = ".eventhorizon.me";
+  public static final String SECURE_HOST = "https://event-horizon.appspot.com";
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   @Autowired
@@ -76,6 +78,18 @@ public class BaseController {
   
   protected boolean isProduction() {
     return ("Production".equals(System.getProperty("com.google.appengine.runtime.environment", "")));
+  }
+  
+  protected String secureHost() {
+    if (isProduction())
+      return SECURE_HOST;
+    return "";
+  }
+  
+  protected String userHost(String personId) {
+    if (isProduction())
+      return "http://"+personId+HOST_POSTFIX;
+    return "/"+personId;
   }
 
   public void setUserService(UserService userService) {

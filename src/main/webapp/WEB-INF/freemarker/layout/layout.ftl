@@ -1,4 +1,4 @@
-<#macro layout title="" heading=title viewer="">
+<#macro layout title="" heading=title viewer="" secureHost="" userHost="/${viewer}/">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -35,9 +35,9 @@
     </div>
     <div id="userbar">
     <#if viewer != "">
-      <a href="/${viewer}/">${viewer}</a> | <a href="/accounts">dashboard</a> | <a href="/users/logout">logout</a>
+      <a href="${userHost}">${viewer}</a> | <a href="${secureHost}/accounts">dashboard</a> | <a href="${secureHost}/users/logout">logout</a>
     <#else>
-      <a href="/users/login">login</a> | <a href="/users/register">register</a>
+      <a href="${secureHost}/users/login">login</a> | <a href="${secureHost}/users/register">register</a>
     </#if>
     </div>
   </body>
