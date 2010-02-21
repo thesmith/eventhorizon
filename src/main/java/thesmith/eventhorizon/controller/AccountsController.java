@@ -30,6 +30,7 @@ public class AccountsController extends BaseController {
       return "redirect:/users/login";
 
     this.setupAccounts(user, model);
+    this.setViewer(request, model);
     return "accounts/list";
   }
 
@@ -46,6 +47,7 @@ public class AccountsController extends BaseController {
         JobsController.PAGE, "1"));
 
     this.setupAccounts(user, model);
+    this.setViewer(request, model);
     return "accounts/list";
   }
 

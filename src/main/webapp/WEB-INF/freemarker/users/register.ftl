@@ -1,4 +1,4 @@
-<@layout.layout "Register">
+<@layout.layout "Register" "Register" "${viewer!}">
 <form action="" method="POST">
   <div class="row">
     <label for="username">Username</label>

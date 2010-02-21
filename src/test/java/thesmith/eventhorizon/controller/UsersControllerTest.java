@@ -4,16 +4,13 @@ import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import javax.servlet.http.Cookie;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 
@@ -26,7 +23,6 @@ public class UsersControllerTest {
   private UsersController controller;
   private UserService userService;
   
-  private MockHttpServletRequest request;
   private MockHttpServletResponse response;
   
   @Before
@@ -41,27 +37,7 @@ public class UsersControllerTest {
     controller.setUserService(userService);
     controller.setLoginValidator(loginValidator);
     controller.setRegisterValidator(registerValidator);
-    request = new MockHttpServletRequest();
     response = new MockHttpServletResponse();
-  }
-  
-  @Test
-  public void shouldAuthUser() throws Exception {
-    String token = "validToken";
-    User user = new User();
-    user.setUsername("personId");
-    user.setPassword("somepass");
-    EasyMock.expect(userService.authn(token)).andReturn(user);
-    replay(userService);
-    
-    Cookie cookie = new Cookie(UsersController.COOKIE, token);
-    request.setCookies(cookie);
-    
-    ModelMap model = new ModelMap();
-    String view = controller.profile(model, request, response);
-    assertEquals("users/profile", view);
-    assertTrue(model.containsKey("user"));
-    assertEquals(user.getUsername(), ((User) model.get("user")).getUsername());
   }
   
   @Test

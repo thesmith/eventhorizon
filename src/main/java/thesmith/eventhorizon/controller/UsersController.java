@@ -72,17 +72,7 @@ public class UsersController extends BaseController {
 
     userService.create(user);
     this.setCookie(response, user);
-    return "redirect:/" + user.getUsername() + "/";
-  }
-
-  @RequestMapping(value = "/profile", method = RequestMethod.GET)
-  public String profile(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-    User user = this.auth(request, response);
-    if (null == user)
-      return "redirect:/users/login";
-    model.addAttribute("user", user);
-
-    return "users/profile";
+    return "redirect:/accounts/";
   }
 
   private void setCookie(HttpServletResponse response, User user) {

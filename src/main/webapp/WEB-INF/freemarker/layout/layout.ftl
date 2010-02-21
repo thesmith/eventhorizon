@@ -1,4 +1,4 @@
-<#macro layout title="" heading=title>
+<#macro layout title="" heading=title viewer="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -25,13 +25,20 @@
     <title>Event Horizon | ${title}</title>
   </head>
   <body>
-    <div id="container"> 
+    <div id="container">
       <div id="primary" class="full">
         <div id="mast"> 
           <h1>${heading}</h1> 
         </div>
         <#nested/>
       </div>
+    </div>
+    <div id="userbar">
+    <#if viewer != "">
+      <a href="/${viewer}/">${viewer}</a> | <a href="/accounts">dashboard</a> | <a href="/users/logout">logout</a>
+    <#else>
+      <a href="/users/login">login</a> | <a href="/users/register">register</a>
+    </#if>
     </div>
   </body>
 </html>

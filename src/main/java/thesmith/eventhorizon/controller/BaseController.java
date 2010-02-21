@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -20,6 +21,7 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.QueueFactory;
 
 public class BaseController {
+  public static final String VIEWER = "viewer";
   public static final String COOKIE = "eventhorizon";
   public static final String USERNAME_COOKIE = "eventhorizon-username";
   protected final Log logger = LogFactory.getLog(this.getClass());
@@ -59,6 +61,17 @@ public class BaseController {
     }
 
     return null;
+  }
+  
+  protected void setViewer(HttpServletRequest request, ModelMap model) {
+    Cookie[] cookies = request.getCookies();
+    if (null != cookies) {
+      for (Cookie cookie : cookies) {
+        if (BaseController.USERNAME_COOKIE.equalsIgnoreCase(cookie.getName())) {
+          model.put(BaseController.VIEWER, cookie.getValue());
+        }
+      }
+    }
   }
   
   protected boolean isProduction() {

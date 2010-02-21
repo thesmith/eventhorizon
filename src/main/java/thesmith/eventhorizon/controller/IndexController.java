@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +29,7 @@ public class IndexController extends BaseController {
   @RequestMapping(value = "/{personId}/{year}/{month}/{day}/{hour}/{min}/{sec}", method = RequestMethod.GET)
   public String index(@PathVariable("personId") String personId, @PathVariable("year") int year,
       @PathVariable("month") int month, @PathVariable("day") int day, @PathVariable("hour") int hour,
-      @PathVariable("min") int min, @PathVariable("sec") int sec, ModelMap model) {
+      @PathVariable("min") int min, @PathVariable("sec") int sec, ModelMap model, HttpServletRequest request) {
 
     try {
       Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
@@ -37,6 +39,7 @@ public class IndexController extends BaseController {
         logger.warn(e);
       return "redirect:/error";
     }
+    this.setViewer(request, model);
     return "index/index";
   }
 
@@ -68,7 +71,7 @@ public class IndexController extends BaseController {
       Status status = statusService.next(account, from);
       if (null == status)
         status = statusService.find(account, from);
-      
+
       return String.format("redirect:/%s/%s/", personId, urlFormat.format(status.getCreated()));
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -116,7 +119,8 @@ public class IndexController extends BaseController {
   }
 
   @RequestMapping(value = "/{personId}/now", method = RequestMethod.GET)
-  public String now(@PathVariable("personId") String personId, @RequestParam("from") String from, ModelMap model) {
+  public String now(@PathVariable("personId") String personId, @RequestParam("from") String from, ModelMap model,
+      HttpServletRequest request) {
     if (null != from && from.length() > 0) {
       try {
         this.setModel(personId, this.parseDate(from), model);
@@ -127,13 +131,15 @@ public class IndexController extends BaseController {
         return "redirect:/error";
       }
     }
+    this.setViewer(request, model);
     return "index/index";
   }
 
   @RequestMapping(value = "/{personId}", method = RequestMethod.GET)
-  public String start(@PathVariable("personId") String personId, ModelMap model) {
+  public String start(@PathVariable("personId") String personId, ModelMap model, HttpServletRequest request) {
     this.setModel(personId, null, model);
 
+    this.setViewer(request, model);
     return "index/index";
   }
 
@@ -145,8 +151,8 @@ public class IndexController extends BaseController {
   private void setModel(String personId, Date from, ModelMap model) {
     List<Account> accounts = accountService.listAll(personId);
     if (logger.isDebugEnabled())
-      logger.debug("Retrieved accounts to be processed: "+accounts);
-    
+      logger.debug("Retrieved accounts to be processed: " + accounts);
+
     List<Status> statuses = Lists.newArrayList();
     if (null != from) {
       for (Account account : accounts) {
@@ -166,11 +172,11 @@ public class IndexController extends BaseController {
     model.addAttribute("statuses", statuses);
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
-    
+
     if (logger.isDebugEnabled())
-      logger.debug("Setting the model: "+model);
+      logger.debug("Setting the model: " + model);
   }
-  
+
   private Status defaultStatus(String personId, String domain, Date from) {
     Status status = new Status();
     status.setDomain(domain);

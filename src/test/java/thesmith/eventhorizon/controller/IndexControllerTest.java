@@ -11,6 +11,7 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ModelMap;
 
 import thesmith.eventhorizon.model.Account;
@@ -69,7 +70,7 @@ public class IndexControllerTest {
     EasyMock.expect(statusService.find(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(lastfmStatus);
     EasyMock.replay(accountService, statusService, userService);
     
-    String view = controller.index("person", 2010, 01, 01, 00, 00, 00, model);
+    String view = controller.index("person", 2010, 01, 01, 00, 00, 00, model, new MockHttpServletRequest());
     assertEquals("index/index", view);
     assertEquals("person", model.get("personId"));
     assertNotNull(model.get("from"));

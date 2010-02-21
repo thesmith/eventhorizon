@@ -1,4 +1,4 @@
-<@layout.layout "Your Events">
+<@layout.layout "Your Events" "Your Events" "${viewer!}">
 <script type="text/javascript">
 $(function() {
   $(".datepicker").datepicker({

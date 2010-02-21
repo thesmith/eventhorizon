@@ -34,6 +34,7 @@ public class StatusController extends BaseController {
       return "redirect:/users/login";
     this.statuses(user.getUsername(), model);
 
+    this.setViewer(request, model);
     return "status/list";
   }
 
@@ -60,6 +61,7 @@ public class StatusController extends BaseController {
     statusService.create(status);
     this.statuses(user.getUsername(), model);
 
+    this.setViewer(request, model);
     return "status/list";
   }
 

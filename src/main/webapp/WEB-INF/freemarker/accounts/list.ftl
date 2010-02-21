@@ -1,4 +1,4 @@
-<@layout.layout "Your Accounts">
+<@layout.layout "Your Accounts" "Your Accounts" "${viewer!}">
 <ul>
   <#list domains as domain>
     <li>
