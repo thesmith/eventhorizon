@@ -1,4 +1,4 @@
-<@layout.layout "Login" "Login &raquo; <a href='/users/register'>Register</a>" "${viewer!}">
+<@layout.layout "Login" "Login <span class='decorator'>or</span> <a href='/users/register'>Register</a>" "${viewer!}">
 <form action="" method="POST">
   <div class="row">
     <label for="username">Username</label>

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,7 +33,6 @@ public class IndexController extends BaseController {
   public String index(@PathVariable("personId") String personId, @PathVariable("year") int year,
       @PathVariable("month") int month, @PathVariable("day") int day, @PathVariable("hour") int hour,
       @PathVariable("min") int min, @PathVariable("sec") int sec, ModelMap model, HttpServletRequest request) {
-
     try {
       Date from = format.parse(String.format("%d/%d/%d %d:%d:%d", year, month, day, hour, min, sec));
       this.setModel(personId, from, model);
@@ -146,7 +146,7 @@ public class IndexController extends BaseController {
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public String startNoPath(ModelMap model, HttpServletRequest request) {
+  public String startNoPath(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     try {
       URL url = new URL(request.getRequestURL().toString());
       String host = url.getHost();
@@ -195,7 +195,6 @@ public class IndexController extends BaseController {
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
-    model.addAttribute("userHost", userHost(personId));
 
     if (logger.isDebugEnabled())
       logger.debug("Setting the model: " + model);

@@ -1,4 +1,4 @@
-<@layout.layout "Your Events" "Your Events &raquo; <a href='/accounts'>Accounts</a>" "${viewer!}" "" "${userHost}">
+<@layout.layout "Your Events" "Your Events <span class='decorator'>or</span> <a href='/accounts'>Accounts</a>" "${viewer!}" "" "${userHost}">
 <script type="text/javascript">
 $(function() {
   $(".datepicker").datepicker({

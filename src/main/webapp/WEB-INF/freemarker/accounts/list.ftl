@@ -1,4 +1,4 @@
-<@layout.layout "Your Accounts" "Your Accounts &raquo; <a href='/status'>Events</a>" "${viewer!}" "" "${userHost}">
+<@layout.layout "Your Accounts" "Your Accounts <span class='decorator'>or</span> <a href='/status'>Events</a>" "${viewer!}" "" "${userHost}">
 <ul>
   <#list domains as domain>
     <li>

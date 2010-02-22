@@ -26,6 +26,7 @@ public class BaseController {
   public static final String USERNAME_COOKIE = "eventhorizon-username";
   public static final String HOST_POSTFIX = ".eventhorizon.me";
   public static final String SECURE_HOST = "https://event-horizon.appspot.com";
+  public static final String REDIRECT = "redirect:";
   protected final Log logger = LogFactory.getLog(this.getClass());
 
   @Autowired
@@ -36,7 +37,7 @@ public class BaseController {
 
   @Autowired
   protected StatusService statusService;
-  
+
   protected Queue queue = QueueFactory.getDefaultQueue();
 
   @InitBinder
@@ -64,32 +65,54 @@ public class BaseController {
 
     return null;
   }
-  
+
   protected void setViewer(HttpServletRequest request, ModelMap model) {
     Cookie[] cookies = request.getCookies();
     if (null != cookies) {
       for (Cookie cookie : cookies) {
         if (BaseController.USERNAME_COOKIE.equalsIgnoreCase(cookie.getName())) {
-          model.put(BaseController.VIEWER, cookie.getValue());
+          model.addAttribute(BaseController.VIEWER, cookie.getValue());
+          model.addAttribute("userHost", userHost(cookie.getValue()));
         }
       }
     }
   }
-  
+
   protected boolean isProduction() {
     return ("Production".equals(System.getProperty("com.google.appengine.runtime.environment", "")));
   }
-  
+
   protected String secureHost() {
     if (isProduction())
       return SECURE_HOST;
     return "";
   }
-  
+
+  protected void setUserCookie(HttpServletResponse response, String personId) {
+    Cookie username = new Cookie(USERNAME_COOKIE, personId);
+    username.setPath("/");
+    username.setMaxAge(60 * 60 * 24 * 30);
+    if (isProduction())
+      username.setDomain(HOST_POSTFIX);
+    response.addCookie(username);
+  }
+
   protected String userHost(String personId) {
     if (isProduction())
-      return "http://"+personId+HOST_POSTFIX;
-    return "/"+personId;
+      return "http://" + personId + HOST_POSTFIX;
+    return "/" + personId;
+  }
+
+  protected String authUrl(String personId, String ptrt) {
+    if (null == ptrt) {
+      if (isProduction())
+        return "http://" + personId + HOST_POSTFIX + AuthController.AUTH_URL +"?ptrt=";
+      return AuthController.AUTH_URL + "?ptrt=/" + personId;
+    } else {
+      if (isProduction())
+        return "http://" + personId + HOST_POSTFIX + AuthController.AUTH_URL + "?ptrt=" + ptrt;
+      return AuthController.AUTH_URL + "?ptrt=" + ptrt;
+    }
   }
 
   public void setUserService(UserService userService) {

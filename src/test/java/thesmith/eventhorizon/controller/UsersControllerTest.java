@@ -92,7 +92,7 @@ public class UsersControllerTest {
     
     BindingResult result = new BeanPropertyBindingResult(user, "user");
     String view = controller.register(user, result, response);
-    assertEquals("redirect:/" + user.getUsername() + "/", view);
+    assertEquals("redirect:/accounts/", view);
     
     Cookie cookie = response.getCookie(BaseController.COOKIE);
     assertNotNull(cookie);

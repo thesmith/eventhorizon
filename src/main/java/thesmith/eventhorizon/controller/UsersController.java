@@ -41,7 +41,7 @@ public class UsersController extends BaseController {
       return "users/login";
 
     this.setCookie(response, userService.find(user.getUsername()));
-    return "redirect:/" + user.getUsername() + "/";
+    return REDIRECT + this.authUrl(user.getUsername(), null);
   }
 
   @RequestMapping(value = "/logout", method = RequestMethod.GET)
@@ -50,13 +50,13 @@ public class UsersController extends BaseController {
     cookie.setMaxAge(0);
     cookie.setPath("/");
     response.addCookie(cookie);
-    
+
     Cookie username = new Cookie(USERNAME_COOKIE, "empty");
     username.setMaxAge(0);
     username.setPath("/");
     response.addCookie(username);
 
-    return "redirect:/users/login";
+    return REDIRECT + "/users/login";
   }
 
   @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -77,7 +77,8 @@ public class UsersController extends BaseController {
 
     userService.create(user);
     this.setCookie(response, user);
-    return "redirect:/accounts/";
+    String ptrt = (isProduction() ? "https://event-horizon.appspot.com/accounts" : "/accounts");
+    return REDIRECT + this.authUrl(user.getUsername(), ptrt);
   }
 
   private void setCookie(HttpServletResponse response, User user) {
@@ -89,15 +90,8 @@ public class UsersController extends BaseController {
     if (logger.isInfoEnabled())
       logger.info("Setting cookie for user " + user.getUsername() + ": " + cookie.getValue());
     response.addCookie(cookie);
-
-    Cookie username = new Cookie(USERNAME_COOKIE, user.getUsername());
-    username.setPath("/");
-    username.setMaxAge(60 * 60 * 24 * 30);
-    if (isProduction())
-      username.setDomain(HOST_POSTFIX);
-    if (logger.isInfoEnabled())
-      logger.info("Setting cookie for user " + user.getUsername() + ": " + username.getValue());
-    response.addCookie(username);
+    
+    this.setUserCookie(response, user.getUsername());
   }
 
   public void setLoginValidator(LoginValidator loginValidator) {
