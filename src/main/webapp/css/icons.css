@@ -41,6 +41,7 @@ span.dopplr{background-image:url('../gfx/dopplr.png');}
 span.tshirt{background-image:url('../gfx/tshirt.png');}
 span.iplayer{background-image:url('../gfx/iplayer.gif');}
 span.wordr{background-image:url('../gfx/wordr.png');}
+span.github{background-image:url('../gfx/github.png');}
 
 span.decorator { color: #808080; }
 
@@ -48,6 +49,7 @@ div.twitter_title{background-image:url('../gfx/twitter_full.png');}
 div.lastfm_title{background-image:url('../gfx/lastfm_full.png');}
 div.flickr_title{background-image:url('../gfx/flickr_full.png');}
 div.wordr_title{background-image:url('../gfx/wordr_full.png');}
+div.github_title{background-image:url('../gfx/github_full.png');}
 div.account_title{color: transparent; height: 45px; width: 145px; float:left; background-repeat:no-repeat; background-color:transparent;}
 div.account_input{float: left; padding-top: 10px; padding-left: 10px;}
 
