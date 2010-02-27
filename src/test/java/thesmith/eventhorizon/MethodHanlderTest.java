@@ -12,7 +12,7 @@ import thesmith.eventhorizon.controller.AccountsController;
 
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
-public class MethodHanlderTest extends AppBaseTest {
+public class MethodHanlderTest extends DataStoreBaseTest {
   @Autowired
   private AnnotationMethodHandlerAdapter adaptor;
   

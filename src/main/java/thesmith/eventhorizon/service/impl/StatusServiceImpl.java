@@ -106,7 +106,7 @@ public class StatusServiceImpl implements StatusService {
   public List<Status> list(Account account, int page) {
     EventService service = eventServices.get(account.getDomain());
     if (service == null)
-      throw new RuntimeException("Unable to process events from domain: " + account.getDomain());
+      throw new RuntimeException("Unable to process events from unknown domain: " + account.getDomain());
 
     List<Status> statuses = Lists.newArrayList();
     Date oldest = null;
@@ -140,7 +140,8 @@ public class StatusServiceImpl implements StatusService {
     
     String text = account.getTemplate();
     text = text.replaceAll("\\{title\\}", Matcher.quoteReplacement(status.getTitle()));
-    text = text.replaceAll("\\{titleUrl\\}", Matcher.quoteReplacement(status.getTitleUrl()));
+    if (null != status.getTitleUrl())
+      text = text.replaceAll("\\{titleUrl\\}", Matcher.quoteReplacement(status.getTitleUrl()));
     text = text.replaceAll("\\{domain\\}", Matcher.quoteReplacement(account.getDomain()));
     if (null != account.getDomainUrl())
       text = text.replaceAll("\\{domainUrl\\}", Matcher.quoteReplacement(account.getDomainUrl()));

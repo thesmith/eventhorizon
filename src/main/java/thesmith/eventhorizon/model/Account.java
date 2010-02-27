@@ -18,7 +18,7 @@ import com.google.appengine.api.datastore.Key;
 
 @Entity
 @Table(name = "account")
-public class Account implements Serializable {
+public class Account implements Serializable, Cloneable {
   private static final long serialVersionUID = -1071691679726356019L;
 
   @Id

@@ -9,10 +9,10 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import thesmith.eventhorizon.AppBaseTest;
+import thesmith.eventhorizon.DataStoreBaseTest;
 import thesmith.eventhorizon.model.Account;
 
-public class AccountServiceImplTest extends AppBaseTest {
+public class AccountServiceImplTest extends DataStoreBaseTest {
   @Autowired
   private AccountService service;
   
@@ -39,7 +39,23 @@ public class AccountServiceImplTest extends AppBaseTest {
     assertEquals(1, service.list(account.getPersonId()).size());
 
     service.delete(account.getPersonId(), account.getDomain());
+    assertNull(service.find(account.getPersonId(), account.getDomain()));
     assertEquals(0, service.list(account.getPersonId()).size());
+  }
+  
+  @Test
+  public void testShouldUpdateAccount() throws Exception {
+    service.create(account);
+    assertNotNull(account.getId());
+    
+    Account acc = service.find(account.getPersonId(), account.getDomain());
+    assertEquals(account.getUserId(), acc.getUserId());
+    
+    acc.setUserId("someotheruserId");
+    service.update(acc);
+    
+    acc = service.find(account.getPersonId(), account.getDomain());
+    assertEquals("someotheruserId", acc.getUserId());
   }
   
   @Test

@@ -11,11 +11,11 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import thesmith.eventhorizon.AppBaseTest;
+import thesmith.eventhorizon.DataStoreBaseTest;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
 
-public class StatusServiceImplTest extends AppBaseTest {
+public class StatusServiceImplTest extends DataStoreBaseTest {
   @Autowired
   private StatusService service;
   

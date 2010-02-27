@@ -31,6 +31,7 @@
         <entry key="lastfm" value-ref="lastfmEventService" />
         <entry key="flickr" value-ref="flickrEventService" />
         <entry key="wordr" value-ref="wordrEventService" />
+        <entry key="github" value-ref="githubEventService" />
       </map>
     </constructor-arg>
   </bean>
@@ -43,6 +44,12 @@
     class="thesmith.eventhorizon.service.impl.FlickrEventServiceImpl" />
   <bean id="wordrEventService"
     class="thesmith.eventhorizon.service.impl.WordrEventServiceImpl" />
+  <bean id="githubEventService"
+    class="thesmith.eventhorizon.service.impl.GithubEventServiceImpl" />
+    
+  <bean id="cacheService" class="thesmith.eventhorizon.service.impl.CacheServiceImpl" />
+  <bean id="cacheManager" class="net.sf.jsr107cache.CacheManager" factory-method="getInstance"/>
+  <bean id="cacheFactory" factory-bean="cacheManager" factory-method="getCacheFactory" />
 
   <bean id="loginValidator" class="thesmith.eventhorizon.validator.LoginValidator" />
   <bean id="registerValidator" class="thesmith.eventhorizon.validator.RegisterValidator" />

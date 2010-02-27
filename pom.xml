@@ -88,6 +88,11 @@
       <version>${appengine.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-cache</artifactId>
+      <version>${appengine.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.appengine.orm</groupId>
       <artifactId>datanucleus-appengine</artifactId>
       <version>1.0.4</version>

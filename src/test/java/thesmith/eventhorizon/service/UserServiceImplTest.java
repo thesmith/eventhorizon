@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import thesmith.eventhorizon.AppBaseTest;
+import thesmith.eventhorizon.DataStoreBaseTest;
 import thesmith.eventhorizon.model.User;
 
-public class UserServiceImplTest extends AppBaseTest {
+public class UserServiceImplTest extends DataStoreBaseTest {
   @Autowired
   private UserService service;
   
