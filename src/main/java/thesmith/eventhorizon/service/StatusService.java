@@ -16,6 +16,8 @@ import com.google.appengine.api.datastore.Key;
  * @author bens
  */
 public interface StatusService {
+  public static final String CACHE_KEY_PREFIX = "status_";
+  
   /**
    * Create a new status for a person
    * @param status

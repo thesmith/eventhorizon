@@ -62,7 +62,7 @@ public class CacheServiceImpl<T> implements CacheService<T> {
   private Cache getCache() {
     if (cache == null) {
       final Map<Integer, Integer> props = Maps.newHashMap();
-      props.put(GCacheFactory.EXPIRATION_DELTA, EXPIREY);
+      //props.put(GCacheFactory.EXPIRATION_DELTA, EXPIREY);
       try {
         cache = cacheFactory.createCache(props);
       } catch (Exception e) {

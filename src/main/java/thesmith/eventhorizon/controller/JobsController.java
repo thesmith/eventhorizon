@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,8 @@ import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.StatusCreatedSort;
 import thesmith.eventhorizon.service.AccountService;
+import thesmith.eventhorizon.service.CacheService;
+import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.impl.WordrEventServiceImpl;
 
 import com.google.appengine.api.datastore.Key;
@@ -24,6 +27,9 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 @Controller
 @RequestMapping(value = "/jobs")
 public class JobsController extends BaseController {
+  @Autowired
+  private CacheService<Status> cache;
+  
   public static final String PAGE = "page";
   public static final int LIMIT = 20;
 
@@ -47,6 +53,8 @@ public class JobsController extends BaseController {
         Date previousCreated = new Date();
         for (Status status : statuses) {
           statusService.create(status);
+          if (null != cache)
+            cache.put(StatusService.CACHE_KEY_PREFIX+status.getId(), status);
           
           List<Snapshot> snapshots = snapshotService.list(personId, status.getCreated(), previousCreated);
           boolean found = false;

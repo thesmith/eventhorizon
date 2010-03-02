@@ -1,6 +1,5 @@
 package thesmith.eventhorizon.controller;
 
-import javax.cache.Cache;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,8 +43,6 @@ public class BaseController {
   protected SnapshotService snapshotService;
 
   protected Queue queue = QueueFactory.getDefaultQueue();
-  
-  protected Cache cache;
 
   @InitBinder
   public void initBinder(WebDataBinder binder) {

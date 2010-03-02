@@ -22,4 +22,14 @@
     <property name="person_id" direction="asc" />
     <property name="created" direction="asc" />
   </datastore-index>
+  
+  <datastore-index kind="snapshot" ancestor="false">
+    <property name="person_id" direction="asc" />
+    <property name="created" direction="asc" />
+  </datastore-index>
+  
+  <datastore-index kind="snapshot" ancestor="false">
+    <property name="person_id" direction="asc" />
+    <property name="created" direction="desc" />
+  </datastore-index>
 </datastore-indexes>
