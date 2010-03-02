@@ -19,6 +19,7 @@ import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.service.EventService;
 import thesmith.eventhorizon.service.StatusService;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.Interval;
@@ -45,16 +46,14 @@ public class StatusServiceImpl implements StatusService {
   @SuppressWarnings("unchecked")
   public void create(Status status) {
     if (null == status.getTitle() || null == status.getTitleUrl() || null == status.getCreated())
-      throw new RuntimeException("Unable to create status without appropriate info: "+status);
-    
+      throw new RuntimeException("Unable to create status without appropriate info: " + status);
+
     List<Status> statuses = em.createQuery(
         "select s from Status s where s.personId = :personId and s.domain = :domain and s.created = :from")
         .setParameter("personId", status.getPersonId()).setParameter("domain", status.getDomain()).setParameter("from",
             status.getCreated()).setMaxResults(1).getResultList();
     if (null == statuses || statuses.size() < 1) {
       em.persist(status);
-      if (logger.isDebugEnabled())
-        logger.debug("Created status: " + status.getPersonId() + ", " + status.getDomain() + ", " + status.getCreated());
     } else {
       Status s = statuses.get(0);
       s.setTitle(status.getTitle());
@@ -78,27 +77,16 @@ public class StatusServiceImpl implements StatusService {
   @SuppressWarnings("unchecked")
   private Status find(Account account, Date from, String created, String order) {
     if (logger.isDebugEnabled())
-      logger.debug("Finding for "+account.getPersonId()+" on "+account.getDomain()+" from "+from+" as "+created+" by "+order);
-    
+      logger.debug("Finding for " + account.getPersonId() + " on " + account.getDomain() + " from " + from + " as "
+          + created + " by " + order);
+
     List<Status> statuses = em.createQuery(
         "select s from Status s where s.personId = :personId and s.domain = :domain and s.created " + created
-            + " :from order by s.created " + order).setParameter("personId", account.getPersonId()).setParameter("domain", account.getDomain())
-        .setParameter("from", from).setMaxResults(1).getResultList();
+            + " :from order by s.created " + order).setParameter("personId", account.getPersonId()).setParameter(
+        "domain", account.getDomain()).setParameter("from", from).setMaxResults(1).getResultList();
     if (null != statuses && statuses.size() > 0) {
       Status status = statuses.get(0);
-      Status returnStatus = new Status();
-      returnStatus.setCreated(status.getCreated());
-      returnStatus.setDomain(status.getDomain());
-      returnStatus.setPersonId(status.getPersonId());
-      returnStatus.setTitle(status.getTitle());
-      returnStatus.setTitleUrl(status.getTitleUrl());
-      returnStatus.setPeriod(this.period(from, status.getCreated()));
-      if (null != account.getTemplate())
-        returnStatus.setStatus(this.status(account, returnStatus));
-      
-      if (logger.isDebugEnabled())
-        logger.debug("Retrieved: "+returnStatus);
-      return returnStatus;
+      return processStatus(status, from, account);
     }
     return null;
   }
@@ -134,10 +122,32 @@ public class StatusServiceImpl implements StatusService {
     return statuses;
   }
   
+  public Status find(Key key, Date from, Map<String, Account> accounts) {
+    Status status = em.find(Status.class, key);
+    return processStatus(status, from, accounts.get(status.getDomain()));
+  }
+  
+  private Status processStatus(Status status, Date from, Account account) {
+    Status returnStatus = new Status();
+    returnStatus.setCreated(status.getCreated());
+    returnStatus.setDomain(status.getDomain());
+    returnStatus.setPersonId(status.getPersonId());
+    returnStatus.setTitle(status.getTitle());
+    returnStatus.setTitleUrl(status.getTitleUrl());
+    if (null != from)
+      returnStatus.setPeriod(this.period(from, status.getCreated()));
+    if (null != account && null != account.getTemplate())
+      returnStatus.setStatus(this.status(account, returnStatus));
+
+    if (logger.isDebugEnabled())
+      logger.debug("Retrieved: " + returnStatus);
+    return returnStatus;
+  }
+
   private String status(Account account, Status status) {
     if (null == status.getTitle() || null == status.getTitleUrl() || null == status.getCreated())
-      throw new RuntimeException("Unable to create status without appropriate info: "+status);
-    
+      throw new RuntimeException("Unable to create status without appropriate info: " + status);
+
     String text = account.getTemplate();
     text = text.replaceAll("\\{title\\}", Matcher.quoteReplacement(status.getTitle()));
     if (null != status.getTitleUrl())

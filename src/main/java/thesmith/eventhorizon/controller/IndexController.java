@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +20,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import thesmith.eventhorizon.model.Account;
+import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 @Controller
 public class IndexController extends BaseController {
@@ -171,22 +175,18 @@ public class IndexController extends BaseController {
   }
 
   private void setModel(String personId, Date from, ModelMap model) {
-    List<Account> accounts = accountService.listAll(personId);
-    if (logger.isDebugEnabled())
-      logger.debug("Retrieved accounts to be processed: " + accounts);
-
     List<Status> statuses = Lists.newArrayList();
+    Map<String, Account> accounts = accountMap( accountService.listAll(personId) );
     if (null != from) {
-      for (Account account : accounts) {
-        Status status = statusService.find(account, from);
-        if (null == status) {
-          status = defaultStatus(personId, account.getDomain(), from);
-        }
-        statuses.add(status);
+      Snapshot snapshot = snapshotService.find(personId, from);
+      for (Key id: snapshot.getStatusIds()) {
+        Status status = statusService.find(id, from, accounts);
+        if (null != status)
+          statuses.add(status);
       }
     } else {
       from = new Date();
-      for (Account account : accounts) {
+      for (Account account : accounts.values()) {
         statuses.add(defaultStatus(personId, account.getDomain(), from));
       }
       model.addAttribute("refresh", true);
@@ -198,6 +198,14 @@ public class IndexController extends BaseController {
 
     if (logger.isDebugEnabled())
       logger.debug("Setting the model: " + model);
+  }
+  
+  private Map<String, Account> accountMap(List<Account> accounts) {
+    Map<String, Account> accountMap = Maps.newHashMap();
+    for (Account account: accounts) {
+      accountMap.put(account.getDomain(), account);
+    }
+    return accountMap;
   }
 
   private Status defaultStatus(String personId, String domain, Date from) {

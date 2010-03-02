@@ -27,7 +27,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
-  private static final Map<String, String> defaults = Maps.newConcurrentMap();
+  public static final Map<String, String> defaults = Maps.newConcurrentMap();
   static {
     defaults.put(AccountService.DOMAIN.twitter.toString(),
         "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
@@ -44,12 +44,12 @@ public class AccountServiceImpl implements AccountService {
         "{ago}, <a href='{userUrl}' rel='me'>I</a> pushed to {title}");
   }
 
-  private static final Map<String, String> domainUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
+  public static final Map<String, String> domainUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
       "http://twitter.com", AccountService.DOMAIN.lastfm.toString(), "http://last.fm", AccountService.DOMAIN.flickr
           .toString(), "http://flickr.com", AccountService.DOMAIN.wordr.toString(), "http://wordr.org",
       AccountService.DOMAIN.github.toString(), "http://github.com");
 
-  private static final Map<String, String> userUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
+  public static final Map<String, String> userUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
       "http://twitter.com/%s", AccountService.DOMAIN.lastfm.toString(), "http://last.fm/user/%s",
       AccountService.DOMAIN.flickr.toString(), "http://flickr.com/people/%s", AccountService.DOMAIN.wordr.toString(),
       "http://wordr.org/users/%s", AccountService.DOMAIN.github.toString(), "http://github.com/%s");

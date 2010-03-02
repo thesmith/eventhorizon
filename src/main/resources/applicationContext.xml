@@ -24,6 +24,7 @@
 
   <bean id="accountService" class="thesmith.eventhorizon.service.impl.AccountServiceImpl" />
   <bean id="userService" class="thesmith.eventhorizon.service.impl.UserServiceImpl" />
+  <bean id="snapshotService" class="thesmith.eventhorizon.service.impl.SnapshotServiceImpl" />
   <bean id="statusService" class="thesmith.eventhorizon.service.impl.StatusServiceImpl">
     <constructor-arg>
       <map>

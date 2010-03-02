@@ -2,9 +2,12 @@ package thesmith.eventhorizon.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
+
+import com.google.appengine.api.datastore.Key;
 
 /**
  * Status service defines an interface for creating and retrieving statuses from
@@ -48,4 +51,11 @@ public interface StatusService {
    * @return
    */
   public List<Status> list(Account account, int page);
+  
+  /**
+   * Find Status by key
+   * @param key
+   * @return
+   */
+  public Status find(Key key, Date from, Map<String, Account> accounts);
 }

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import thesmith.eventhorizon.DataStoreBaseTest;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
+
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 public class StatusServiceImplTest extends DataStoreBaseTest {
   @Autowired
@@ -82,5 +85,18 @@ public class StatusServiceImplTest extends DataStoreBaseTest {
     Status stat = statuses.get(0);
     assertNotNull(stat);
     assertNotNull(stat.getTitle());
+  }
+  
+  @Test
+  public void shouldGetStatusFromId() throws Exception {
+    service.create(status);
+    
+    Map<String, Account> accounts = Maps.newHashMap();
+    Account account = new Account();
+    account.setDomain(status.getDomain());
+    accounts.put(status.getDomain(), account);
+    
+    Status stat = service.find(status.getId(), new Date(), accounts);
+    assertEquals(status.getTitle(), stat.getTitle());
   }
 }

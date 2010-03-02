@@ -2,6 +2,7 @@ package thesmith.eventhorizon.controller;
 
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -11,9 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import thesmith.eventhorizon.model.Account;
+import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
+import thesmith.eventhorizon.model.StatusCreatedSort;
 import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.impl.WordrEventServiceImpl;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping(value = "/jobs")
@@ -32,27 +38,67 @@ public class JobsController extends BaseController {
       @RequestParam("page") String page) {
     Account account = accountService.find(personId, domain);
     if (null != account) {
-      Date oldest = new Date();
       int p = Integer.parseInt(page);
       List<Status> statuses = statusService.list(account, p);
-      for (Status status : statuses) {
-        statusService.create(status);
-        if (null != status.getCreated() && oldest.after(status.getCreated()))
-          oldest = status.getCreated();
-      }
+      if (!statuses.isEmpty()) {
+        Collections.sort(statuses, new StatusCreatedSort());
+        Date oldest = oldest(statuses);
 
-      if (statuses.size() > 0) {
+        Date previousCreated = new Date();
+        for (Status status : statuses) {
+          statusService.create(status);
+          
+          List<Snapshot> snapshots = snapshotService.list(personId, status.getCreated(), previousCreated);
+          boolean found = false;
+          for (Snapshot snapshot: snapshots) {
+            snapshotService.addStatus(snapshot, status);
+            if (snapshot.getCreated().equals(status.getCreated()))
+              found = true;
+          }
+          if (! found) {
+            List<Account> accounts = accountService.list(personId);
+            List<Key> statusIds = Lists.newArrayList();
+            for (Account acc: accounts) {
+              if (null != acc.getUserId()) {
+                if (domain.equals(status.getDomain())) {
+                  statusIds.add(status.getId());
+                } else {
+                  Status s = statusService.find(acc, status.getCreated());
+                  if (null != s)
+                    statusIds.add(s.getId());
+                }
+              }
+            }
+            Snapshot snapshot = new Snapshot();
+            snapshot.setPersonId(personId);
+            snapshot.setCreated(status.getCreated());
+            snapshot.setStatusIds(statusIds);
+            snapshotService.create(snapshot);
+          }
+          previousCreated = status.getCreated();
+        }
+        
         Date d = new Date(oldest.getTime() - 1L);
         Status status = statusService.find(account, d);
         if (null == status) {
-          p = p+1;
+          p = p + 1;
           if (AccountService.DOMAIN.wordr.toString().equals(domain))
-            p = Integer.valueOf(statuses.get(statuses.size()-1).getTitleUrl().replace(WordrEventServiceImpl.STATUS_URL, ""));
+            p = Integer.valueOf(statuses.get(statuses.size() - 1).getTitleUrl().replace(
+                WordrEventServiceImpl.STATUS_URL, ""));
           queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, String.valueOf(p)));
         }
       }
     }
     return "jobs/index";
+  }
+  
+  private Date oldest(List<Status> statuses) {
+    for (int i=(statuses.size()-1); i>=0; i--) {
+      Date d = statuses.get(i).getCreated();
+      if (null != d)
+        return d;
+    }
+    return new Date();
   }
 
   @RequestMapping(value = "/accounts/process")

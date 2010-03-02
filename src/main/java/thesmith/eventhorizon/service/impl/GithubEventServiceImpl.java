@@ -57,7 +57,7 @@ public class GithubEventServiceImpl implements EventService {
           String head = act.getJSONObject("payload").getString("head");
           Date created = formater.parseDateTime(act.getString("created_at")).toDate();
           String title = "<a href='" + repoUrl + "'>" + repoName + "</a> saying <a href='" + account.getUserUrl() + "/"
-              + repoName + "/tree/" + head + "'>'" + comment + "</a>";
+              + repoName + "/tree/" + head + "'>'" + comment + "'</a>";
 
           Event event = new Event();
           event.setCreated(created);

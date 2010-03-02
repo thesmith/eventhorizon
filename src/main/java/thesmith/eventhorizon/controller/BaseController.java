@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.AccountService;
+import thesmith.eventhorizon.service.SnapshotService;
 import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
@@ -38,6 +39,9 @@ public class BaseController {
 
   @Autowired
   protected StatusService statusService;
+  
+  @Autowired
+  protected SnapshotService snapshotService;
 
   protected Queue queue = QueueFactory.getDefaultQueue();
   
@@ -128,6 +132,10 @@ public class BaseController {
 
   public void setStatusService(StatusService statusService) {
     this.statusService = statusService;
+  }
+  
+  public void setSnapshotService(SnapshotService snapshotService) {
+    this.snapshotService = snapshotService;
   }
 
   public void setQueue(Queue queue) {
