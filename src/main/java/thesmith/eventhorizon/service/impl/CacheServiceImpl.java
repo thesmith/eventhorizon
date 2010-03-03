@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import thesmith.eventhorizon.service.CacheService;
 
-import com.google.appengine.api.memcache.stdimpl.GCacheFactory;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 /**
@@ -23,7 +22,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
  * @author bens
  */
 public class CacheServiceImpl<T> implements CacheService<T> {
-  private static final int EXPIREY = 3600;
+  //private static final int EXPIREY = 3600;
   protected final Log logger = LogFactory.getLog(this.getClass());
   
   @Autowired

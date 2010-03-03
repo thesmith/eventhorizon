@@ -36,7 +36,7 @@ public class IndexController extends BaseController {
   public static final String FROM = "from";
   private static final DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
   private static final DateFormat urlFormat = new SimpleDateFormat("yyyy/MM/dd/kk/mm/ss");
-  
+
   @Autowired
   private CacheService<Status> cache;
 
@@ -183,21 +183,23 @@ public class IndexController extends BaseController {
 
   private void setModel(String personId, Date from, ModelMap model) {
     List<Status> statuses = Lists.newArrayList();
-    Map<String, Account> accounts = accountMap( accountService.listAll(personId) );
+    Map<String, Account> accounts = accountMap(accountService.listAll(personId));
     if (null != from) {
       Snapshot snapshot = snapshotService.find(personId, from);
-      Map<String, Key> cacheKeys = cacheKeys(snapshot.getStatusIds());
-      Map<String, Status> cachedStatuses = Maps.newHashMap();
-      if (null != cache)
-        cachedStatuses = cache.getAll(cacheKeys.keySet());
-      statuses.addAll(cachedStatuses.values());
+      if (snapshot != null) {
+        Map<String, Key> cacheKeys = cacheKeys(snapshot.getStatusIds());
+        Map<String, Status> cachedStatuses = Maps.newHashMap();
+        if (null != cache)
+          cachedStatuses = cache.getAll(cacheKeys.keySet());
+        statuses.addAll(cachedStatuses.values());
 
-      for (Key id: missingKeys(cacheKeys, cachedStatuses.keySet())) {
-        Status status = statusService.find(id, from, accounts);
-        if (null != status) {
-          statuses.add(status);
-          if (null != cache)
-            cache.put(StatusService.CACHE_KEY_PREFIX+status.getId(), status);
+        for (Key id : missingKeys(cacheKeys, cachedStatuses.keySet())) {
+          Status status = statusService.find(id, from, accounts);
+          if (null != status) {
+            statuses.add(status);
+            if (null != cache)
+              cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
+          }
         }
       }
     } else {
@@ -215,27 +217,27 @@ public class IndexController extends BaseController {
     if (logger.isDebugEnabled())
       logger.debug("Setting the model: " + model);
   }
-  
+
   private Map<String, Key> cacheKeys(List<Key> keys) {
     Map<String, Key> cacheKeys = Maps.newHashMap();
-    for (Key key: keys) {
-      cacheKeys.put(StatusService.CACHE_KEY_PREFIX+key, key);
+    for (Key key : keys) {
+      cacheKeys.put(StatusService.CACHE_KEY_PREFIX + key, key);
     }
     return cacheKeys;
   }
-  
+
   private List<Key> missingKeys(Map<String, Key> cacheKeys, Collection<String> foundKeys) {
     List<Key> missingKeys = Lists.newArrayList();
-    for(String key: cacheKeys.keySet()) {
-      if (! foundKeys.contains(key))
+    for (String key : cacheKeys.keySet()) {
+      if (!foundKeys.contains(key))
         missingKeys.add(cacheKeys.get(key));
     }
     return missingKeys;
   }
-  
+
   private Map<String, Account> accountMap(List<Account> accounts) {
     Map<String, Account> accountMap = Maps.newHashMap();
-    for (Account account: accounts) {
+    for (Account account : accounts) {
       accountMap.put(account.getDomain(), account);
     }
     return accountMap;
