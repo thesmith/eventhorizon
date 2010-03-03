@@ -54,6 +54,7 @@ public class StatusServiceImpl implements StatusService {
             status.getCreated()).setMaxResults(1).getResultList();
     if (null == statuses || statuses.size() < 1) {
       em.persist(status);
+      em.flush();
     } else {
       Status s = statuses.get(0);
       s.setTitle(status.getTitle());

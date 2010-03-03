@@ -86,6 +86,8 @@ public class Status implements Serializable {
   }
 
   public String getStatus() {
+    if (null == status)
+      return null;
     return status.getValue();
   }
 

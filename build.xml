@@ -2,14 +2,24 @@
   <property name="sdk.dir" location="/Library/appengine-java-sdk/"/>
     <import file="${sdk.dir}/config/user/ant-macros.xml"/>
     <property name="war.dir" value="target/ehorizon"/>
+    <property name="war.port" value="9000" />
 
     <target name="datanucleusenhance" description="Performs JPA/JDO enhancement on compiled data classes.">
         <enhance_war war="${war.dir}"/>
     </target>
 
     <target name="runserver" depends="datanucleusenhance" description="Starts the development server.">
+      <dev_appserver war="${war.dir}" port="${war.port}"/>
+    </target>
+
+    <target name="debug" depends="datanucleusenhance" description="Starts the development server.">
         <!--many developer's workstation using port 8080, change the default port -->
-        <dev_appserver war="${war.dir}" port="9000"/>
+        <dev_appserver war="${war.dir}" port="${war.port}">
+          <options>
+            <arg value="--jvm_flag=-Xdebug"/>
+            <arg value="--jvm_flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9999"/>
+          </options>
+        </dev_appserver>
     </target>
 
     <target name="update" depends="datanucleusenhance" description="Uploads the application to App Engine.">
