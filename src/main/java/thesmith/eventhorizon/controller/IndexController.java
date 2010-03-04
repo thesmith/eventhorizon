@@ -5,7 +5,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
-import thesmith.eventhorizon.service.CacheService;
-import thesmith.eventhorizon.service.StatusService;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
@@ -36,9 +31,6 @@ public class IndexController extends BaseController {
   public static final String FROM = "from";
   private static final DateFormat format = new SimpleDateFormat("yyyy/MM/dd kk:mm:ss");
   private static final DateFormat urlFormat = new SimpleDateFormat("yyyy/MM/dd/kk/mm/ss");
-
-  @Autowired
-  private CacheService<Status> cache;
 
   @RequestMapping(value = "/{personId}/{year}/{month}/{day}/{hour}/{min}/{sec}", method = RequestMethod.GET)
   public String index(@PathVariable("personId") String personId, @PathVariable("year") int year,
@@ -186,22 +178,8 @@ public class IndexController extends BaseController {
     Map<String, Account> accounts = accountMap(accountService.listAll(personId));
     if (null != from) {
       Snapshot snapshot = snapshotService.find(personId, from);
-      if (snapshot != null) {
-        Map<String, Key> cacheKeys = cacheKeys(snapshot.getStatusIds());
-        Map<String, Status> cachedStatuses = Maps.newHashMap();
-        if (null != cache)
-          cachedStatuses = cache.getAll(cacheKeys.keySet());
-        statuses.addAll(cachedStatuses.values());
-
-        for (Key id : missingKeys(cacheKeys, cachedStatuses.keySet())) {
-          Status status = statusService.find(id, from, accounts);
-          if (null != status) {
-            statuses.add(status);
-            if (null != cache)
-              cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
-          }
-        }
-      }
+      if (snapshot != null)
+        statuses = statusService.list(snapshot.getStatusIds(), from, accounts);
     } else {
       from = new Date();
       for (Account account : accounts.values()) {
@@ -213,27 +191,9 @@ public class IndexController extends BaseController {
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
-
-    if (logger.isDebugEnabled())
-      logger.debug("Setting the model: " + model);
   }
 
-  private Map<String, Key> cacheKeys(List<Key> keys) {
-    Map<String, Key> cacheKeys = Maps.newHashMap();
-    for (Key key : keys) {
-      cacheKeys.put(StatusService.CACHE_KEY_PREFIX + key, key);
-    }
-    return cacheKeys;
-  }
-
-  private List<Key> missingKeys(Map<String, Key> cacheKeys, Collection<String> foundKeys) {
-    List<Key> missingKeys = Lists.newArrayList();
-    for (String key : cacheKeys.keySet()) {
-      if (!foundKeys.contains(key))
-        missingKeys.add(cacheKeys.get(key));
-    }
-    return missingKeys;
-  }
+  
 
   private Map<String, Account> accountMap(List<Account> accounts) {
     Map<String, Account> accountMap = Maps.newHashMap();

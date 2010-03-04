@@ -9,12 +9,12 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
-
 import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.service.SnapshotService;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 /**
  * Implementation of service for snapshots of statuses
@@ -38,10 +38,11 @@ public class SnapshotServiceImpl implements SnapshotService {
   public void addStatus(Snapshot snapshot, Status status) {
     if (null == status || null == status.getId())
       return;
-    
+
     if (null == snapshot.getStatusIds())
       snapshot.setStatusIds(Lists.<Key>newArrayList());
     snapshot.getStatusIds().add(status.getId());
+
     em.merge(snapshot);
   }
 

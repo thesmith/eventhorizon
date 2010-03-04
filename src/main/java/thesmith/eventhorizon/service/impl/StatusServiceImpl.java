@@ -1,5 +1,6 @@
 package thesmith.eventhorizon.service.impl;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,17 +11,20 @@ import javax.persistence.PersistenceContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Event;
 import thesmith.eventhorizon.model.Status;
+import thesmith.eventhorizon.service.CacheService;
 import thesmith.eventhorizon.service.EventService;
 import thesmith.eventhorizon.service.StatusService;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.Interval;
 import com.google.appengine.repackaged.org.joda.time.Period;
@@ -35,8 +39,10 @@ import com.google.appengine.repackaged.org.joda.time.Period;
 public class StatusServiceImpl implements StatusService {
   @PersistenceContext
   private EntityManager em;
+  @Autowired
+  private CacheService<Status> cache;
+  
   private final Log logger = LogFactory.getLog(this.getClass());
-
   private final Map<String, EventService> eventServices;
 
   public StatusServiceImpl(Map<String, EventService> eventServices) {
@@ -60,7 +66,10 @@ public class StatusServiceImpl implements StatusService {
       s.setTitle(status.getTitle());
       s.setTitleUrl(status.getTitleUrl());
       em.merge(s);
+      status = s;
     }
+    if (null != cache && null != status.getId())
+      cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
   }
 
   public Status find(Account account, Date from) {
@@ -126,6 +135,44 @@ public class StatusServiceImpl implements StatusService {
   public Status find(Key key, Date from, Map<String, Account> accounts) {
     Status status = em.find(Status.class, key);
     return processStatus(status, from, accounts.get(status.getDomain()));
+  }
+  
+  public List<Status> list(Collection<Key> keys, Date from, Map<String, Account> accounts) {
+    List<Status> statuses = Lists.newArrayList();
+    Map<String, Key> cacheKeys = cacheKeys(keys);
+    Map<String, Status> cachedStatuses = Maps.newHashMap();
+    if (null != cache)
+      cachedStatuses = cache.getAll(cacheKeys.keySet());
+    for (Status status: cachedStatuses.values()) {
+      statuses.add( processStatus(status, from, accounts.get(status.getDomain())) );
+    }
+
+    for (Key id : missingKeys(cacheKeys, cachedStatuses.keySet())) {
+      Status status = find(id, from, accounts);
+      if (null != status) {
+        statuses.add(status);
+        if (null != cache && null != status.getId())
+          cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
+      }
+    }
+    return statuses;
+  }
+  
+  private Map<String, Key> cacheKeys(Collection<Key> keys) {
+    Map<String, Key> cacheKeys = Maps.newHashMap();
+    for (Key key : keys) {
+      cacheKeys.put(StatusService.CACHE_KEY_PREFIX + key, key);
+    }
+    return cacheKeys;
+  }
+
+  private List<Key> missingKeys(Map<String, Key> cacheKeys, Collection<String> foundKeys) {
+    List<Key> missingKeys = Lists.newArrayList();
+    for (String key : cacheKeys.keySet()) {
+      if (!foundKeys.contains(key))
+        missingKeys.add(cacheKeys.get(key));
+    }
+    return missingKeys;
   }
   
   private Status processStatus(Status status, Date from, Account account) {

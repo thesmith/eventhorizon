@@ -99,4 +99,16 @@ public class StatusServiceImplTest extends DataStoreBaseTest {
     Status stat = service.find(status.getId(), new Date(), accounts);
     assertEquals(status.getTitle(), stat.getTitle());
   }
+  
+  @Test
+  public void shouldUpdateStatus() throws Exception {
+    service.create(status);
+    status.setTitle("new title");
+    service.create(status);
+    assertNotNull(status.getId());
+    
+    Status stat = service.find(status.getId(), new Date(), Maps.<String, Account>newHashMap());
+    assertNotNull(stat);
+    assertEquals("new title", stat.getTitle());
+  }
 }

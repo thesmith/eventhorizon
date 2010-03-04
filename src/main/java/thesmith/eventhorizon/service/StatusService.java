@@ -1,5 +1,6 @@
 package thesmith.eventhorizon.service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -60,4 +61,13 @@ public interface StatusService {
    * @return
    */
   public Status find(Key key, Date from, Map<String, Account> accounts);
+  
+  /**
+   * Retrive a list of statuses by their ID
+   * @param keys
+   * @param from
+   * @param accounts
+   * @return
+   */
+  public List<Status> list(Collection<Key> keys, Date from, Map<String, Account> accounts);
 }

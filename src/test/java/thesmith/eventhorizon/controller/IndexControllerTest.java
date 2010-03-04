@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import thesmith.eventhorizon.service.impl.AccountServiceImpl;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 public class IndexControllerTest extends DataStoreBaseTest {
   private IndexController controller;

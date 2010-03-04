@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +16,6 @@ import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.StatusCreatedSort;
 import thesmith.eventhorizon.service.AccountService;
-import thesmith.eventhorizon.service.CacheService;
-import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.impl.WordrEventServiceImpl;
 
 import com.google.appengine.api.datastore.Key;
@@ -27,9 +24,6 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 @Controller
 @RequestMapping(value = "/jobs")
 public class JobsController extends BaseController {
-  @Autowired
-  private CacheService<Status> cache;
-
   public static final String PAGE = "page";
   public static final int LIMIT = 20;
 
@@ -42,6 +36,7 @@ public class JobsController extends BaseController {
   @RequestMapping(value = "/accounts/{personId}/{domain}/")
   public String page(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
       @RequestParam("page") String page) {
+    List<Account> accounts = accountService.list(personId);
     Account account = accountService.find(personId, domain);
     if (null != account) {
       int p = Integer.parseInt(page);
@@ -50,32 +45,36 @@ public class JobsController extends BaseController {
         Collections.sort(statuses, new StatusCreatedSort());
         Date oldest = oldest(statuses);
 
-        Date previousCreated = null;
+        Date nextCreated = null;
         if (p == 1)
-          previousCreated = new Date();
+          nextCreated = new Date();
 
-        for (Status status : statuses) {
-          if (null == previousCreated) {
+        for (Status status: statuses) {
+          if (null == nextCreated) {
             Status next = statusService.next(account, status.getCreated());
             if (null != next)
-              previousCreated = next.getCreated();
+              nextCreated = next.getCreated();
           }
+          Date previousCreated = null;
+          Status previous = statusService.previous(account, status.getCreated());
+          if (null != previous)
+            previousCreated = new Date(previous.getCreated().getTime() + 1L);
 
           statusService.create(status);
-          if (null != cache)
-            cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
 
-          List<Snapshot> snapshots = snapshotService.list(personId, status.getCreated(), previousCreated);
           boolean found = false;
-          for (Snapshot snapshot : snapshots) {
-            snapshotService.addStatus(snapshot, status);
-            if (snapshot.getCreated().equals(status.getCreated()))
-              found = true;
+          if (null != previousCreated) {
+            List<Snapshot> snapshots = snapshotService.list(personId, previousCreated, nextCreated);
+            for (Snapshot snapshot: snapshots) {
+              snapshotService.addStatus(snapshot, status);
+              if (snapshot.getCreated().equals(status.getCreated()))
+                found = true;
+            }
           }
+
           if (!found) {
-            List<Account> accounts = accountService.list(personId);
-            List<Key> statusIds = Lists.newArrayList();
-            for (Account acc : accounts) {
+            List<Key> statusIds = Lists.<Key> newArrayList();
+            for (Account acc: accounts) {
               if (null != acc.getUserId()) {
                 if (domain.equals(status.getDomain())) {
                   statusIds.add(status.getId());
@@ -92,7 +91,7 @@ public class JobsController extends BaseController {
             snapshot.setStatusIds(statusIds);
             snapshotService.create(snapshot);
           }
-          previousCreated = status.getCreated();
+          nextCreated = status.getCreated();
         }
 
         Date d = new Date(oldest.getTime() - 1L);
@@ -124,7 +123,7 @@ public class JobsController extends BaseController {
     if (logger.isInfoEnabled())
       logger.info("Retrieved " + accounts.size() + " accounts to be processed");
 
-    for (Account account : accounts) {
+    for (Account account: accounts) {
       queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE, "1"));
       account.setProcessed(new Date());
       accountService.update(account);
