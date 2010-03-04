@@ -55,7 +55,7 @@ public class JobsController extends BaseController {
             if (null != next)
               nextCreated = next.getCreated();
           }
-          Date previousCreated = null;
+          Date previousCreated = status.getCreated();
           Status previous = statusService.previous(account, status.getCreated());
           if (null != previous)
             previousCreated = new Date(previous.getCreated().getTime() + 1L);
