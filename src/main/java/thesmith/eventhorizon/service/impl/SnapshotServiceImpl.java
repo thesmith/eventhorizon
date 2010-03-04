@@ -36,7 +36,7 @@ public class SnapshotServiceImpl implements SnapshotService {
   }
 
   public void addStatus(Snapshot snapshot, Status status) {
-    if (null != status && null != status.getId())
+    if (null == status || null == status.getId())
       return;
     
     if (null == snapshot.getStatusIds())

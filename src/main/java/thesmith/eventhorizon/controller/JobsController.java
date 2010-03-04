@@ -29,7 +29,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 public class JobsController extends BaseController {
   @Autowired
   private CacheService<Status> cache;
-  
+
   public static final String PAGE = "page";
   public static final int LIMIT = 20;
 
@@ -50,23 +50,32 @@ public class JobsController extends BaseController {
         Collections.sort(statuses, new StatusCreatedSort());
         Date oldest = oldest(statuses);
 
-        Date previousCreated = new Date();
+        Date previousCreated = null;
+        if (p == 1)
+          previousCreated = new Date();
+
         for (Status status : statuses) {
+          if (null == previousCreated) {
+            Status next = statusService.next(account, status.getCreated());
+            if (null != next)
+              previousCreated = next.getCreated();
+          }
+
           statusService.create(status);
           if (null != cache)
-            cache.put(StatusService.CACHE_KEY_PREFIX+status.getId(), status);
-          
+            cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
+
           List<Snapshot> snapshots = snapshotService.list(personId, status.getCreated(), previousCreated);
           boolean found = false;
-          for (Snapshot snapshot: snapshots) {
+          for (Snapshot snapshot : snapshots) {
             snapshotService.addStatus(snapshot, status);
             if (snapshot.getCreated().equals(status.getCreated()))
               found = true;
           }
-          if (! found) {
+          if (!found) {
             List<Account> accounts = accountService.list(personId);
             List<Key> statusIds = Lists.newArrayList();
-            for (Account acc: accounts) {
+            for (Account acc : accounts) {
               if (null != acc.getUserId()) {
                 if (domain.equals(status.getDomain())) {
                   statusIds.add(status.getId());
@@ -85,7 +94,7 @@ public class JobsController extends BaseController {
           }
           previousCreated = status.getCreated();
         }
-        
+
         Date d = new Date(oldest.getTime() - 1L);
         Status status = statusService.find(account, d);
         if (null == status) {
@@ -99,9 +108,9 @@ public class JobsController extends BaseController {
     }
     return "jobs/index";
   }
-  
+
   private Date oldest(List<Status> statuses) {
-    for (int i=(statuses.size()-1); i>=0; i--) {
+    for (int i = (statuses.size() - 1); i >= 0; i--) {
       Date d = statuses.get(i).getCreated();
       if (null != d)
         return d;
