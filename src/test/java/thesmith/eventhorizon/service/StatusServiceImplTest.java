@@ -110,5 +110,6 @@ public class StatusServiceImplTest extends DataStoreBaseTest {
     Status stat = service.find(status.getId(), new Date(), Maps.<String, Account>newHashMap());
     assertNotNull(stat);
     assertEquals("new title", stat.getTitle());
+    assertNotNull(stat.getId());
   }
 }

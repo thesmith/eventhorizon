@@ -177,6 +177,7 @@ public class StatusServiceImpl implements StatusService {
   
   private Status processStatus(Status status, Date from, Account account) {
     Status returnStatus = new Status();
+    returnStatus.setId(status.getId());
     returnStatus.setCreated(status.getCreated());
     returnStatus.setDomain(status.getDomain());
     returnStatus.setPersonId(status.getPersonId());

@@ -72,40 +72,53 @@ public class JobsController extends BaseController {
             }
           }
 
-          if (!found) {
-            List<Key> statusIds = Lists.<Key> newArrayList();
-            for (Account acc: accounts) {
-              if (null != acc.getUserId()) {
-                if (domain.equals(status.getDomain())) {
-                  statusIds.add(status.getId());
-                } else {
-                  Status s = statusService.find(acc, status.getCreated());
-                  if (null != s)
-                    statusIds.add(s.getId());
-                }
-              }
-            }
-            Snapshot snapshot = new Snapshot();
-            snapshot.setPersonId(personId);
-            snapshot.setCreated(status.getCreated());
-            snapshot.setStatusIds(statusIds);
-            snapshotService.create(snapshot);
-          }
+          if (!found)
+            createSnapshot(status, accounts);
           nextCreated = status.getCreated();
         }
 
-        Date d = new Date(oldest.getTime() - 1L);
-        Status status = statusService.find(account, d);
-        if (null == status) {
-          p = p + 1;
-          if (AccountService.DOMAIN.wordr.toString().equals(domain))
-            p = Integer.valueOf(statuses.get(statuses.size() - 1).getTitleUrl().replace(
-                WordrEventServiceImpl.STATUS_URL, ""));
-          queue.add(url("/jobs/accounts/" + personId + "/" + domain + "/").param(PAGE, String.valueOf(p)));
-        }
+        triggerQueue(p, statuses, account, oldest);
       }
     }
     return "jobs/index";
+  }
+
+  private void createSnapshot(Status status, List<Account> accounts) {
+    List<Key> statusIds = Lists.newArrayList();
+    List<String> domains = Lists.newArrayList();
+    for (Account acc: accounts) {
+      if (null != acc.getUserId()) {
+        if (acc.getDomain().equals(status.getDomain())) {
+          statusIds.add(status.getId());
+          domains.add(status.getDomain());
+        } else {
+          Status s = statusService.find(acc, status.getCreated());
+          if (null != s) {
+            statusIds.add(s.getId());
+            domains.add(s.getDomain());
+          }
+        }
+      }
+    }
+    Snapshot snapshot = new Snapshot();
+    snapshot.setPersonId(status.getPersonId());
+    snapshot.setCreated(status.getCreated());
+    snapshot.setStatusIds(statusIds);
+    snapshot.setDomains(domains);
+    snapshotService.create(snapshot);
+  }
+
+  private void triggerQueue(int p, List<Status> statuses, Account account, Date oldest) {
+    Date d = new Date(oldest.getTime() - 1L);
+    Status status = statusService.find(account, d);
+    if (null == status) {
+      p = p + 1;
+      if (AccountService.DOMAIN.wordr.toString().equals(account.getDomain()))
+        p = Integer.valueOf(statuses.get(statuses.size() - 1).getTitleUrl().replace(WordrEventServiceImpl.STATUS_URL,
+            ""));
+      queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE,
+          String.valueOf(p)));
+    }
   }
 
   private Date oldest(List<Status> statuses) {
