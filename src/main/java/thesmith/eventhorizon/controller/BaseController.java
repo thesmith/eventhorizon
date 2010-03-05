@@ -63,6 +63,8 @@ public class BaseController {
       Status next = statusService.next(account, status.getCreated());
       if (null != next)
         nextCreated = next.getCreated();
+      else
+        nextCreated = new Date();
     }
     Date previousCreated = status.getCreated();
     Status previous = statusService.previous(account, status.getCreated());
