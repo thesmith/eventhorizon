@@ -58,7 +58,7 @@ public class StatusController extends BaseController {
     if (logger.isDebugEnabled())
       logger.debug("Recieved request to create status: " + status);
 
-    statusService.create(status);
+    this.createStatus(null, status, this.accountService.listAll(status.getPersonId()));
     this.statuses(user.getUsername(), model);
 
     this.setViewer(request, model);

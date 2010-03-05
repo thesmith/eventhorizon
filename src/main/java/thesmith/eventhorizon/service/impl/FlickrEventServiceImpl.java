@@ -20,7 +20,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Sets;
 
 public class FlickrEventServiceImpl implements EventService {
-  private static final int PAGE = 100;
+  private static final int PAGE = 10;
   private static final String DOMAIN_URL = "http://flickr.com";
   private static final String KEY = "caf56542180f49cf50019be3a0e290b0";
   private static final String SECRET = "2383b862e64597be";

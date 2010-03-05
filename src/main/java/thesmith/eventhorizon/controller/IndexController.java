@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import thesmith.eventhorizon.model.Status;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
+import com.google.appengine.repackaged.com.google.common.collect.Sets;
 
 @Controller
 public class IndexController extends BaseController {
@@ -188,12 +190,20 @@ public class IndexController extends BaseController {
       model.addAttribute("refresh", true);
     }
     model.addAttribute("statuses", statuses);
+    model.addAttribute("emptyDomains", emptyDomains(accounts.keySet(), statuses));
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
   }
 
-  
+  private Set<String> emptyDomains(Set<String> domains, List<Status> statuses) {
+    Set<String> foundDomains = Sets.newHashSet();
+    for (Status status: statuses) {
+      foundDomains.add(status.getDomain());
+    }
+    
+    return Sets.difference(domains, foundDomains);
+  }
 
   private Map<String, Account> accountMap(List<Account> accounts) {
     Map<String, Account> accountMap = Maps.newHashMap();

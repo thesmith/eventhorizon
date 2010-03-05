@@ -42,6 +42,10 @@ function updatePage(urlAppend, from, direction) {
       window.location.replace(currentUrl);
       $("#dotdot").html("And so on..");
     }
+    
+    $.each(data.emptyDomains, function(i, domain) {
+    	$('#' + domain + " .status").html('');
+    });
   });
   $("#dotdot").html("<img src='/gfx/ajax-loader.gif' />");
 }

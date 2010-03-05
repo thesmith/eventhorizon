@@ -20,10 +20,10 @@ span.status{ position: absolute; width: 50em; padding-left: 26px; background-rep
 a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }
 
-span.today{ opacity: 1; }
+/*span.today{ opacity: 1; }
 span.week{ opacity: 0.9; }
 span.month{ opacity: 0.75; }
-span.yonks{ opacity: 0.5; }
+span.yonks{ opacity: 0.5; }*/
 
 span.me{background-image:url('../gfx/london.png');}
 span.bbc{background-image:url('../gfx/id.png');}

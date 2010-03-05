@@ -54,7 +54,7 @@ public class SnapshotServiceImpl implements SnapshotService {
     
     if (found >= 0) {
       snapshot.getStatusIds().add(found, status.getId());
-      snapshot.getDomains().add(found, status.getDomain());
+      snapshot.getStatusIds().remove(found+1);
     } else {
       snapshot.getStatusIds().add(status.getId());
       snapshot.getDomains().add(status.getDomain());

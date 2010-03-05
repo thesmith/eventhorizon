@@ -24,6 +24,12 @@ public interface StatusService {
    * @param status
    */
   public void create(Status status);
+  
+  /**
+   * Delete a status object
+   * @param status
+   */
+  public void delete(Key key);
 
   /**
    * Get a specific status update from a user, for a domain, at a time
@@ -54,6 +60,13 @@ public interface StatusService {
    * @return
    */
   public List<Status> list(Account account, int page);
+  
+  /**
+   * Get a list of 20 statuses for a user
+   * @param account
+   * @return
+   */
+  public List<Status> list(Account account);
   
   /**
    * Find Status by key

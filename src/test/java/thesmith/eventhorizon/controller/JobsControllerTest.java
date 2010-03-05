@@ -76,10 +76,7 @@ public class JobsControllerTest {
     EasyMock.expect(accountService.find(account.getPersonId(), account.getDomain())).andReturn(account);
 
     List<Account> accounts = Lists.newArrayList();
-    Account a = new Account();
-    a.setDomain("somedomain");
-    a.setUserId("userId");
-    accounts.add(a);
+    accounts.add(account);
     EasyMock.expect(accountService.list(account.getPersonId())).andReturn(accounts);
 
     Calendar yesturday = Calendar.getInstance();

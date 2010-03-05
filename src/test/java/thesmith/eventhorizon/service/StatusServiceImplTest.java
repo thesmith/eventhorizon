@@ -54,6 +54,23 @@ public class StatusServiceImplTest extends DataStoreBaseTest {
   }
   
   @Test
+  public void shouldCreateAndDelete() throws Exception {
+    service.create(status);
+    assertNotNull(status.getId());
+    
+    Account account = accountService.account(status.getPersonId(), status.getDomain());
+    account.setUserId("userId");
+    
+    List<Status> statuses = service.list(account);
+    assertEquals(1, statuses.size());
+    
+    service.delete(status.getId());
+    
+    statuses = service.list(account);
+    assertEquals(0, statuses.size());
+  }
+  
+  @Test
   public void testShouldGetStatusFromWeekAgo() throws Exception {
     Calendar created = Calendar.getInstance();
     created.add(Calendar.DAY_OF_MONTH, -7);

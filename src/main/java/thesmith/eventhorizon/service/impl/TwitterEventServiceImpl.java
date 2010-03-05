@@ -17,6 +17,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 public class TwitterEventServiceImpl implements EventService {
   private static final String DOMAIN_URL = "http://twitter.com";
+  private static final int PAGE = 10;
   private final Log logger = LogFactory.getLog(this.getClass());
   
   public List<Event> events(Account account, int page) {
@@ -28,7 +29,7 @@ public class TwitterEventServiceImpl implements EventService {
     List<Event> events = Lists.newArrayList();
 
     try {
-      Paging paging = new Paging(page);
+      Paging paging = new Paging(page, PAGE);
       List<Status> statuses = twitter.getUserTimeline(account.getUserId(), paging);
       if (logger.isInfoEnabled())
         logger.info("Retrieving user timeline for "+account.getUserId()+" and got "+statuses.size());

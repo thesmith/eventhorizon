@@ -12,14 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import thesmith.eventhorizon.model.Account;
-import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.StatusCreatedSort;
 import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.impl.WordrEventServiceImpl;
-
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping(value = "/jobs")
@@ -50,35 +46,7 @@ public class JobsController extends BaseController {
           nextCreated = new Date();
 
         for (Status status: statuses) {
-          if (null == nextCreated) {
-            Status next = statusService.next(account, status.getCreated());
-            if (null != next)
-              nextCreated = next.getCreated();
-          }
-          Date previousCreated = status.getCreated();
-          Status previous = statusService.previous(account, status.getCreated());
-          if (null != previous)
-            previousCreated = new Date(previous.getCreated().getTime() + 1L);
-
-          statusService.create(status);
-
-          boolean found = false;
-          if (null != previousCreated) {
-            List<Snapshot> snapshots = snapshotService.list(personId, previousCreated, nextCreated);
-            if (logger.isInfoEnabled())
-              logger.info("Found "+snapshots.size()+" snapshots between "+previousCreated+" and "+nextCreated+" for "+personId);
-            for (Snapshot snapshot: snapshots) {
-              snapshotService.addStatus(snapshot, status);
-              if (logger.isInfoEnabled())
-                logger.info("Adding status: "+status+" to snapshot "+snapshot);
-              if (snapshot.getCreated().equals(status.getCreated()))
-                found = true;
-            }
-          }
-
-          if (!found)
-            createSnapshot(status, accounts);
-          nextCreated = status.getCreated();
+          nextCreated = this.createStatus(nextCreated, status, accounts);
         }
 
         triggerQueue(p, statuses, account, oldest);
@@ -87,51 +55,22 @@ public class JobsController extends BaseController {
     return "jobs/index";
   }
 
-  private void createSnapshot(Status status, List<Account> accounts) {
-    List<Key> statusIds = Lists.newArrayList();
-    List<String> domains = Lists.newArrayList();
-    for (Account acc: accounts) {
-      if (null != acc.getUserId()) {
-        if (acc.getDomain().equals(status.getDomain())) {
-          statusIds.add(status.getId());
-          domains.add(status.getDomain());
-        } else {
-          Status s = statusService.find(acc, status.getCreated());
-          if (null != s) {
-            statusIds.add(s.getId());
-            domains.add(s.getDomain());
-          }
-        }
-      }
+  @RequestMapping(value = "/status/{personId}/{domain}/remove")
+  public String remove(@PathVariable("personId") String personId, @PathVariable("domain") String domain) {
+    Account account = accountService.find(personId, domain);
+    List<Status> statuses = statusService.list(account);
+    int size = statuses.size();
+    
+    for (Status status: statuses) {
+      statusService.delete(status.getId());
     }
-    Snapshot snapshot = new Snapshot();
-    snapshot.setPersonId(status.getPersonId());
-    snapshot.setCreated(status.getCreated());
-    snapshot.setStatusIds(statusIds);
-    snapshot.setDomains(domains);
-    snapshotService.create(snapshot);
-  }
-
-  private void triggerQueue(int p, List<Status> statuses, Account account, Date oldest) {
-    Date d = new Date(oldest.getTime() - 1L);
-    Status status = statusService.find(account, d);
-    if (null == status) {
-      p = p + 1;
-      if (AccountService.DOMAIN.wordr.toString().equals(account.getDomain()))
-        p = Integer.valueOf(statuses.get(statuses.size() - 1).getTitleUrl().replace(WordrEventServiceImpl.STATUS_URL,
-            ""));
-      queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE,
-          String.valueOf(p)));
-    }
-  }
-
-  private Date oldest(List<Status> statuses) {
-    for (int i = (statuses.size() - 1); i >= 0; i--) {
-      Date d = statuses.get(i).getCreated();
-      if (null != d)
-        return d;
-    }
-    return new Date();
+    
+    if (logger.isInfoEnabled())
+      logger.info("Removed "+size+" statuses for "+personId+" : "+domain);
+    if (size > 0)
+      queue.add(url("/jobs/status/" + account.getPersonId() + "/" + account.getDomain() + "/remove"));
+    
+    return "jobs/index";
   }
 
   @RequestMapping(value = "/accounts/process")
@@ -146,5 +85,27 @@ public class JobsController extends BaseController {
       accountService.update(account);
     }
     return "jobs/index";
+  }
+  
+  private void triggerQueue(int p, List<Status> statuses, Account account, Date oldest) {
+    Date d = new Date(oldest.getTime() - 1L);
+    Status status = statusService.find(account, d);
+    if (null == status) {
+      p = p + 1;
+      if (AccountService.DOMAIN.wordr.toString().equals(account.getDomain()))
+        p = Integer.valueOf(statuses.get(statuses.size() - 1).getTitleUrl()
+            .replace(WordrEventServiceImpl.STATUS_URL, ""));
+      queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE,
+          String.valueOf(p)));
+    }
+  }
+
+  private Date oldest(List<Status> statuses) {
+    for (int i = (statuses.size() - 1); i >= 0; i--) {
+      Date d = statuses.get(i).getCreated();
+      if (null != d)
+        return d;
+    }
+    return new Date();
   }
 }

@@ -100,6 +100,13 @@ public class StatusServiceImpl implements StatusService {
     }
     return null;
   }
+  
+  public void delete(Key key) {
+    Status status = em.find(Status.class, key);
+    em.remove(status);
+    if (cache != null)
+      cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), null);
+  }
 
   public List<Status> list(Account account, int page) {
     EventService service = eventServices.get(account.getDomain());
@@ -156,6 +163,13 @@ public class StatusServiceImpl implements StatusService {
       }
     }
     return statuses;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Status> list(Account account) {
+    return em.createQuery("select s from Status s where s.personId = :personId and s.domain = :domain").setParameter(
+        "personId", account.getPersonId()).setParameter("domain", account.getDomain()).setMaxResults(20)
+        .getResultList();
   }
   
   private Map<String, Key> cacheKeys(Collection<Key> keys) {
