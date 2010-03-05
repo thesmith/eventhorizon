@@ -83,4 +83,9 @@ public class Snapshot implements Serializable {
   public void setDomains(List<String> domains) {
     this.domains = domains;
   }
+  
+  @Override
+  public String toString() {
+    return "id: "+id+", personId: "+personId+", created: "+created+", statusIds: "+statusIds+", domains: "+domains;
+  }
 }

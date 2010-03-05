@@ -65,8 +65,12 @@ public class JobsController extends BaseController {
           boolean found = false;
           if (null != previousCreated) {
             List<Snapshot> snapshots = snapshotService.list(personId, previousCreated, nextCreated);
+            if (logger.isInfoEnabled())
+              logger.info("Found "+snapshots.size()+" snapshots between "+previousCreated+" and "+nextCreated+" for "+personId);
             for (Snapshot snapshot: snapshots) {
               snapshotService.addStatus(snapshot, status);
+              if (logger.isInfoEnabled())
+                logger.info("Adding status: "+status+" to snapshot "+snapshot);
               if (snapshot.getCreated().equals(status.getCreated()))
                 found = true;
             }
