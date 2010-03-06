@@ -31,17 +31,22 @@ public class AccountServiceImpl implements AccountService {
   static {
     defaults.put(AccountService.DOMAIN.twitter.toString(),
         "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
-    defaults.put(AccountService.DOMAIN.lastfm.toString(),
-        "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
-    defaults.put(AccountService.DOMAIN.flickr.toString(),
-         "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
+    defaults
+        .put(
+            AccountService.DOMAIN.lastfm.toString(),
+            "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
+    defaults
+        .put(
+            AccountService.DOMAIN.flickr.toString(),
+            "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
     defaults.put(AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>");
     defaults.put(AccountService.DOMAIN.lives.toString(),
         "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}");
-    defaults.put(AccountService.DOMAIN.wordr.toString(),
-        "And, {ago}, <a href='{userUrl}'>my</a> last <a href='{domainUrl}'>word</a> was <a href='{titleUrl}'>{title}</a>");
-    defaults.put(AccountService.DOMAIN.github.toString(),
-        "{ago}, <a href='{userUrl}' rel='me'>I</a> pushed to {title}");
+    defaults
+        .put(AccountService.DOMAIN.wordr.toString(),
+            "And, {ago}, <a href='{userUrl}'>my</a> last <a href='{domainUrl}'>word</a> was <a href='{titleUrl}'>{title}</a>");
+    defaults
+        .put(AccountService.DOMAIN.github.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> pushed to {title}");
   }
 
   public static final Map<String, String> domainUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
@@ -77,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
     if (null != account.getUserId())
       account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
 
-    if (null == this.find(account.getPersonId(), account.getDomain()))
+    if (null == this.findLiveAccount(account.getPersonId(), account.getDomain()))
       em.persist(account);
     cache.put(key(account.getPersonId(), account.getDomain()), account);
   }
@@ -108,21 +113,22 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public Account find(String personId, String domain) {
-    try {
-      Account account = cache.get(key(personId, domain));
-      if (account == null) {
-        account = findLiveAccount(personId, domain);
+    Account account = cache.get(key(personId, domain));
+    if (account == null) {
+      account = findLiveAccount(personId, domain);
+      if (null != account)
         cacheAccounts(personId, Lists.newArrayList(account));
-      }
-      return account;
-    } catch (NoResultException e) {
-      return null;
     }
+    return account;
   }
 
   private Account findLiveAccount(String personId, String domain) {
-    return (Account) em.createQuery("select a from Account a where a.personId = :personId and a.domain = :domain")
-        .setParameter("personId", personId).setParameter("domain", domain).getSingleResult();
+    try {
+      return (Account) em.createQuery("select a from Account a where a.personId = :personId and a.domain = :domain")
+          .setParameter("personId", personId).setParameter("domain", domain).getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 
   /** {@inheritDoc} */
