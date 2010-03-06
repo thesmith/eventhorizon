@@ -31,10 +31,10 @@ import com.google.appengine.repackaged.org.joda.time.Period;
 
 /**
  * Implementation of StatusService
+ * Methods are annotated as transactional as there are methods that shouldn't be
  * 
  * @author bens
  */
-@Transactional
 @Service
 public class StatusServiceImpl implements StatusService {
   @PersistenceContext
@@ -50,6 +50,7 @@ public class StatusServiceImpl implements StatusService {
   }
 
   @SuppressWarnings("unchecked")
+  @Transactional
   public void create(Status status) {
     if (null == status.getTitle() || null == status.getTitleUrl() || null == status.getCreated())
       throw new RuntimeException("Unable to create status without appropriate info: " + status);
@@ -72,19 +73,23 @@ public class StatusServiceImpl implements StatusService {
       cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
   }
 
+  @Transactional
   public Status find(Account account, Date from) {
     return this.find(account, from, "<=", "desc");
   }
 
+  @Transactional
   public Status next(Account account, Date from) {
     return this.find(account, from, ">", "asc");
   }
 
+  @Transactional
   public Status previous(Account account, Date from) {
     return this.find(account, from, "<", "desc");
   }
 
   @SuppressWarnings("unchecked")
+  @Transactional
   private Status find(Account account, Date from, String created, String order) {
     if (logger.isDebugEnabled())
       logger.debug("Finding for " + account.getPersonId() + " on " + account.getDomain() + " from " + from + " as "
@@ -101,6 +106,7 @@ public class StatusServiceImpl implements StatusService {
     return null;
   }
   
+  @Transactional
   public void delete(Key key) {
     Status status = em.find(Status.class, key);
     em.remove(status);
@@ -139,6 +145,7 @@ public class StatusServiceImpl implements StatusService {
     return statuses;
   }
   
+  @Transactional
   public Status find(Key key, Date from, Map<String, Account> accounts) {
     Status status = em.find(Status.class, key);
     return processStatus(status, from, accounts.get(status.getDomain()));
@@ -148,7 +155,7 @@ public class StatusServiceImpl implements StatusService {
     List<Status> statuses = Lists.newArrayList();
     Map<String, Key> cacheKeys = cacheKeys(keys);
     Map<String, Status> cachedStatuses = Maps.newHashMap();
-    if (null != cache)
+    if (false)
       cachedStatuses = cache.getAll(cacheKeys.keySet());
     for (Status status: cachedStatuses.values()) {
       statuses.add( processStatus(status, from, accounts.get(status.getDomain())) );
@@ -166,6 +173,7 @@ public class StatusServiceImpl implements StatusService {
   }
   
   @SuppressWarnings("unchecked")
+  @Transactional
   public List<Status> list(Account account) {
     return em.createQuery("select s from Status s where s.personId = :personId and s.domain = :domain").setParameter(
         "personId", account.getPersonId()).setParameter("domain", account.getDomain()).setMaxResults(20)
