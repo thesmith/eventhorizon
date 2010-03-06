@@ -155,7 +155,7 @@ public class StatusServiceImpl implements StatusService {
     List<Status> statuses = Lists.newArrayList();
     Map<String, Key> cacheKeys = cacheKeys(keys);
     Map<String, Status> cachedStatuses = Maps.newHashMap();
-    if (false)
+    if (null != cache)
       cachedStatuses = cache.getAll(cacheKeys.keySet());
     for (Status status: cachedStatuses.values()) {
       statuses.add( processStatus(status, from, accounts.get(status.getDomain())) );
