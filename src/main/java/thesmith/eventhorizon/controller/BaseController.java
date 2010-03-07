@@ -1,5 +1,7 @@
 package thesmith.eventhorizon.controller;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class BaseController {
 
   @Autowired
   protected StatusService statusService;
-  
+
   @Autowired
   protected SnapshotService snapshotService;
 
@@ -56,7 +58,7 @@ public class BaseController {
   public void initBinder(WebDataBinder binder) {
     binder.registerCustomEditor(String.class, new StringTrimmerEditor(false));
   }
-  
+
   protected Date createStatus(Date nextCreated, Status status, List<Account> accounts) {
     Account account = getAccount(accounts, status);
     if (null == nextCreated) {
@@ -74,9 +76,11 @@ public class BaseController {
     statusService.create(status);
 
     boolean found = false;
+    int size = 0;
     if (null != previousCreated) {
-      List<Snapshot> snapshots = snapshotService.list(status.getPersonId(), previousCreated, nextCreated);
-      for (Snapshot snapshot: snapshots) {
+      List<Snapshot> snapshots = snapshotService.list(status.getPersonId(), previousCreated, nextCreated, 1);
+      size = snapshots.size();
+      for (Snapshot snapshot : snapshots) {
         snapshotService.addStatus(snapshot, status);
         if (snapshot.getCreated().equals(status.getCreated()))
           found = true;
@@ -85,22 +89,30 @@ public class BaseController {
 
     if (!found)
       createSnapshot(status, accounts);
+
+    if (size >= SnapshotService.MAX) {
+      queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/" + account.getDomain() + "/create").param(
+          "created", String.valueOf(status.getCreated().getTime())).param("previous",
+          String.valueOf(previousCreated.getTime())).param("next", String.valueOf(nextCreated.getTime())).param("page",
+          String.valueOf(2)));
+    }
+
     nextCreated = status.getCreated();
     return nextCreated;
   }
-  
+
   private Account getAccount(List<Account> accounts, Status status) {
-    for (Account account: accounts) {
+    for (Account account : accounts) {
       if (account.getDomain().equals(status.getDomain()))
         return account;
     }
     return null;
   }
-  
+
   private void createSnapshot(Status status, List<Account> accounts) {
     List<Key> statusIds = Lists.newArrayList();
     List<String> domains = Lists.newArrayList();
-    for (Account acc: accounts) {
+    for (Account acc : accounts) {
       if (null != acc.getUserId()) {
         if (acc.getDomain().equals(status.getDomain())) {
           statusIds.add(status.getId());
@@ -183,7 +195,7 @@ public class BaseController {
   protected String authUrl(String personId, String ptrt) {
     if (null == ptrt) {
       if (isProduction())
-        return "http://" + personId + HOST_POSTFIX + AuthController.AUTH_URL +"?ptrt=";
+        return "http://" + personId + HOST_POSTFIX + AuthController.AUTH_URL + "?ptrt=";
       return AuthController.AUTH_URL + "?ptrt=/" + personId;
     } else {
       if (isProduction())
@@ -203,7 +215,7 @@ public class BaseController {
   public void setStatusService(StatusService statusService) {
     this.statusService = statusService;
   }
-  
+
   public void setSnapshotService(SnapshotService snapshotService) {
     this.snapshotService = snapshotService;
   }

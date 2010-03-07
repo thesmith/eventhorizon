@@ -12,6 +12,8 @@ import thesmith.eventhorizon.model.Status;
  * @author bens
  */
 public interface SnapshotService {
+  public static final int MAX = 20;
+  
   /**
    * Snapshot instance that contains the statuses for the nearest date to 'from'
    * @param personId
@@ -28,6 +30,15 @@ public interface SnapshotService {
    * @return
    */
   public List<Snapshot> list(String personId, Date from, Date to);
+  
+  /**
+   * List all snapshots between 2 points in time
+   * @param personId
+   * @param from
+   * @param to
+   * @return
+   */
+  public List<Snapshot> list(String personId, Date from, Date to, int page);
   
   /**
    * Create a snapshot of statuses

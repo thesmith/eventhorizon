@@ -34,6 +34,14 @@ public class SnapshotServiceImpl implements SnapshotService {
             + " and s.created < :to order by s.created desc").setParameter("personId", personId).setParameter("from",
         from).setParameter("to", to).getResultList();
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<Snapshot> list(String personId, Date from, Date to, int page) {
+    return em.createQuery(
+        "select s from Snapshot s where s.personId = :personId and s.created >= :from"
+            + " and s.created < :to order by s.created desc").setParameter("personId", personId).setParameter("from",
+        from).setParameter("to", to).setMaxResults(MAX).setFirstResult(page*MAX).getResultList();
+  }
 
   public void addStatus(Snapshot snapshot, Status status) {
     if (null == status || null == status.getId())
