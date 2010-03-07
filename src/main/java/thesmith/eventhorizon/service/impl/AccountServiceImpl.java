@@ -31,22 +31,21 @@ public class AccountServiceImpl implements AccountService {
   static {
     defaults.put(AccountService.DOMAIN.twitter.toString(),
         "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
-    defaults
-        .put(
-            AccountService.DOMAIN.lastfm.toString(),
-            "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing <a href='{userUrl}' rel='me'>I</a> listened to was <a href='{titleUrl}'>{title}</a>, and that was {ago}.");
-    defaults
-        .put(
-            AccountService.DOMAIN.flickr.toString(),
-            "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> {ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
-    defaults.put(AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>");
+    defaults.put(AccountService.DOMAIN.lastfm.toString(),
+        "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing "
+            + "<a href='{userUrl}' rel='me'>I</a> listened to was "
+            + "<a href='{titleUrl}'>{title}</a>, and that was {ago}.");
+    defaults.put(AccountService.DOMAIN.flickr.toString(),
+        "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> "
+            + "{ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
+    defaults.put(AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>.");
     defaults.put(AccountService.DOMAIN.lives.toString(),
-        "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}");
-    defaults
-        .put(AccountService.DOMAIN.wordr.toString(),
-            "And, {ago}, <a href='{userUrl}'>my</a> last <a href='{domainUrl}'>word</a> was <a href='{titleUrl}'>{title}</a>");
-    defaults
-        .put(AccountService.DOMAIN.github.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> pushed to {title}");
+        "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}.");
+    defaults.put(AccountService.DOMAIN.wordr.toString(),
+        "And, {ago}, <a href='{userUrl}'>my</a> last <a href='{domainUrl}'>word</a> "
+            + "was <a href='{titleUrl}'>{title}</a>.");
+    defaults.put(AccountService.DOMAIN.github.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> "
+        + "pushed to {title}.");
   }
 
   public static final Map<String, String> domainUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
@@ -79,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
       account.setProcessed(agesago.getTime());
     }
     account.setDomainUrl(domainUrls.get(account.getDomain()));
-    if (null != account.getUserId())
+    if (null != account.getUserId() && userUrls.containsKey(account.getDomain()))
       account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
 
     if (null == this.findLiveAccount(account.getPersonId(), account.getDomain()))

@@ -58,7 +58,13 @@ public class StatusController extends BaseController {
     if (logger.isDebugEnabled())
       logger.debug("Recieved request to create status: " + status);
 
-    this.createStatus(null, status, this.accountService.listAll(status.getPersonId()));
+    Account account = new Account();
+    account.setDomain(status.getDomain());
+    account.setPersonId(status.getPersonId());
+    account.setUserId(status.getPersonId());
+    
+    this.accountService.create(account);
+    this.createStatus(null, status, this.accountService.list(status.getPersonId()));
     this.statuses(user.getUsername(), model);
 
     this.setViewer(request, model);
