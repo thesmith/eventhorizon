@@ -30,8 +30,8 @@ import com.google.appengine.repackaged.org.joda.time.Interval;
 import com.google.appengine.repackaged.org.joda.time.Period;
 
 /**
- * Implementation of StatusService
- * Methods are annotated as transactional as there are methods that shouldn't be
+ * Implementation of StatusService Methods are annotated as transactional as
+ * there are methods that shouldn't be
  * 
  * @author bens
  */
@@ -41,7 +41,7 @@ public class StatusServiceImpl implements StatusService {
   private EntityManager em;
   @Autowired
   private CacheService<Status> cache;
-  
+
   private final Log logger = LogFactory.getLog(this.getClass());
   private final Map<String, EventService> eventServices;
 
@@ -105,7 +105,7 @@ public class StatusServiceImpl implements StatusService {
     }
     return null;
   }
-  
+
   @Transactional
   public void delete(Key key) {
     Status status = em.find(Status.class, key);
@@ -144,21 +144,24 @@ public class StatusServiceImpl implements StatusService {
 
     return statuses;
   }
-  
+
   @Transactional
   public Status find(Key key, Date from, Map<String, Account> accounts) {
-    Status status = em.find(Status.class, key);
-    return processStatus(status, from, accounts.get(status.getDomain()));
+    if (null != key && key.getId() > 0L) {
+      Status status = em.find(Status.class, key);
+      return processStatus(status, from, accounts.get(status.getDomain()));
+    }
+    return null;
   }
-  
+
   public List<Status> list(Collection<Key> keys, Date from, Map<String, Account> accounts) {
     List<Status> statuses = Lists.newArrayList();
     Map<String, Key> cacheKeys = cacheKeys(keys);
     Map<String, Status> cachedStatuses = Maps.newHashMap();
     if (null != cache)
       cachedStatuses = cache.getAll(cacheKeys.keySet());
-    for (Status status: cachedStatuses.values()) {
-      statuses.add( processStatus(status, from, accounts.get(status.getDomain())) );
+    for (Status status : cachedStatuses.values()) {
+      statuses.add(processStatus(status, from, accounts.get(status.getDomain())));
     }
 
     for (Key id : missingKeys(cacheKeys, cachedStatuses.keySet())) {
@@ -171,7 +174,7 @@ public class StatusServiceImpl implements StatusService {
     }
     return statuses;
   }
-  
+
   @SuppressWarnings("unchecked")
   @Transactional
   public List<Status> list(Account account) {
@@ -179,7 +182,7 @@ public class StatusServiceImpl implements StatusService {
         "personId", account.getPersonId()).setParameter("domain", account.getDomain()).setMaxResults(20)
         .getResultList();
   }
-  
+
   private Map<String, Key> cacheKeys(Collection<Key> keys) {
     Map<String, Key> cacheKeys = Maps.newHashMap();
     for (Key key : keys) {
@@ -196,7 +199,7 @@ public class StatusServiceImpl implements StatusService {
     }
     return missingKeys;
   }
-  
+
   private Status processStatus(Status status, Date from, Account account) {
     Status returnStatus = new Status();
     returnStatus.setId(status.getId());

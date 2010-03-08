@@ -85,6 +85,7 @@ public class JobsController extends BaseController {
       queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE, "1"));
       account.setProcessed(new Date());
       accountService.update(account);
+      queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/check").param(PAGE, "1"));
     }
     return "jobs/index";
   }
@@ -110,6 +111,32 @@ public class JobsController extends BaseController {
       p = p + 1;
       queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/" + account.getDomain() + "/create").param(
           "created", created).param("previous", previous).param("next", next).param(PAGE, String.valueOf(p)));
+    }
+
+    return "jobs/index";
+  }
+
+  @RequestMapping(value = "/snapshots/{personId}/check")
+  public String check(@PathVariable("personId") String personId, @RequestParam("page") String page) {
+    List<Account> accounts = accountService.list(personId);
+
+    int p = Integer.parseInt(page);
+    List<Snapshot> snapshots = snapshotService.list(personId, p);
+    int size = snapshots.size();
+    for (Snapshot snapshot : snapshots) {
+      for (Account account : accounts) {
+        Status status = statusService.find(account, snapshot.getCreated());
+        if (null != status && null != snapshot.getStatusIds() && !snapshot.getStatusIds().contains(status.getId())) {
+          snapshotService.addStatus(snapshot, status);
+          if (logger.isInfoEnabled())
+            logger.info("Adding status: " + status + " to snapshot: " + snapshot);
+        }
+      }
+    }
+
+    if (size >= SnapshotService.MAX) {
+      p = p + 1;
+      queue.add(url("/jobs/snapshots/" + personId + "/check").param(PAGE, String.valueOf(p)));
     }
 
     return "jobs/index";

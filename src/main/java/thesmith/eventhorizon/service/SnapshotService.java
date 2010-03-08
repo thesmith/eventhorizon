@@ -41,6 +41,14 @@ public interface SnapshotService {
   public List<Snapshot> list(String personId, Date from, Date to, int page);
   
   /**
+   * list all of a person's snapshots
+   * @param personId
+   * @param page
+   * @return
+   */
+  public List<Snapshot> list(String personId, int page);
+  
+  /**
    * Create a snapshot of statuses
    * @param snapshot
    */

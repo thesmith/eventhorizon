@@ -114,12 +114,12 @@ public class BaseController {
     List<String> domains = Lists.newArrayList();
     for (Account acc : accounts) {
       if (null != acc.getUserId()) {
-        if (acc.getDomain().equals(status.getDomain())) {
+        if (acc.getDomain().equals(status.getDomain()) && null != status && null != status.getId()) {
           statusIds.add(status.getId());
           domains.add(status.getDomain());
         } else {
           Status s = statusService.find(acc, status.getCreated());
-          if (null != s) {
+          if (null != s && null != s.getId()) {
             statusIds.add(s.getId());
             domains.add(s.getDomain());
           }

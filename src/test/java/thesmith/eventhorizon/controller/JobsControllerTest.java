@@ -128,7 +128,7 @@ public class JobsControllerTest {
     List<Account> accounts = Lists.newArrayList(account);
 
     EasyMock.expect(accountService.toProcess(JobsController.LIMIT)).andReturn(accounts);
-    EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
+    EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null).times(2);
     accountService.update(account);
     EasyMock.expectLastCall();
     EasyMock.replay(accountService, queue);
