@@ -56,6 +56,8 @@ public class IndexControllerTest extends DataStoreBaseTest {
   public void shouldRetrieveIndexes() throws Exception {
     ModelMap model = new ModelMap();
     
+    EasyMock.expect(userService.getGravatar(EasyMock.isA(String.class))).andReturn("somegravatar");
+    
     List<Account> accounts = Lists.newArrayList();
     Account account = new Account();
     account.setPersonId("person");

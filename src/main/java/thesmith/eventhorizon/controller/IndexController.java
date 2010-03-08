@@ -166,8 +166,12 @@ public class IndexController extends BaseController {
       if (logger.isInfoEnabled())
         logger.info("Unable to decode url from " + request.getRequestURL().toString());
     }
+    
+    String view = redirectIndex(request);
+    if (null == view)
+      view = "index/home";
 
-    return "index/front";
+    return view;
   }
 
   @RequestMapping(value = "/error", method = RequestMethod.GET)

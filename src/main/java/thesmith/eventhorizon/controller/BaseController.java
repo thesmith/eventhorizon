@@ -166,6 +166,18 @@ public class BaseController {
       }
     }
   }
+  
+  protected String redirectIndex(HttpServletRequest request) {
+    Cookie[] cookies = request.getCookies();
+    if (null != cookies) {
+      for (Cookie cookie : cookies) {
+        if (BaseController.USERNAME_COOKIE.equalsIgnoreCase(cookie.getName())) {
+          return "redirect:"+userHost(cookie.getValue());
+        }
+      }
+    }
+    return null;
+  }
 
   protected boolean isProduction() {
     return ("Production".equals(System.getProperty("com.google.appengine.runtime.environment", "")));

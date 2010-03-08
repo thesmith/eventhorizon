@@ -90,6 +90,7 @@ public class UsersController extends BaseController {
 
     model.addAttribute("gravatar", userService.getGravatar(user.getUsername()));
     this.setViewer(request, model);
+    model.addAttribute("userHost", userHost(user.getUsername()));
     return "users/gravatar";
   }
 
@@ -104,6 +105,7 @@ public class UsersController extends BaseController {
     userService.update(user);
     model.addAttribute("gravatar", userService.getGravatar(user.getUsername()));
     this.setViewer(request, model);
+    model.addAttribute("userHost", userHost(user.getUsername()));
     return "users/gravatar";
   }
 

@@ -1,4 +1,4 @@
-<@layout.layout "Gravatar" "<img src='${gravatar}' /> Gravatar" "${viewer!}">
+<@layout.layout "Gravatar" "<img src='${gravatar}' /> Gravatar" "${viewer!}" "" "${userHost}">
 <form action="" method="POST">
   <label for="email" style="padding-bottom: 1em; padding-top: 20px; font-size: 1.6em; width: 8em;">Gravatar Email</label>
   <div class="account_input">
