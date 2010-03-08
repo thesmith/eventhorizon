@@ -194,6 +194,7 @@ public class IndexController extends BaseController {
     model.addAttribute("statuses", statuses);
     model.addAttribute("emptyDomains", emptyDomains);
     model.addAttribute("personId", personId);
+    model.addAttribute("gravatar", userService.getGravatar(personId));
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
   }

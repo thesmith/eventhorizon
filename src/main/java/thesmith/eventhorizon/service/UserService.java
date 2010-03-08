@@ -29,6 +29,19 @@ public interface UserService {
   public User find(String username);
   
   /**
+   * Get a user's gravatar
+   * @param username
+   * @return
+   */
+  public String getGravatar(String username);
+  
+  /**
+   * Update a user
+   * @param user
+   */
+  public void update(User user);
+  
+  /**
    * Authenticate a user by username and password
    * @param username
    * @param password

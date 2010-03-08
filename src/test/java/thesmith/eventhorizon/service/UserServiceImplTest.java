@@ -30,6 +30,17 @@ public class UserServiceImplTest extends DataStoreBaseTest {
   }
   
   @Test
+  public void testShouldUpdateGravatar() throws Exception {
+    service.create(user);
+    assertNotNull(user.getId());
+    
+    user.setEmail("ben@thesmith.co.uk");
+    service.update(user);
+    
+    assertNotNull(service.getGravatar(user.getUsername()));
+  }
+  
+  @Test
   public void testShouldCreateUser() throws Exception {
     service.create(user);
     assertNotNull(user.getId());
