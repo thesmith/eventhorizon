@@ -78,7 +78,7 @@ public class BaseController {
     boolean found = false;
     int size = 0;
     if (null != previousCreated) {
-      List<Snapshot> snapshots = snapshotService.list(status.getPersonId(), previousCreated, nextCreated, 1);
+      List<Snapshot> snapshots = snapshotService.list(status.getPersonId(), previousCreated, nextCreated, 0);
       size = snapshots.size();
       for (Snapshot snapshot : snapshots) {
         snapshotService.addStatus(snapshot, status);
@@ -94,7 +94,7 @@ public class BaseController {
       queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/" + account.getDomain() + "/create").param(
           "created", String.valueOf(status.getCreated().getTime())).param("previous",
           String.valueOf(previousCreated.getTime())).param("next", String.valueOf(nextCreated.getTime())).param("page",
-          String.valueOf(2)));
+          String.valueOf(1)));
     }
 
     nextCreated = status.getCreated();
