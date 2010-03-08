@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
   private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
   private static final String DELIMITOR = "|";
   private static final String CACHE_KEY_PREFIX = "gravatar_";
+  private static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/%s?s=52";
   private final Log logger = LogFactory.getLog(this.getClass());
 
   @PersistenceContext
@@ -101,7 +102,7 @@ public class UserServiceImpl implements UserService {
       }
     }
     
-    return gravatar;
+    return String.format(GRAVATAR_URL, gravatar);
   }
 
   /** {@inheritDoc} */

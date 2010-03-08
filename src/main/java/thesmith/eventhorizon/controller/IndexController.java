@@ -190,7 +190,7 @@ public class IndexController extends BaseController {
       model.addAttribute("refresh", true);
     }
     Set<String> emptyDomains = emptyDomains(accounts.keySet(), statuses);
-    
+
     model.addAttribute("statuses", statuses);
     model.addAttribute("emptyDomains", emptyDomains);
     model.addAttribute("personId", personId);
@@ -201,10 +201,10 @@ public class IndexController extends BaseController {
 
   private Set<String> emptyDomains(Set<String> domains, List<Status> statuses) {
     Set<String> foundDomains = Sets.newHashSet();
-    for (Status status: statuses) {
+    for (Status status : statuses) {
       foundDomains.add(status.getDomain());
     }
-    
+
     return Sets.difference(domains, foundDomains);
   }
 

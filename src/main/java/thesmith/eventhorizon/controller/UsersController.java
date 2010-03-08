@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.validator.LoginValidator;
@@ -81,6 +82,31 @@ public class UsersController extends BaseController {
     return REDIRECT + this.authUrl(user.getUsername(), ptrt);
   }
 
+  @RequestMapping(value = "/gravatar", method = RequestMethod.GET)
+  public String gravatar(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+    User user = this.auth(request, response);
+    if (null == user)
+      return "redirect:/users/login";
+
+    model.addAttribute("gravatar", userService.getGravatar(user.getUsername()));
+    this.setViewer(request, model);
+    return "users/gravatar";
+  }
+
+  @RequestMapping(value = "/gravatar", method = RequestMethod.POST)
+  public String setGravatar(@RequestParam("email") String email, HttpServletRequest request,
+      HttpServletResponse response, ModelMap model) {
+    User user = this.auth(request, response);
+    if (null == user)
+      return "redirect:/users/login";
+
+    user.setEmail(email);
+    userService.update(user);
+    model.addAttribute("gravatar", userService.getGravatar(user.getUsername()));
+    this.setViewer(request, model);
+    return "users/gravatar";
+  }
+
   private void setCookie(HttpServletResponse response, User user) {
     Cookie cookie = new Cookie(COOKIE, userService.token(user));
     cookie.setPath("/");
@@ -90,7 +116,7 @@ public class UsersController extends BaseController {
     if (logger.isInfoEnabled())
       logger.info("Setting cookie for user " + user.getUsername() + ": " + cookie.getValue());
     response.addCookie(cookie);
-    
+
     this.setUserCookie(response, user.getUsername());
   }
 

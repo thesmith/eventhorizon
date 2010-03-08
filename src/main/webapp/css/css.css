@@ -4,8 +4,8 @@
 body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.5%; }
 
 #container { margin: 26px auto; width: 832px; text-align: left; font-size: 1.3em; }
-#mast { width: 832px; height: 52px; margin: 0; font-size: 2.6em; }
-#userbar { font-size: 1.5em; float: left; margin-top: 23px; position: absolute; right: 26px;}
+#mast { width: 832px; height: 52px; margin: 0; font-size: 2.6em; padding-bottom: 1em; }
+#userbar { font-size: 1.5em; float: left; margin-top: 32px; position: absolute; right: 26px;}
 
 #primary, #secondary, #tertiary { float: left; display: inline; padding: 0; }
 
@@ -20,7 +20,7 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 
 #primary.full { width: 832px; }
 
-#foot { position: relative; font-size: 0.9em; color: #888; width: 832px; height: 76px; margin: 13px 0 0 0; clear: both; border-top: 1px solid #aaa; }
+#foot { position: relative; font-size: 2.6em; width: 832px; height: 76px; margin: 13px 0 0 0; clear: both; border-top: 1px solid black; }
 #foot strong { position: absolute; right: 0; }
 /* ====================================================== */
 

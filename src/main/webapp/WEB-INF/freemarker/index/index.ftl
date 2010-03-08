@@ -1,4 +1,4 @@
-<@layout.layout "${personId} at ${from?string('kk:mm:ss')} on ${from?string('MMM d, yyyy')}" "<span id='title_username'>${personId}</span> <span class='decorator'>at</span> <span class='title_time'>${from?string('kk:mm:ss')}</span> <span class='decorator'>on</span> <span class='title_date'>${from?string('MMM d, yyyy')}</span>" "${viewer!}" "${secureHost!}" "${userHost!}">
+<@layout.layout "${personId} at ${from?string('kk:mm:ss')} on ${from?string('MMM d, yyyy')}" "<img src='${gravatar}' /> <span id='title_username'>${personId}</span> <span class='decorator'>at</span> <span class='title_time'>${from?string('kk:mm:ss')}</span> <span class='decorator'>on</span> <span class='title_date'>${from?string('MMM d, yyyy')}</span>" "${viewer!}" "${secureHost!}" "${userHost!}">
 
 <#if refresh??>
   <noscript>
