@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,7 @@ public class IndexController extends BaseController {
 
   private void setModel(String personId, Date from, ModelMap model) {
     List<Status> statuses = Lists.newArrayList();
-    Map<String, Account> accounts = accountMap(accountService.listAll(personId));
+    Map<String, Account> accounts = accountMap(accountService.list(personId));
     if (null != from) {
       Snapshot snapshot = snapshotService.find(personId, from);
       if (snapshot != null)
@@ -189,8 +190,10 @@ public class IndexController extends BaseController {
       }
       model.addAttribute("refresh", true);
     }
+    Set<String> emptyDomains = emptyDomains(accounts.keySet(), statuses);
+    
     model.addAttribute("statuses", statuses);
-    model.addAttribute("emptyDomains", emptyDomains(accounts.keySet(), statuses));
+    model.addAttribute("emptyDomains", emptyDomains);
     model.addAttribute("personId", personId);
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
