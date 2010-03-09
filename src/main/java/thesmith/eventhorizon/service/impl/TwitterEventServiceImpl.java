@@ -1,6 +1,8 @@
 package thesmith.eventhorizon.service.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +21,9 @@ public class TwitterEventServiceImpl implements EventService {
   private static final String DOMAIN_URL = "http://twitter.com";
   private static final int PAGE = 10;
   private final Log logger = LogFactory.getLog(this.getClass());
-  
+  private static final Pattern p = Pattern
+      .compile("\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+
   public List<Event> events(Account account, int page) {
     if (!"twitter".equals(account.getDomain()))
       throw new RuntimeException("You can only get events for the twitter domain");
@@ -32,8 +36,8 @@ public class TwitterEventServiceImpl implements EventService {
       Paging paging = new Paging(page, PAGE);
       List<Status> statuses = twitter.getUserTimeline(account.getUserId(), paging);
       if (logger.isInfoEnabled())
-        logger.info("Retrieving user timeline for "+account.getUserId()+" and got "+statuses.size());
-      for (Status status : statuses) {
+        logger.info("Retrieving user timeline for " + account.getUserId() + " and got " + statuses.size());
+      for (Status status: statuses) {
         Event event = new Event();
         event.setDomainUrl(DOMAIN_URL);
         event.setTitle(this.processTweet(status.getText()));
@@ -47,10 +51,25 @@ public class TwitterEventServiceImpl implements EventService {
     }
     return events;
   }
-  
+
   private String processTweet(String tweet) {
-    return tweet.replaceAll("@([a-zA-Z0-9_-]+)", "<a href='http://www.twitter.com/$1'>@$1</a>")
-        .replaceAll("#([a-zA-Z0-9_-]+)", "<a href='http://www.twitter.com/search?q=%23$1'>#$1</a>")
-        .replaceAll("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]", "<a href='$0'>$0</a>");
+    tweet = replaceUrl(tweet);
+    return tweet.replaceAll("@([a-zA-Z0-9_-]+)", "<a href='http://www.twitter.com/$1'>@$1</a>").replaceAll(
+        "#([a-zA-Z0-9_-]+)", "<a href='http://www.twitter.com/search?q=%23$1'>#$1</a>");
+  }
+
+  private String replaceUrl(String tweet) {
+    Matcher m = p.matcher(tweet);
+    if (null != tweet && m.find()) {
+      String url = m.group();
+
+      int start = tweet.indexOf(url);
+      String replacement = String.format("<a href='%s'>%s</a>", url, url);
+      String beginning = tweet.substring(0, start);
+      String end = tweet.substring(start + url.length());
+      tweet = beginning + replacement + end;
+    }
+
+    return tweet;
   }
 }
