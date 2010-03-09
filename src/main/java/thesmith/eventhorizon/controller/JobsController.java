@@ -85,7 +85,6 @@ public class JobsController extends BaseController {
       queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE, "1"));
       account.setProcessed(new Date());
       accountService.update(account);
-      queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/check").param(PAGE, "1"));
     }
     return "jobs/index";
   }
