@@ -47,6 +47,7 @@ public class AccountsControllerTest {
     
     userService = createMock(UserService.class);
     EasyMock.expect(userService.authn(token)).andReturn(user);
+    EasyMock.expect(userService.getGravatar(EasyMock.isA(String.class))).andReturn("somegr");
     replay(userService);
     
     accountService = createMock(AccountService.class);

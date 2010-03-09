@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AuthController extends BaseController {
   public static final String AUTH_URL = "/auth";
+  public static final String UNAUTH_URL = "/unauth";
 
   @RequestMapping(value = AUTH_URL, method = RequestMethod.GET)
   public String authenticate(HttpServletRequest request, HttpServletResponse response, @RequestParam("ptrt") String ptrt) {
@@ -28,6 +29,13 @@ public class AuthController extends BaseController {
       if (logger.isInfoEnabled())
         logger.info("Unable to decode url from " + request.getRequestURL().toString());
     }
+
+    return (null != ptrt ? REDIRECT + ptrt : REDIRECT + "/");
+  }
+
+  @RequestMapping(value = UNAUTH_URL, method = RequestMethod.GET)
+  public String unauthenticate(HttpServletResponse response, @RequestParam("ptrt") String ptrt) {
+    this.unsetCookie(response);
 
     return (null != ptrt ? REDIRECT + ptrt : REDIRECT + "/");
   }

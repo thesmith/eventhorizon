@@ -13,4 +13,7 @@
     </li>
   </#list>
 </ul>
+<div id="foot">
+  <p><img src="${gravatar}" /> You could also <a href="/users/gravatar">update your Gravatar</a></p>
+</div>
 </@layout.layout>

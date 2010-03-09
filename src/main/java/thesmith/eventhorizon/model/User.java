@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import com.google.appengine.api.datastore.Key;
@@ -33,6 +34,13 @@ public class User implements Serializable {
   @Basic
   @Column(name = "password", length = 50)
   private String password;
+  
+  @Transient
+  private String email;
+  
+  @Basic
+  @Column(name = "gravatar")
+  private String gravatar;
 
   public Key getId() {
     return id;
@@ -56,5 +64,21 @@ public class User implements Serializable {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getGravatar() {
+    return gravatar;
+  }
+
+  public void setGravatar(String gravatar) {
+    this.gravatar = gravatar;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 }

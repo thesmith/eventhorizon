@@ -61,5 +61,6 @@ public class AccountsController extends BaseController {
     }
     model.addAttribute("domains", domains);
     model.addAttribute("userHost", userHost(user.getUsername()));
+    model.addAttribute("gravatar", userService.getGravatar(user.getUsername()));
   }
 }

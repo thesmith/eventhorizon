@@ -157,17 +157,23 @@ public class IndexController extends BaseController {
       String host = url.getHost();
       if (null != host && host.contains(HOST_POSTFIX)) {
         String personId = host.replace(HOST_POSTFIX, "");
-        this.setModel(personId, null, model);
+        if (!"www".equals(personId)) {
+          this.setModel(personId, null, model);
 
-        this.setViewer(request, model);
-        return "index/index";
+          this.setViewer(request, model);
+          return "index/index";
+        }
       }
     } catch (MalformedURLException e) {
       if (logger.isInfoEnabled())
         logger.info("Unable to decode url from " + request.getRequestURL().toString());
     }
 
-    return "index/front";
+    String view = redirectIndex(request);
+    if (null == view)
+      view = "index/home";
+
+    return view;
   }
 
   @RequestMapping(value = "/error", method = RequestMethod.GET)
@@ -177,7 +183,7 @@ public class IndexController extends BaseController {
 
   private void setModel(String personId, Date from, ModelMap model) {
     List<Status> statuses = Lists.newArrayList();
-    Map<String, Account> accounts = accountMap(accountService.listAll(personId));
+    Map<String, Account> accounts = accountMap(accountService.list(personId));
     if (null != from) {
       Snapshot snapshot = snapshotService.find(personId, from);
       if (snapshot != null)
@@ -189,19 +195,22 @@ public class IndexController extends BaseController {
       }
       model.addAttribute("refresh", true);
     }
+    Set<String> emptyDomains = emptyDomains(accounts.keySet(), statuses);
+
     model.addAttribute("statuses", statuses);
-    model.addAttribute("emptyDomains", emptyDomains(accounts.keySet(), statuses));
+    model.addAttribute("emptyDomains", emptyDomains);
     model.addAttribute("personId", personId);
+    model.addAttribute("gravatar", userService.getGravatar(personId));
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
   }
 
   private Set<String> emptyDomains(Set<String> domains, List<Status> statuses) {
     Set<String> foundDomains = Sets.newHashSet();
-    for (Status status: statuses) {
+    for (Status status : statuses) {
       foundDomains.add(status.getDomain());
     }
-    
+
     return Sets.difference(domains, foundDomains);
   }
 

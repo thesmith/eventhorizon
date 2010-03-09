@@ -92,7 +92,8 @@ public class JobsControllerTest {
     statusService.create(status);
     EasyMock.expectLastCall();
 
-    EasyMock.expect(statusService.find(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(null).anyTimes();
+    EasyMock.expect(statusService.find(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(null)
+        .anyTimes();
     EasyMock.expect(statusService.previous(EasyMock.isA(Account.class), EasyMock.isA(Date.class))).andReturn(null);
 
     EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
@@ -103,12 +104,12 @@ public class JobsControllerTest {
     Snapshot snapshot = new Snapshot();
     snapshot.setCreated(cal.getTime());
     snapshot.setPersonId(account.getPersonId());
-    snapshot.setStatusIds(Lists.<Key>newArrayList());
+    snapshot.setStatusIds(Lists.<Key> newArrayList());
     snapshots.add(snapshot);
 
     EasyMock.expect(
         snapshotService.list(EasyMock.matches(account.getPersonId()), EasyMock.isA(Date.class), EasyMock
-            .isA(Date.class))).andReturn(snapshots);
+            .isA(Date.class), EasyMock.anyInt())).andReturn(snapshots);
     snapshotService.addStatus(EasyMock.isA(Snapshot.class), EasyMock.isA(Status.class));
     EasyMock.expectLastCall();
     snapshotService.create(EasyMock.isA(Snapshot.class));
@@ -127,7 +128,7 @@ public class JobsControllerTest {
     List<Account> accounts = Lists.newArrayList(account);
 
     EasyMock.expect(accountService.toProcess(JobsController.LIMIT)).andReturn(accounts);
-    EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null);
+    EasyMock.expect(queue.add(EasyMock.isA(TaskOptions.class))).andReturn(null).times(2);
     accountService.update(account);
     EasyMock.expectLastCall();
     EasyMock.replay(accountService, queue);

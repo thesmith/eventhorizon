@@ -56,6 +56,8 @@ public class IndexControllerTest extends DataStoreBaseTest {
   public void shouldRetrieveIndexes() throws Exception {
     ModelMap model = new ModelMap();
     
+    EasyMock.expect(userService.getGravatar(EasyMock.isA(String.class))).andReturn("somegravatar");
+    
     List<Account> accounts = Lists.newArrayList();
     Account account = new Account();
     account.setPersonId("person");
@@ -68,7 +70,7 @@ public class IndexControllerTest extends DataStoreBaseTest {
     account2.setDomain("lastfm");
     account2.setTemplate(AccountServiceImpl.defaults.get(account.getDomain()));
     accounts.add(account2);
-    EasyMock.expect(accountService.listAll("person")).andReturn(accounts);
+    EasyMock.expect(accountService.list("person")).andReturn(accounts);
     
     List<Key> statusIds = Lists.newArrayList();
     Status twitterStatus = new Status();

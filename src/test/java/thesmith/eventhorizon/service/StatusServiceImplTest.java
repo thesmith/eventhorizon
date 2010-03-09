@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import thesmith.eventhorizon.DataStoreBaseTest;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Status;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 public class StatusServiceImplTest extends DataStoreBaseTest {
@@ -128,5 +131,24 @@ public class StatusServiceImplTest extends DataStoreBaseTest {
     assertNotNull(stat);
     assertEquals("new title", stat.getTitle());
     assertNotNull(stat.getId());
+  }
+  
+  @Test
+  public void shouldListStatuses() throws Exception {
+    Collection<Key> ids = Lists.newArrayList();
+    service.create(status);
+    ids.add(status.getId());
+    
+    Status s = new Status();
+    s.setDomain(AccountService.DOMAIN.flickr.toString());
+    s.setPersonId("id"+Math.random());
+    s.setCreated(new Date());
+    s.setTitle("title");
+    s.setTitleUrl("titleUrl");
+    service.create(s);
+    ids.add(s.getId());
+    
+    List<Status> statuses = service.list(ids, new Date(),  Maps.<String, Account>newHashMap());
+    assertEquals(2, statuses.size());
   }
 }
