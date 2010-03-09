@@ -43,7 +43,7 @@ public class UsersControllerTest {
   @Test
   public void shouldLogout() throws Exception {
     String view = controller.logout(response);
-    assertEquals("redirect:/users/login", view);
+    assertEquals("redirect:/unauth?ptrt=/", view);
     
     Cookie cookie = response.getCookie(BaseController.COOKIE);
     assertNotNull(cookie);
