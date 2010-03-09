@@ -157,16 +157,18 @@ public class IndexController extends BaseController {
       String host = url.getHost();
       if (null != host && host.contains(HOST_POSTFIX)) {
         String personId = host.replace(HOST_POSTFIX, "");
-        this.setModel(personId, null, model);
+        if (!"www".equals(personId)) {
+          this.setModel(personId, null, model);
 
-        this.setViewer(request, model);
-        return "index/index";
+          this.setViewer(request, model);
+          return "index/index";
+        }
       }
     } catch (MalformedURLException e) {
       if (logger.isInfoEnabled())
         logger.info("Unable to decode url from " + request.getRequestURL().toString());
     }
-    
+
     String view = redirectIndex(request);
     if (null == view)
       view = "index/home";

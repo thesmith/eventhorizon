@@ -47,17 +47,8 @@ public class UsersController extends BaseController {
 
   @RequestMapping(value = "/logout", method = RequestMethod.GET)
   public String logout(HttpServletResponse response) {
-    Cookie cookie = new Cookie(COOKIE, "empty");
-    cookie.setMaxAge(0);
-    cookie.setPath("/");
-    response.addCookie(cookie);
-
-    Cookie username = new Cookie(USERNAME_COOKIE, "empty");
-    username.setMaxAge(0);
-    username.setPath("/");
-    response.addCookie(username);
-
-    return REDIRECT + "/users/login";
+    this.unsetCookie(response);
+    return REDIRECT + this.unauthUrl(null);
   }
 
   @RequestMapping(value = "/register", method = RequestMethod.GET)

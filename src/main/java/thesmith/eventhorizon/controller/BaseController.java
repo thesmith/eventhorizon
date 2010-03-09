@@ -197,6 +197,25 @@ public class BaseController {
       username.setDomain(HOST_POSTFIX);
     response.addCookie(username);
   }
+  
+  protected void unsetCookie(HttpServletResponse response) {
+    Cookie cookie = new Cookie(COOKIE, "empty");
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
+
+    Cookie username = new Cookie(USERNAME_COOKIE, "empty");
+    username.setMaxAge(0);
+    username.setPath("/");
+    response.addCookie(username);
+    
+    Cookie u = new Cookie(USERNAME_COOKIE, "empty");
+    u.setMaxAge(0);
+    u.setPath("/");
+    if (isProduction())
+      u.setDomain(HOST_POSTFIX);
+    response.addCookie(u);
+  }
 
   protected String userHost(String personId) {
     if (isProduction())
@@ -213,6 +232,18 @@ public class BaseController {
       if (isProduction())
         return "http://" + personId + HOST_POSTFIX + AuthController.AUTH_URL + "?ptrt=" + ptrt;
       return AuthController.AUTH_URL + "?ptrt=" + ptrt;
+    }
+  }
+  
+  protected String unauthUrl(String ptrt) {
+    if (null == ptrt) {
+      if (isProduction())
+        return "http://www" + HOST_POSTFIX + AuthController.UNAUTH_URL + "?ptrt=";
+      return AuthController.UNAUTH_URL + "?ptrt=/";
+    } else {
+      if (isProduction())
+        return "http://www" + HOST_POSTFIX + AuthController.UNAUTH_URL + "?ptrt=" + ptrt;
+      return AuthController.UNAUTH_URL + "?ptrt=" + ptrt;
     }
   }
 
