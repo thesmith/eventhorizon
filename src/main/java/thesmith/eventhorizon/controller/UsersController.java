@@ -91,6 +91,11 @@ public class UsersController extends BaseController {
       logger.info("Setting cookie for user " + user.getUsername() + ": " + cookie.getValue());
     response.addCookie(cookie);
     
+    Cookie username = new Cookie(USERNAME_COOKIE, user.getUsername());
+    username.setPath("/");
+    username.setMaxAge(60 * 60 * 24 * 30);
+    response.addCookie(username);
+    
     this.setUserCookie(response, user.getUsername());
   }
 
