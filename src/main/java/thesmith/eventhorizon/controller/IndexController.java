@@ -169,6 +169,7 @@ public class IndexController extends BaseController {
         logger.info("Unable to decode url from " + request.getRequestURL().toString());
     }
 
+    model.addAttribute("secureHost", secureHost());
     String view = redirectIndex(request);
     if (null == view)
       view = "index/home";

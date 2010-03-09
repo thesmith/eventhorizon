@@ -48,7 +48,7 @@
       <div class="next"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/next" class="image"><img src="/gfx/next.png" title="next" /></a></div>
     </li>
   </#list>
-  <li id="dotdot">And so on..</li>
+  <li id="dotdot">And so on...</li>
 </ul>
 </div>
 </@layout.layout>
