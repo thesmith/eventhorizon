@@ -47,6 +47,8 @@
     class="thesmith.eventhorizon.service.impl.WordrEventServiceImpl" />
   <bean id="githubEventService"
     class="thesmith.eventhorizon.service.impl.GithubEventServiceImpl" />
+  <bean id="socailGraphApiService"
+    class="thesmith.eventhorizon.service.impl.SocialGraphApiServiceImpl" />
     
   <bean id="cacheService" class="thesmith.eventhorizon.service.impl.CacheServiceImpl" />
   <bean id="cacheManager" class="net.sf.jsr107cache.CacheManager" factory-method="getInstance"/>

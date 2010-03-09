@@ -22,7 +22,6 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 @Controller
 @RequestMapping(value = "/accounts")
 public class AccountsController extends BaseController {
-
   @RequestMapping(method = RequestMethod.GET)
   public String list(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
     User user = this.auth(request, response);
@@ -46,6 +45,12 @@ public class AccountsController extends BaseController {
     queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(
         JobsController.PAGE, "1"));
 
+    List<Account> accounts = socialGraphApi.getAccounts(user.getUsername(), Lists.newArrayList(account.getUserUrl()));
+    for (Account a: accounts) {
+      accountService.create(a);
+      queue.add(url("/jobs/accounts/" + a.getPersonId() + "/" + a.getDomain() + "/").param(JobsController.PAGE, "1"));
+    }
+
     this.setupAccounts(user, model);
     this.setViewer(request, model);
     return "accounts/list";
@@ -53,7 +58,7 @@ public class AccountsController extends BaseController {
 
   private void setupAccounts(User user, ModelMap model) {
     List<String> domains = Lists.newArrayList();
-    for (Account account : accountService.listAll(user.getUsername())) {
+    for (Account account: accountService.listAll(user.getUsername())) {
       if (!AccountService.FREESTYLE_DOMAINS.contains(account.getDomain())) {
         model.addAttribute("account_" + account.getDomain(), account);
         domains.add(account.getDomain());

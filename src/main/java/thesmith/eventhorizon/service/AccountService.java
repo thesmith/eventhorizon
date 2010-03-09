@@ -1,10 +1,13 @@
 package thesmith.eventhorizon.service;
 
 import java.util.List;
-
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import thesmith.eventhorizon.model.Account;
+
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
 /**
  * Defines the interface to Account objects
@@ -16,6 +19,20 @@ public interface AccountService {
   public static enum DOMAIN {
     twitter, lastfm, flickr, birth, lives, wordr, github;
   }
+  
+  public static final Map<String, String> DOMAIN_SEARCH = Maps.immutableMap(
+      "twitter.com", DOMAIN.twitter.toString(),
+      "last.fm", DOMAIN.lastfm.toString(),
+      "flickr.com", DOMAIN.flickr.toString(),
+      "wordr.com", DOMAIN.wordr.toString(),
+      "github.com", DOMAIN.github.toString());
+  
+  public static final Map<String, Pattern> DOMAIN_MATCHERS = Maps.immutableMap(
+      DOMAIN.twitter.toString(), Pattern.compile("^http:\\/\\/twitter.com\\/(.+?)\\/?$"),
+      DOMAIN.lastfm.toString(), Pattern.compile("^http:\\/\\/www.last.fm\\/user\\/(.+?)\\/?$"),
+      DOMAIN.flickr.toString(), Pattern.compile("^http:\\/\\/www.flickr.com\\/photos\\/(.+?)\\/$"),
+      DOMAIN.wordr.toString(), Pattern.compile("^http:\\/\\/wordr.com\\/(.+?)\\/?$"),
+      DOMAIN.github.toString(), Pattern.compile("^http:\\/\\/github.com\\/(.+?)\\/?$"));
 
   /** Domains that are freestyle */
   public static final List<String> FREESTYLE_DOMAINS = Lists.immutableList(

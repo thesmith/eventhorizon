@@ -19,6 +19,7 @@ import org.springframework.ui.ModelMap;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.AccountService;
+import thesmith.eventhorizon.service.SocialGraphApiService;
 import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
@@ -32,6 +33,7 @@ public class AccountsControllerTest {
   private AccountService accountService;
   private StatusService statusService;
   private Queue queue;
+  private SocialGraphApiService socialGraphApi;
   
   private MockHttpServletRequest request;
   private MockHttpServletResponse response;
@@ -39,6 +41,7 @@ public class AccountsControllerTest {
   private String token = "validToken";
   private User user;
   
+  @SuppressWarnings("unchecked")
   @Before
   public void setUp() throws Exception {
     user = new User();
@@ -53,11 +56,16 @@ public class AccountsControllerTest {
     accountService = createMock(AccountService.class);
     statusService = createMock(StatusService.class);
     queue = createMock(Queue.class);
+    socialGraphApi = createMock(SocialGraphApiService.class);
+    EasyMock.expect(socialGraphApi.getAccounts(EasyMock.isA(String.class), EasyMock.isA(List.class))).andReturn(Lists.<Account>newArrayList());
+    replay(socialGraphApi);
+    
     controller = new AccountsController();
     controller.setUserService(userService);
     controller.setAccountService(accountService);
     controller.setStatusService(statusService);
     controller.setQueue(queue);
+    controller.setSocialGraphApiService(socialGraphApi);
     
     request = new MockHttpServletRequest();
     Cookie cookie = new Cookie(AccountsController.COOKIE, token);

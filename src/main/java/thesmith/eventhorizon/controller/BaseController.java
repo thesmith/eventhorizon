@@ -23,6 +23,7 @@ import thesmith.eventhorizon.model.Status;
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.SnapshotService;
+import thesmith.eventhorizon.service.SocialGraphApiService;
 import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
 
@@ -39,6 +40,9 @@ public class BaseController {
   public static final String SECURE_HOST = "https://event-horizon.appspot.com";
   public static final String REDIRECT = "redirect:";
   protected final Log logger = LogFactory.getLog(this.getClass());
+  
+  @Autowired
+  protected SocialGraphApiService socialGraphApi;
 
   @Autowired
   protected UserService userService;
@@ -261,6 +265,10 @@ public class BaseController {
 
   public void setSnapshotService(SnapshotService snapshotService) {
     this.snapshotService = snapshotService;
+  }
+  
+  public void setSocialGraphApiService(SocialGraphApiService socialGraphApi) {
+    this.socialGraphApi = socialGraphApi;
   }
 
   public void setQueue(Queue queue) {
