@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -21,6 +22,7 @@ import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.CacheService;
 import thesmith.eventhorizon.service.UserService;
 
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.util.Base64;
 
 /**
@@ -31,17 +33,22 @@ import com.google.appengine.repackaged.com.google.common.util.Base64;
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
+  public static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/%s?s=52";
+  
   private static final String HMAC_SHA1_ALGORITHM = "HmacSHA1";
   private static final String DELIMITOR = "|";
   private static final String CACHE_KEY_PREFIX = "gravatar_";
-  private static final String GRAVATAR_URL = "http://www.gravatar.com/avatar/%s?s=52";
+  private static final String USERS_KEY = "random_users";
   private final Log logger = LogFactory.getLog(this.getClass());
+  private static final int MAX = 10;
 
   @PersistenceContext
   private EntityManager em;
 
   @Autowired
   private CacheService<String> cache;
+  @Autowired
+  private CacheService<List<User>> userCache;
 
   /** {@inheritDoc} */
   public void create(User user) {
@@ -160,6 +167,24 @@ public class UserServiceImpl implements UserService {
     } catch (SignatureException e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  /** {@inheritDoc} */
+  @SuppressWarnings("unchecked")
+  public List<User> randomList() {
+    List<User> users = null;
+    if (null != cache)
+      users = userCache.get(USERS_KEY);
+    
+    if (null == users) {
+      users = em.createQuery("select u from User u where u.gravatar is not null").setMaxResults(MAX).getResultList();
+      userCache.put(USERS_KEY, Lists.newArrayList(users));
+    }
+    
+    if (null == users)
+      users = Lists.newArrayList();
+    
+    return users;
   }
 
   /**

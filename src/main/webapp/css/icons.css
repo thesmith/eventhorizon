@@ -5,6 +5,7 @@ label { font-size: 1.3em; padding-top: 9px; float: left; width: 6em; }
 label.image { margin-top: 6px; padding: 0px; width: 9em; }
 label.long { width: 14em; }
 input.submit { margin-left: 101px; width: 7em; background-color:#3392ce; background-image:url(/gfx/submitbg.png); background-repeat:repeat-x; background-position:0 center; width:122px; border:1px solid #2c8ecc; color:white; font-size:1.4em; letter-spacing:.05em; cursor:pointer; border-bottom-left-radius: 10px 10px; border-bottom-right-radius: 10px 10px; border-top-left-radius: 10px 10px; border-top-right-radius: 10px 10px; }
+input.submit:hover { background-position: -450px 50%; }
 input.submit_long { margin-left: 13em; }
 input.submit_inline { margin-left: 10px; }
 div.row { padding: 2px; }

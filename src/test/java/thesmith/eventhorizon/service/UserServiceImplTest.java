@@ -1,6 +1,11 @@
 package thesmith.eventhorizon.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +90,23 @@ public class UserServiceImplTest extends DataStoreBaseTest {
     assertNotNull(authUser);
     assertEquals(user.getUsername(), authUser.getUsername());
     assertNotSame("somepassword", authUser.getPassword());
+  }
+  
+  @Test
+  public void shouldRetrieveUsers() throws Exception {
+    for (int i=0; i<20; i++) {
+      User user = new User();
+      user.setUsername("user"+Math.random());
+      user.setPassword("password");
+      user.setEmail("ben@thesmith.co.uk");
+      service.create(user);
+    }
+    
+    List<User> users = service.randomList();
+    assertNotNull(users);
+    assertEquals(10, users.size());
+    for (User user: users) {
+      assertNotNull(user.getGravatar());
+    }
   }
 }

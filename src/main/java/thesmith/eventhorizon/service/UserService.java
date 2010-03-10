@@ -1,5 +1,7 @@
 package thesmith.eventhorizon.service;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 
 import thesmith.eventhorizon.model.User;
@@ -70,4 +72,10 @@ public interface UserService {
    * @throws SecurityException
    */
   public String hash(String string);
+  
+  /**
+   * Retrieve a random list of random users with gravatars
+   * @return
+   */
+  public List<User> randomList();
 }

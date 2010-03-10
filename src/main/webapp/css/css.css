@@ -6,8 +6,10 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 #container { margin: 26px auto; width: 832px; text-align: left; font-size: 1.3em; }
 #mast { width: 832px; height: 52px; margin: 0; font-size: 2.6em; padding-bottom: 1em; }
 #userbar { font-size: 1.5em; float: left; margin-top: 32px; position: absolute; right: 26px;}
-#cta { font-size: 2.6em; display: block; margin-top: 4em; margin-left 5em; }
+#cta { font-size: 1.6em; display: block; margin: 3em; }
 #cta a{ background-color:#3392ce; background-image:url(/gfx/submitbg.png); background-repeat:repeat-x; background-position:0 center; border:1px solid #2c8ecc; color:white; padding-left: 10px; padding-right: 10px; font-size:2.6em; cursor:pointer; border-bottom-left-radius: 10px 10px; border-bottom-right-radius: 10px 10px; border-top-left-radius: 10px 10px; border-top-right-radius: 10px 10px; }
+#cta a:hover{ background-position: -450px 50%; }
+#users a{ border:1px solid #2c8ecc; margin: 5px; padding: 17px 0px 20px; }
 
 #primary, #secondary, #tertiary { float: left; display: inline; padding: 0; }
 

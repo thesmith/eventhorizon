@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
+import thesmith.eventhorizon.model.User;
+import thesmith.eventhorizon.service.impl.UserServiceImpl;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
@@ -174,12 +176,23 @@ public class IndexController extends BaseController {
     if (null == view)
       view = "index/home";
 
+    model.addAttribute("userLinks", userLinks(userService.randomList()));
     return view;
   }
 
   @RequestMapping(value = "/error", method = RequestMethod.GET)
   public String error() {
     return "error";
+  }
+  
+  private Map<String, String> userLinks(List<User> users) {
+    Map<String, String> userLinks = Maps.newHashMap();
+    
+    for (User user: users) {
+      userLinks.put(userHost(user.getUsername()), String.format(UserServiceImpl.GRAVATAR_URL, user.getGravatar()));
+    }
+    
+    return userLinks;
   }
 
   private void setModel(String personId, Date from, ModelMap model) {

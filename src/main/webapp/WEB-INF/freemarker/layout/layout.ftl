@@ -35,9 +35,9 @@
     </div>
     <div id="userbar">
     <#if viewer != "">
-      <a href="${userHost}">${viewer}</a> | <a href="${secureHost}/accounts">dashboard</a> | <a href="${secureHost}/users/logout">logout</a>
+      <a href="${userHost}">${viewer}</a><span class="decorator">.</span> <a href="${secureHost}/accounts">dashboard</a> <span class="decorator">or</span> <a href="${secureHost}/users/logout">logout</a>
     <#else>
-      <a href="${secureHost}/users/login">login</a> | <a href="${secureHost}/users/register">register</a>
+      <a href="${secureHost}/users/login">login</a> <span class="decorator">or</span> <a href="${secureHost}/users/register">register</a>
     </#if>
     </div>
   </body>
