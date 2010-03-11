@@ -117,7 +117,7 @@ public class StatusServiceImpl implements StatusService {
   public List<Status> list(Account account, int page) {
     EventService service = eventServices.get(account.getDomain());
     if (service == null)
-      throw new RuntimeException("Unable to process events from unknown domain: " + account.getDomain());
+      return Lists.newArrayList();
 
     List<Status> statuses = Lists.newArrayList();
     Date oldest = null;
