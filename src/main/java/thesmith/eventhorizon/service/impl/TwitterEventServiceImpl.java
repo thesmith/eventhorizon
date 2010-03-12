@@ -47,7 +47,8 @@ public class TwitterEventServiceImpl implements EventService {
         events.add(event);
       }
     } catch (TwitterException e) {
-      throw new RuntimeException(e);
+      if (logger.isWarnEnabled())
+        logger.warn("Unable to retrieve tweets for "+account+" with error "+e.getStatusCode()+" '"+e.getMessage()+"'");
     }
     return events;
   }

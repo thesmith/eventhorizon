@@ -51,7 +51,7 @@ public class StatusServiceImpl implements StatusService {
 
   @SuppressWarnings("unchecked")
   @Transactional
-  public void create(Status status) {
+  public boolean create(Status status) {
     if (null == status.getTitle() || null == status.getTitleUrl() || null == status.getCreated())
       throw new RuntimeException("Unable to create status without appropriate info: " + status);
 
@@ -62,15 +62,19 @@ public class StatusServiceImpl implements StatusService {
     if (null == statuses || statuses.size() < 1) {
       em.persist(status);
       em.flush();
+      if (null != cache && null != status.getId())
+        cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
+      return true;
     } else {
       Status s = statuses.get(0);
       s.setTitle(status.getTitle());
       s.setTitleUrl(status.getTitleUrl());
       em.merge(s);
       status = s;
+      if (null != cache && null != status.getId())
+        cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
     }
-    if (null != cache && null != status.getId())
-      cache.put(StatusService.CACHE_KEY_PREFIX + status.getId(), status);
+    return false;
   }
 
   @Transactional

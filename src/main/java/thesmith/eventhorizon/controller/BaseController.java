@@ -40,7 +40,7 @@ public class BaseController {
   public static final String SECURE_HOST = "https://event-horizon.appspot.com";
   public static final String REDIRECT = "redirect:";
   protected final Log logger = LogFactory.getLog(this.getClass());
-  
+
   @Autowired
   protected SocialGraphApiService socialGraphApi;
 
@@ -77,28 +77,28 @@ public class BaseController {
     if (null != previous)
       previousCreated = new Date(previous.getCreated().getTime() + 1L);
 
-    statusService.create(status);
-
-    boolean found = false;
-    int size = 0;
-    if (null != previousCreated) {
-      List<Snapshot> snapshots = snapshotService.list(status.getPersonId(), previousCreated, nextCreated, 0);
-      size = snapshots.size();
-      for (Snapshot snapshot : snapshots) {
-        snapshotService.addStatus(snapshot, status);
-        if (snapshot.getCreated().equals(status.getCreated()))
-          found = true;
+    if (statusService.create(status)) {
+      boolean found = false;
+      int size = 0;
+      if (null != previousCreated) {
+        List<Snapshot> snapshots = snapshotService.list(status.getPersonId(), previousCreated, nextCreated, 0);
+        size = snapshots.size();
+        for (Snapshot snapshot : snapshots) {
+          snapshotService.addStatus(snapshot, status);
+          if (snapshot.getCreated().equals(status.getCreated()))
+            found = true;
+        }
       }
-    }
 
-    if (!found)
-      createSnapshot(status, accounts);
+      if (!found)
+        createSnapshot(status, accounts);
 
-    if (size >= SnapshotService.MAX) {
-      queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/" + account.getDomain() + "/create").param(
-          "created", String.valueOf(status.getCreated().getTime())).param("previous",
-          String.valueOf(previousCreated.getTime())).param("next", String.valueOf(nextCreated.getTime())).param("page",
-          String.valueOf(1)));
+      if (size >= SnapshotService.MAX) {
+        queue.add(url("/jobs/snapshots/" + account.getPersonId() + "/" + account.getDomain() + "/create").param(
+            "created", String.valueOf(status.getCreated().getTime())).param("previous",
+            String.valueOf(previousCreated.getTime())).param("next", String.valueOf(nextCreated.getTime())).param(
+            "page", String.valueOf(1)));
+      }
     }
 
     nextCreated = status.getCreated();
@@ -170,13 +170,13 @@ public class BaseController {
       }
     }
   }
-  
+
   protected String redirectIndex(HttpServletRequest request) {
     Cookie[] cookies = request.getCookies();
     if (null != cookies) {
       for (Cookie cookie : cookies) {
         if (BaseController.USERNAME_COOKIE.equalsIgnoreCase(cookie.getName())) {
-          return "redirect:"+userHost(cookie.getValue());
+          return "redirect:" + userHost(cookie.getValue());
         }
       }
     }
@@ -201,7 +201,7 @@ public class BaseController {
       username.setDomain(HOST_POSTFIX);
     response.addCookie(username);
   }
-  
+
   protected void unsetCookie(HttpServletResponse response) {
     Cookie cookie = new Cookie(COOKIE, "empty");
     cookie.setMaxAge(0);
@@ -212,7 +212,7 @@ public class BaseController {
     username.setMaxAge(0);
     username.setPath("/");
     response.addCookie(username);
-    
+
     Cookie u = new Cookie(USERNAME_COOKIE, "empty");
     u.setMaxAge(0);
     u.setPath("/");
@@ -238,7 +238,7 @@ public class BaseController {
       return AuthController.AUTH_URL + "?ptrt=" + ptrt;
     }
   }
-  
+
   protected String unauthUrl(String ptrt) {
     if (null == ptrt) {
       if (isProduction())
@@ -266,7 +266,7 @@ public class BaseController {
   public void setSnapshotService(SnapshotService snapshotService) {
     this.snapshotService = snapshotService;
   }
-  
+
   public void setSocialGraphApiService(SocialGraphApiService socialGraphApi) {
     this.socialGraphApi = socialGraphApi;
   }

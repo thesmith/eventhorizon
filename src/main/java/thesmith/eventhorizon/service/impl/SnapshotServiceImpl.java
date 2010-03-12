@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 public class SnapshotServiceImpl implements SnapshotService {
   @PersistenceContext
   private EntityManager em;
+  private final Log logger = LogFactory.getLog(this.getClass());
 
   @SuppressWarnings("unchecked")
   public List<Snapshot> list(String personId, Date from, Date to) {
@@ -50,9 +53,10 @@ public class SnapshotServiceImpl implements SnapshotService {
   }
 
   public void addStatus(Snapshot snapshot, Status status) {
-    if (null == status || null == status.getId())
+    if (null == status || null == status.getId() || null == snapshot.getId())
       return;
 
+    List<Key> statusIds = Lists.newArrayList(snapshot.getStatusIds());
     if (null == snapshot.getStatusIds() || null == snapshot.getDomains()) {
       snapshot.setStatusIds(Lists.<Key> newArrayList());
       snapshot.setDomains(Lists.<String> newArrayList());
@@ -74,7 +78,14 @@ public class SnapshotServiceImpl implements SnapshotService {
       snapshot.getDomains().add(status.getDomain());
     }
 
-    em.merge(snapshot);
+    if (! snapshot.getStatusIds().equals(statusIds)) {
+      try {
+        em.merge(snapshot);
+      } catch (IllegalStateException e) {
+        if (logger.isWarnEnabled())
+          logger.warn("Unable to update snapshot: "+snapshot+" which differed from its previous statusIds: "+statusIds);
+      }
+    }
   }
 
   public void create(Snapshot snapshot) {

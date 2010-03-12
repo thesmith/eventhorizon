@@ -167,9 +167,17 @@ public class AccountServiceImpl implements AccountService {
   @SuppressWarnings("unchecked")
   public List<Account> toProcess(int limit) {
     Calendar by = Calendar.getInstance();
-    by.add(Calendar.HOUR, -1);
-    return em.createQuery("select a from Account a where a.processed < :processed order by a.processed desc")
+    by.add(Calendar.HOUR, -2);
+    List<Account> accounts = em.createQuery("select a from Account a where a.processed < :processed order by a.processed desc")
         .setParameter("processed", by.getTime()).setMaxResults(limit).getResultList();
+    
+    List<Account> filteredAccounts = Lists.newArrayList();
+    for (Account account: accounts) {
+      if (!FREESTYLE_DOMAINS.contains(account.getDomain()))
+        filteredAccounts.add(account);
+    }
+    
+    return filteredAccounts;
   }
 
   /** {@inheritDoc} */

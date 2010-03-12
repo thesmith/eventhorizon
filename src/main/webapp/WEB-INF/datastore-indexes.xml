@@ -4,10 +4,6 @@
     <property name="person_id" direction="asc" />
     <property name="domain" direction="asc" />
   </datastore-index>
-  
-  <datastore-index kind="user" ancestor="false">
-    <property name="gravatar" direction="asc" />
-  </datastore-index>
 
   <datastore-index kind="status" ancestor="false">
     <property name="person_id" direction="asc" />

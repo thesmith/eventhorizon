@@ -23,7 +23,7 @@ public interface StatusService {
    * Create a new status for a person
    * @param status
    */
-  public void create(Status status);
+  public boolean create(Status status);
   
   /**
    * Delete a status object
