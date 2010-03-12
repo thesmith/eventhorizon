@@ -10,6 +10,7 @@ function updatePage(urlAppend, from, direction) {
 
     if (data.statuses) {
       $.each(data.statuses, function(i, status) {
+        var currentDate = eventhorizonDates[status.domain];
         eventhorizonDates[status.domain] = urlDate(new Date(status.created));
         var directionOut = '+50em';
         var directionBack = '-100em';
@@ -18,7 +19,7 @@ function updatePage(urlAppend, from, direction) {
           directionBack = '+100em';
         }
         
-        if (direction == 'next' || direction == 'previous') {
+        if ((direction == 'next' || direction == 'previous') && (currentDate != eventhorizonDates[status.domain])) {
           $("#" + status.domain + " .status").animate({"left": directionOut}, periodSpeed(status.period), null, 
               function() {
                 $(this).html(status.status).removeClass('yonks month week today').addClass(status.period)
