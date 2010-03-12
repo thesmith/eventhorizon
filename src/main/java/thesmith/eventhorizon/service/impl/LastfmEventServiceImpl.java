@@ -38,20 +38,23 @@ public class LastfmEventServiceImpl implements EventService {
       }
       reader.close();
 
-      JSONArray tracks = (new JSONObject(json.toString())).getJSONObject("recenttracks").getJSONArray("track");
-      for (int i = 0; i < tracks.length(); i++) {
-        JSONObject track = tracks.getJSONObject(i);
-        Event event = new Event();
-        event.setTitle(track.getJSONObject("artist").getString("#text") + " - " + track.getString("name"));
-        event.setTitleUrl(track.getString("url"));
-        if (track.has("date")) {
-          event.setCreated(formater.parseDateTime(track.getJSONObject("date").getString("#text")).toDate());
-        } else {
-          event.setCreated(new Date());
+      JSONObject recentTracks = (new JSONObject(json.toString())).getJSONObject("recenttracks");
+      if (recentTracks.has("track")) {
+        JSONArray tracks = recentTracks.getJSONArray("track");
+        for (int i = 0; i < tracks.length(); i++) {
+          JSONObject track = tracks.getJSONObject(i);
+          Event event = new Event();
+          event.setTitle(track.getJSONObject("artist").getString("#text") + " - " + track.getString("name"));
+          event.setTitleUrl(track.getString("url"));
+          if (track.has("date")) {
+            event.setCreated(formater.parseDateTime(track.getJSONObject("date").getString("#text")).toDate());
+          } else {
+            event.setCreated(new Date());
+          }
+          event.setDomainUrl(DOMAIN_URL);
+          event.setUserUrl(DOMAIN_URL + "/user/" + account.getUserId());
+          events.add(event);
         }
-        event.setDomainUrl(DOMAIN_URL);
-        event.setUserUrl(DOMAIN_URL + "/user/" + account.getUserId());
-        events.add(event);
       }
 
       return events;

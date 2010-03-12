@@ -70,6 +70,7 @@ public class AccountServiceImpl implements AccountService {
   /** {@inheritDoc} */
   public void create(Account account) {
     this.validate(account);
+    
     if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
       account.setTemplate(defaults.get(account.getDomain()));
     if (null == account.getProcessed()) {
@@ -81,8 +82,14 @@ public class AccountServiceImpl implements AccountService {
     if (null != account.getUserId() && userUrls.containsKey(account.getDomain()))
       account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
 
-    if (null == this.findLiveAccount(account.getPersonId(), account.getDomain()))
+    Account existingAccount = this.findLiveAccount(account.getPersonId(), account.getDomain());
+    if (null == existingAccount)
       em.persist(account);
+    else if (!account.getUserId().equals(existingAccount.getUserId())) {
+      existingAccount.setUserId(account.getUserId());
+      em.merge(existingAccount);
+      account = existingAccount;
+    }
     cache.put(key(account.getPersonId(), account.getDomain()), account);
   }
 
