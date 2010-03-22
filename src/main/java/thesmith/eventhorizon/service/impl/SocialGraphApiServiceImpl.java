@@ -4,24 +4,34 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.SocialGraphApiService;
+import thesmith.eventhorizon.service.AccountService.DOMAIN;
 import twitter4j.org.json.JSONException;
 import twitter4j.org.json.JSONObject;
 
 import com.google.appengine.repackaged.com.google.common.base.StringUtil;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
 
+@Service
 public class SocialGraphApiServiceImpl implements SocialGraphApiService {
   private static final String URL = "http://socialgraph.apis.google.com/otherme?q=%s&sgn=1";
-  @SuppressWarnings("deprecation")
-  private static final List<String> domainSearches = Lists.immutableList(AccountService.DOMAIN_SEARCH.keySet());
+  private static final Map<String, DOMAIN> domainSearches = Maps.newHashMap();
+  static {
+    for (DOMAIN domain: DOMAIN.values()) {
+      if (null != domain.getDomainSearch())
+        domainSearches.put(domain.getDomainSearch(), domain);
+    }
+  }
 
   @Autowired
   private AccountService accountService;
@@ -50,10 +60,10 @@ public class SocialGraphApiServiceImpl implements SocialGraphApiService {
     String[] names = JSONObject.getNames(graph);
     if (null != names && names.length > 0) {
       for (String name: names) {
-        String domain = findDomain(name);
+        DOMAIN domain = findDomain(name);
         if (null != domain) {
-          Account account = accountService.account(personId, domain);
-          Pattern p = AccountService.DOMAIN_MATCHERS.get(domain);
+          Account account = accountService.account(personId, domain.toString());
+          Pattern p = domain.getDomainMatcher();
           Matcher m = p.matcher(name);
           if (m.find()) {
             account.setUserId(m.group(1));
@@ -65,10 +75,10 @@ public class SocialGraphApiServiceImpl implements SocialGraphApiService {
     return accounts;
   }
 
-  protected String findDomain(String domain) {
-    for (String search: domainSearches) {
-      if (domain.contains(search))
-        return AccountService.DOMAIN_SEARCH.get(search);
+  protected DOMAIN findDomain(String domain) {
+    for (String search: domainSearches.keySet()) {
+      if (null != search && domain.contains(search))
+        return domainSearches.get(search);
     }
     return null;
   }

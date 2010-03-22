@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Event;
@@ -19,6 +20,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.org.joda.time.format.DateTimeFormat;
 import com.google.appengine.repackaged.org.joda.time.format.DateTimeFormatter;
 
+@Service
 public class GithubEventServiceImpl implements EventService {
   private static final String URL = "http://github.com/%s.json";
   private static final String COMMIT_TYPE = "PushEvent";

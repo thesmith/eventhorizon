@@ -27,36 +27,6 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
 @Transactional
 @Service
 public class AccountServiceImpl implements AccountService {
-  public static final Map<String, String> defaults = Maps.newConcurrentMap();
-  static {
-    defaults.put(AccountService.DOMAIN.twitter.toString(),
-        "{ago}, <a href='{userUrl}' rel='me'>I</a> <a href='{titleUrl}'>tweeted</a> '{title}'.");
-    defaults.put(AccountService.DOMAIN.lastfm.toString(),
-        "As far as <a href='{domainUrl}'>last.fm</a> knows, the last thing "
-            + "<a href='{userUrl}' rel='me'>I</a> listened to was "
-            + "<a href='{titleUrl}'>{title}</a>, and that was {ago}.");
-    defaults.put(AccountService.DOMAIN.flickr.toString(),
-        "<a href='{userUrl}' rel='me'>I</a> took a <a href='{titleUrl}'>photo</a> "
-            + "{ago} called '{title}' and uploaded it to <a href='{domainUrl}'>flickr</a>.");
-    defaults.put(AccountService.DOMAIN.birth.toString(), "I was born {ago} in <a href='{titleUrl}'>{title}</a>.");
-    defaults.put(AccountService.DOMAIN.lives.toString(),
-        "I now live in <a href='{titleUrl}'>{title}</a> which I moved to {ago}.");
-    defaults.put(AccountService.DOMAIN.wordr.toString(),
-        "And, {ago}, <a href='{userUrl}'>my</a> last <a href='{domainUrl}'>word</a> "
-            + "was <a href='{titleUrl}'>{title}</a>.");
-    defaults.put(AccountService.DOMAIN.github.toString(), "{ago}, <a href='{userUrl}' rel='me'>I</a> "
-        + "pushed to {title}.");
-  }
-
-  public static final Map<String, String> domainUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
-      "http://twitter.com", AccountService.DOMAIN.lastfm.toString(), "http://last.fm", AccountService.DOMAIN.flickr
-          .toString(), "http://flickr.com", AccountService.DOMAIN.wordr.toString(), "http://wordr.org",
-      AccountService.DOMAIN.github.toString(), "http://github.com");
-
-  public static final Map<String, String> userUrls = Maps.immutableMap(AccountService.DOMAIN.twitter.toString(),
-      "http://twitter.com/%s", AccountService.DOMAIN.lastfm.toString(), "http://last.fm/user/%s",
-      AccountService.DOMAIN.flickr.toString(), "http://flickr.com/people/%s", AccountService.DOMAIN.wordr.toString(),
-      "http://wordr.org/users/%s", AccountService.DOMAIN.github.toString(), "http://github.com/%s");
 
   private static final String CACHE_KEY_PREFIX = "accounts_";
   private static final String DELIMITER = "_";
@@ -69,18 +39,18 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public void create(Account account) {
-    this.validate(account);
+    DOMAIN domain = this.validate(account);
     
-    if (null == account.getTemplate() && defaults.containsKey(account.getDomain()))
-      account.setTemplate(defaults.get(account.getDomain()));
+    if (null == account.getTemplate())
+      account.setTemplate(domain.getDefaultTemplate());
     if (null == account.getProcessed()) {
       Calendar agesago = Calendar.getInstance();
       agesago.add(Calendar.DAY_OF_WEEK, -5);
       account.setProcessed(agesago.getTime());
     }
-    account.setDomainUrl(domainUrls.get(account.getDomain()));
-    if (null != account.getUserId() && userUrls.containsKey(account.getDomain()))
-      account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
+    account.setDomainUrl(domain.getDomainUrl());
+    if (null != account.getUserId() && null != domain.getUserUrl())
+      account.setUserUrl(String.format(domain.getUserUrl(), account.getUserId()));
 
     Account existingAccount = this.findLiveAccount(account.getPersonId(), account.getDomain());
     if (null == existingAccount)
@@ -93,14 +63,15 @@ public class AccountServiceImpl implements AccountService {
     cache.put(key(account.getPersonId(), account.getDomain()), account);
   }
 
-  public Account account(String personId, String domain) {
+  public Account account(String personId, String d) {
+    DOMAIN domain = DOMAIN.valueOf(d);
     Account account = new Account();
     account.setPersonId(personId);
-    account.setDomain(domain);
-    account.setDomainUrl(domainUrls.get(account.getDomain()));
-    if (userUrls.containsKey(account.getDomain()))
-      account.setUserUrl(String.format(userUrls.get(account.getDomain()), account.getUserId()));
-    account.setTemplate(defaults.get(account.getDomain()));
+    account.setDomain(domain.toString());
+    account.setDomainUrl(domain.getDomainUrl());
+    if (null != domain.getUserUrl() && null != domain.getUserUrl())
+      account.setUserUrl(String.format(domain.getUserUrl(), account.getUserId()));
+    account.setTemplate(domain.getDefaultTemplate());
     return account;
   }
 
@@ -114,7 +85,11 @@ public class AccountServiceImpl implements AccountService {
 
   /** {@inheritDoc} */
   public List<String> domains(String personId) {
-    return Lists.newArrayList(defaults.keySet());
+    List<String> domains = Lists.newArrayList();
+    for (DOMAIN domain: DOMAIN.values()) {
+      domains.add(domain.toString());
+    }
+    return domains;
   }
 
   /** {@inheritDoc} */
@@ -140,7 +115,7 @@ public class AccountServiceImpl implements AccountService {
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   public List<Account> list(String personId) {
-    Map<String, Account> cachedAccounts = cache.getAll(cacheKeys(personId, Lists.newArrayList(defaults.keySet())));
+    Map<String, Account> cachedAccounts = cache.getAll(cacheKeys(personId, domains(null)));
     List<String> missingKeys = missingKeys(personId, cachedAccounts);
 
     if (!missingKeys.isEmpty()) {
@@ -157,7 +132,7 @@ public class AccountServiceImpl implements AccountService {
     List<Account> usersAccounts = this.list(personId);
     List<Account> accounts = Lists.newArrayList(usersAccounts);
 
-    for (String domain : defaults.keySet()) {
+    for (String domain : domains(null)) {
       boolean found = false;
       for (Account account : usersAccounts) {
         if (domain.equals(account.getDomain()))
@@ -193,7 +168,7 @@ public class AccountServiceImpl implements AccountService {
     cache.put(key(account.getPersonId(), account.getDomain()), account);
   }
 
-  private void validate(Account account) {
+  private DOMAIN validate(Account account) {
     if (null == account)
       throw new RuntimeException("You must pass an account");
     if (null == account.getPersonId())
@@ -202,7 +177,7 @@ public class AccountServiceImpl implements AccountService {
       throw new RuntimeException("You must include a domain");
     if (null == account.getUserId())
       throw new RuntimeException("You must include a userId");
-    AccountService.DOMAIN.valueOf(account.getDomain());
+    return AccountService.DOMAIN.valueOf(account.getDomain());
   }
 
   private Map<String, Account> cacheAccounts(String personId, List<Account> accounts) {
@@ -227,7 +202,7 @@ public class AccountServiceImpl implements AccountService {
 
   private List<String> missingKeys(String personId, Map<String, Account> cachedAccounts) {
     List<String> missing = Lists.newArrayList();
-    for (String domain : Lists.newArrayList(defaults.keySet())) {
+    for (String domain : domains(null)) {
       String key = key(personId, domain);
       if (!cachedAccounts.containsKey(key))
         missing.add(key);

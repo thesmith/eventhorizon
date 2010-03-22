@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Event;
@@ -17,6 +18,7 @@ import twitter4j.TwitterException;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 
+@Service
 public class TwitterEventServiceImpl implements EventService {
   private static final String DOMAIN_URL = "http://twitter.com";
   private static final int PAGE = 10;

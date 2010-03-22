@@ -37,18 +37,6 @@ public class SocialGraphApiServiceImplTest {// extends DataStoreBaseTest {
     }
     assertTrue(flickr);
   }
-  
-  @Test
-  public void shouldMatchFlickr() throws Exception {
-    String url = "http://www.flickr.com/photos/thesmith/";
-    Pattern p = AccountService.DOMAIN_MATCHERS.get("flickr");
-    Matcher m = p.matcher(url);
-    if (m.find()) {
-      String userId = m.group(1);
-      assertEquals("thesmith", userId);
-    }
-  }
-  
   @Test
   public void shouldReplaceLink() throws Exception {
     String tweet = "Panic Status Board: http://bit.ly/aTs0uZ";

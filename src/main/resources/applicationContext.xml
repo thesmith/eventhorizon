@@ -21,36 +21,7 @@
 
   <bean
     class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
-
-  <bean id="accountService" class="thesmith.eventhorizon.service.impl.AccountServiceImpl" />
-  <bean id="userService" class="thesmith.eventhorizon.service.impl.UserServiceImpl" />
-  <bean id="snapshotService" class="thesmith.eventhorizon.service.impl.SnapshotServiceImpl" />
-  <bean id="statusService" class="thesmith.eventhorizon.service.impl.StatusServiceImpl">
-    <constructor-arg>
-      <map>
-        <entry key="twitter" value-ref="twitterEventService" />
-        <entry key="lastfm" value-ref="lastfmEventService" />
-        <entry key="flickr" value-ref="flickrEventService" />
-        <entry key="wordr" value-ref="wordrEventService" />
-        <entry key="github" value-ref="githubEventService" />
-      </map>
-    </constructor-arg>
-  </bean>
-
-  <bean id="twitterEventService"
-    class="thesmith.eventhorizon.service.impl.TwitterEventServiceImpl" />
-  <bean id="lastfmEventService"
-    class="thesmith.eventhorizon.service.impl.LastfmEventServiceImpl" />
-  <bean id="flickrEventService"
-    class="thesmith.eventhorizon.service.impl.FlickrEventServiceImpl" />
-  <bean id="wordrEventService"
-    class="thesmith.eventhorizon.service.impl.WordrEventServiceImpl" />
-  <bean id="githubEventService"
-    class="thesmith.eventhorizon.service.impl.GithubEventServiceImpl" />
-  <bean id="socailGraphApiService"
-    class="thesmith.eventhorizon.service.impl.SocialGraphApiServiceImpl" />
-    
-  <bean id="cacheService" class="thesmith.eventhorizon.service.impl.CacheServiceImpl" />
+  
   <bean id="cacheManager" class="net.sf.jsr107cache.CacheManager" factory-method="getInstance"/>
   <bean id="cacheFactory" factory-bean="cacheManager" factory-method="getCacheFactory" />
 
@@ -58,6 +29,7 @@
   <bean id="registerValidator" class="thesmith.eventhorizon.validator.RegisterValidator" />
 
   <context:component-scan base-package="thesmith.eventhorizon.controller" />
+  <context:component-scan base-package="thesmith.eventhorizon.service.impl" />
   <tx:annotation-driven />
 
   <!--

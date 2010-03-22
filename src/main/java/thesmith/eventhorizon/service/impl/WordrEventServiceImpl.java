@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Event;
@@ -16,6 +17,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.org.joda.time.format.DateTimeFormat;
 import com.google.appengine.repackaged.org.joda.time.format.DateTimeFormatter;
 
+@Service
 public class WordrEventServiceImpl implements EventService {
   public final static String STATUS_URL = "http://wordr.org/status/";
   private final static DateTimeFormatter formater = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");

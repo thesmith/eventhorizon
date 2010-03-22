@@ -23,7 +23,7 @@ import thesmith.eventhorizon.service.AccountService;
 import thesmith.eventhorizon.service.SnapshotService;
 import thesmith.eventhorizon.service.StatusService;
 import thesmith.eventhorizon.service.UserService;
-import thesmith.eventhorizon.service.impl.AccountServiceImpl;
+import thesmith.eventhorizon.service.AccountService.DOMAIN;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
@@ -62,13 +62,15 @@ public class IndexControllerTest extends DataStoreBaseTest {
     Account account = new Account();
     account.setPersonId("person");
     account.setDomain("twitter");
-    account.setTemplate(AccountServiceImpl.defaults.get(account.getDomain()));
+    DOMAIN domain = DOMAIN.valueOf(account.getDomain());
+    account.setTemplate(domain.getDefaultTemplate());
     accounts.add(account);
 
     Account account2 = new Account();
     account2.setPersonId("person");
     account2.setDomain("lastfm");
-    account2.setTemplate(AccountServiceImpl.defaults.get(account.getDomain()));
+    domain = DOMAIN.valueOf(account.getDomain());
+    account2.setTemplate(domain.getDefaultTemplate());
     accounts.add(account2);
     EasyMock.expect(accountService.list("person")).andReturn(accounts);
     

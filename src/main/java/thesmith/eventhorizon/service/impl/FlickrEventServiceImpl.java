@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.stereotype.Service;
+
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Event;
 import thesmith.eventhorizon.service.EventService;
@@ -19,6 +21,7 @@ import com.aetrion.flickr.urls.UrlsInterface;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Sets;
 
+@Service
 public class FlickrEventServiceImpl implements EventService {
   private static final int PAGE = 10;
   private static final String DOMAIN_URL = "http://flickr.com";

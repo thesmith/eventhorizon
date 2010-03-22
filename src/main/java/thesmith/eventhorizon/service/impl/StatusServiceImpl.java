@@ -41,13 +41,10 @@ public class StatusServiceImpl implements StatusService {
   private EntityManager em;
   @Autowired
   private CacheService<Status> cache;
+  @Autowired
+  private EventServices eventServices;
 
   private final Log logger = LogFactory.getLog(this.getClass());
-  private final Map<String, EventService> eventServices;
-
-  public StatusServiceImpl(Map<String, EventService> eventServices) {
-    this.eventServices = eventServices;
-  }
 
   @SuppressWarnings("unchecked")
   @Transactional

@@ -11,6 +11,7 @@ import net.sf.jsr107cache.CacheFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import thesmith.eventhorizon.service.CacheService;
 
@@ -21,6 +22,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Maps;
  * 
  * @author bens
  */
+@Service
 public class CacheServiceImpl<T> implements CacheService<T> {
   //private static final int EXPIREY = 3600;
   protected final Log logger = LogFactory.getLog(this.getClass());
