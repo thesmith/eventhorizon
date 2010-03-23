@@ -1,4 +1,5 @@
 <@layout.layout "Your Accounts" "Your Accounts <span class='decorator'>or</span> <a href='/status'>Events</a>" "${viewer!}" "" "${userHost}">
+<div class="centered" style="width: 630px;">
 <ul>
   <#list domains as domain>
     <li>
@@ -13,6 +14,7 @@
     </li>
   </#list>
 </ul>
+</div>
 <div id="foot">
   <p><img src="${gravatar}" /> You could also <a href="/users/gravatar">update your Gravatar</a></p>
 </div>

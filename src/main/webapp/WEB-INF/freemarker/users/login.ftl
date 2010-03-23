@@ -1,4 +1,5 @@
 <@layout.layout "Login" "Login <span class='decorator'>or</span> <a href='/users/register'>Register</a>" "${viewer!}">
+<div class="centered">
 <form action="" method="POST">
   <div class="row">
     <label for="username">Username</label>
@@ -16,4 +17,5 @@
     <input class="submit" type="submit" name="login" value="Login" />
   </div>
 </form>
+</div>
 </@layout.layout>

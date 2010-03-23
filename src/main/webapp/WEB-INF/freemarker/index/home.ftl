@@ -6,7 +6,7 @@
 	</#list>
 </div>
 
-<div id="cta">
+<div id="cta" class="centered">
   <a href="${secureHost}/users/login">Login</a> <span class="decorator">or</span> <a href="${secureHost}/users/register">Register</a>
 </div>
 

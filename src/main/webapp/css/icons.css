@@ -58,6 +58,15 @@ div.tumblr_title{background-image:url('../gfx/tumblr_full.png');}
 div.account_title{color: transparent; height: 45px; width: 145px; float:left; background-repeat:no-repeat; background-color:transparent;}
 div.account_input{float: left; padding-top: 10px; padding-left: 10px;}
 
+#twitter { border-bottom:2px solid #00DEEE; }
+#lastfm { border-bottom:2px solid #D20039; }
+#github { border-bottom:2px solid #000000; }
+#wordr { border-bottom:2px solid #B60A02; }
+#tumblr { border-bottom:2px solid #37516A; }
+#flickr { border-bottom:2px solid #FD2A7D; }
+#birth { border-bottom:2px solid #AAAAAA; }
+#lives { border-bottom:2px solid #AAAAAA; }
+
 #svg { height: 500px; z-index: -1; }
 #slider { top: 0px; margin-top: 10px; width: 637px; position: absolute; }
 #title_username { top: 100px; left: 100; z-index: 99; }

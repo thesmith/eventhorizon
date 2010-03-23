@@ -9,7 +9,7 @@ $(function() {
   });
 });
 </script>
-<div class="form">
+<div class="form centered" style="width: 630px;">
   <form action="/status" method="post">
     <div class="row">
       <label for="birthTitle" class="long">Where were you born?</label>
