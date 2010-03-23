@@ -14,11 +14,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import lombok.Data;
+
 import com.google.appengine.api.datastore.Key;
 
 @Entity
 @Table(name = "account")
-public class Account implements Serializable, Cloneable {
+public @Data class Account implements Serializable, Cloneable {
   private static final long serialVersionUID = -1071691679726356019L;
 
   @Id
@@ -56,73 +58,4 @@ public class Account implements Serializable, Cloneable {
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "processed")
   private Date processed;
-
-  public Key getId() {
-    return id;
-  }
-
-  public void setId(Key id) {
-    this.id = id;
-  }
-
-  public String getPersonId() {
-    return personId;
-  }
-
-  public void setPersonId(String personId) {
-    this.personId = personId;
-  }
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
-  public String getTemplate() {
-    return template;
-  }
-
-  public void setTemplate(String template) {
-    this.template = template;
-  }
-
-  public Date getProcessed() {
-    return processed;
-  }
-
-  public void setProcessed(Date processed) {
-    this.processed = processed;
-  }
-
-  public String getUserUrl() {
-    return userUrl;
-  }
-
-  public void setUserUrl(String userUrl) {
-    this.userUrl = userUrl;
-  }
-
-  public String getDomainUrl() {
-    return domainUrl;
-  }
-
-  public void setDomainUrl(String domainUrl) {
-    this.domainUrl = domainUrl;
-  }
-  
-  @Override
-  public String toString() {
-    return "id: "+this.id+", personId: "+this.personId+", domain: "+this.domain+", userId: "+this.userId+", template: "+this.template+", userUrl: "+this.userUrl+", domainUrl: "+this.domainUrl;
-  }
 }

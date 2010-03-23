@@ -13,11 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.Data;
+
 import com.google.appengine.api.datastore.Key;
 
 @Entity
 @Table
-public class Snapshot implements Serializable {
+public @Data class Snapshot implements Serializable {
   private static final long serialVersionUID = -2946316378710810137L;
 
   @Id
@@ -43,49 +45,4 @@ public class Snapshot implements Serializable {
   @Basic
   @Column(name = "created")
   private Date created;
-
-  public Key getId() {
-    return id;
-  }
-
-  public void setId(Key id) {
-    this.id = id;
-  }
-
-  public String getPersonId() {
-    return personId;
-  }
-
-  public void setPersonId(String personId) {
-    this.personId = personId;
-  }
-
-  public List<Key> getStatusIds() {
-    return statusIds;
-  }
-
-  public void setStatusIds(List<Key> statusIds) {
-    this.statusIds = statusIds;
-  }
-
-  public Date getCreated() {
-    return created;
-  }
-
-  public void setCreated(Date created) {
-    this.created = created;
-  }
-
-  public List<String> getDomains() {
-    return domains;
-  }
-
-  public void setDomains(List<String> domains) {
-    this.domains = domains;
-  }
-  
-  @Override
-  public String toString() {
-    return "id: "+id+", personId: "+personId+", created: "+created+", statusIds: "+statusIds+", domains: "+domains;
-  }
 }

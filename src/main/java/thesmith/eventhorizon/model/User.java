@@ -12,11 +12,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import lombok.Data;
+
 import com.google.appengine.api.datastore.Key;
 
 @Entity
 @Table(name = "user")
-public class User implements Serializable {
+public @Data class User implements Serializable {
   private static final long serialVersionUID = -1071691679726356018L;
 
   @Id
@@ -41,44 +43,4 @@ public class User implements Serializable {
   @Basic
   @Column(name = "gravatar")
   private String gravatar;
-
-  public Key getId() {
-    return id;
-  }
-
-  public void setId(Key id) {
-    this.id = id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getGravatar() {
-    return gravatar;
-  }
-
-  public void setGravatar(String gravatar) {
-    this.gravatar = gravatar;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
 }

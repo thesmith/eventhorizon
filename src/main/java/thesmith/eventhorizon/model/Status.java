@@ -15,12 +15,14 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import lombok.Data;
+
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Text;
 
 @Entity
 @Table(name = "status")
-public class Status implements Serializable {
+public @Data class Status implements Serializable {
   private static final long serialVersionUID = 2586035568417551655L;
 
   @Id
@@ -60,31 +62,7 @@ public class Status implements Serializable {
 
   @Transient
   protected String period;
-
-  public Key getId() {
-    return id;
-  }
-
-  public void setId(Key id) {
-    this.id = id;
-  }
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  public String getPersonId() {
-    return personId;
-  }
-
-  public void setPersonId(String personId) {
-    this.personId = personId;
-  }
-
+  
   public String getStatus() {
     if (null == status)
       return null;
@@ -93,51 +71,5 @@ public class Status implements Serializable {
 
   public void setStatus(String status) {
     this.status = new Text(status);
-  }
-
-  public Date getCreated() {
-    return created;
-  }
-
-  public void setCreated(Date created) {
-    this.created = created;
-  }
-
-  public String getPeriod() {
-    return period;
-  }
-
-  public void setPeriod(String period) {
-    this.period = period;
-  }
-
-  public String getTitleUrl() {
-    return titleUrl;
-  }
-
-  public void setTitleUrl(String titleUrl) {
-    this.titleUrl = titleUrl;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getCreated_at() {
-    return created_at;
-  }
-
-  public void setCreated_at(String createdAt) {
-    created_at = createdAt;
-  }
-
-  @Override
-  public String toString() {
-    return "id: " + id + ", domain: " + domain + ", personId: " + personId + ", titleUrl: " + titleUrl + ", title: "
-        + title + ", created: " + created + ", period: " + period;
   }
 }
