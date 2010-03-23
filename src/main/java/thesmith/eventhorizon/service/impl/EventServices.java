@@ -18,6 +18,8 @@ public class EventServices {
   private TwitterEventServiceImpl twitter;
   @Autowired
   private WordrEventServiceImpl wordr;
+  @Autowired
+  private TumblrEventServiceImpl tumblr;
 
   public EventService get(String key) {
     try {
@@ -33,6 +35,8 @@ public class EventServices {
         return twitter;
       case wordr:
         return wordr;
+      case tumblr:
+        return tumblr;
       }
     } catch (Exception e) {}
 

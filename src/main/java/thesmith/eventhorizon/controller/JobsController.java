@@ -146,11 +146,12 @@ public class JobsController extends BaseController {
     Status status = statusService.find(account, d);
     if (null == status) {
       p = p + 1;
-      if (AccountService.DOMAIN.wordr.toString().equals(account.getDomain()))
-        p = Integer.valueOf(statuses.get(statuses.size() - 1).getTitleUrl().replace(WordrEventServiceImpl.STATUS_URL,
-            ""));
-      queue.add(url("/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/").param(PAGE,
-          String.valueOf(p)));
+      if (AccountService.DOMAIN.wordr.toString().equals(account.getDomain())) {
+        String titleUrl = statuses.get(statuses.size() - 1).getTitleUrl();
+        p = Integer.valueOf(titleUrl.replace(WordrEventServiceImpl.STATUS_URL, ""));
+      }
+      String url = "/jobs/accounts/" + account.getPersonId() + "/" + account.getDomain() + "/";
+      queue.add(url(url).param(PAGE, String.valueOf(p)));
     }
   }
 

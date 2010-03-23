@@ -29,6 +29,7 @@ span.yonks{ opacity: 0.5; }*/
 span.me{background-image:url('../gfx/london.png');}
 span.bbc{background-image:url('../gfx/id.png');}
 span.thing13{background-image:url('../gfx/thing13.png');}
+span.tumblr{background-image:url('../gfx/tumblr.png');}
 span.bookmark{background-image:url('../gfx/delicious.png');}
 span.flickr{background-image:url('../gfx/flickr.png');}
 span.lastfm{background-image:url('../gfx/lastfm.png');}
@@ -53,6 +54,7 @@ div.lastfm_title{background-image:url('../gfx/lastfm_full.png');}
 div.flickr_title{background-image:url('../gfx/flickr_full.png');}
 div.wordr_title{background-image:url('../gfx/wordr_full.png');}
 div.github_title{background-image:url('../gfx/github_full.png');}
+div.tumblr_title{background-image:url('../gfx/tumblr_full.png');}
 div.account_title{color: transparent; height: 45px; width: 145px; float:left; background-repeat:no-repeat; background-color:transparent;}
 div.account_input{float: left; padding-top: 10px; padding-left: 10px;}
 
