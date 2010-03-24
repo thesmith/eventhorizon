@@ -9,7 +9,8 @@ $(function() {
   });
 });
 </script>
-<div class="form centered" style="width: 630px;">
+<div class="centered" style="width: 630px;">
+<div class="form">
   <form action="/status" method="post">
     <div class="row">
       <label for="birthTitle" class="long">Where were you born?</label>
@@ -26,8 +27,8 @@ $(function() {
       <input class="submit submit_long" type="submit" name="submit" value="Submit" />
     </div>
   </form>
-  </div>
-  <div class="form">
+</div>
+<div class="form">
   <form action="/status" method="post">
     <div class="row">
       <label for="livesTitle" class="long">Where do you live now?</label>
@@ -44,5 +45,6 @@ $(function() {
       <input class="submit submit_long" type="submit" name="submit" value="Submit" />
     </div>
   </form>
+</div>
 </div>
 </@layout.layout>

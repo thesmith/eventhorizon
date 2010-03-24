@@ -13,6 +13,7 @@
     <script type="text/javascript" src="/js/js.js"></script> 
     <script type="text/javascript" src="/js/date.js"></script>
     <script type="text/javascript" src="/js/jquery.svg.js"></script>
+    <script type="text/javascript" src="/js/jquery.qtip-1.0.0-rc3.min.js"></script>
     <link rel="stylesheet" type="text/css" media="all" href="/css/css.css" /> 
     <link rel="stylesheet" type="text/css" media="all" href="/css/icons.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

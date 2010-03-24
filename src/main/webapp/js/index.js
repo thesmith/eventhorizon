@@ -34,6 +34,10 @@ $(document).ready(function() {
       }
     }
   }
+  
+  $("#status_holder").qtip({
+	  style: { name: 'cream', tip: true } 
+  });
 });
 
 function setPageToNow(protocol, host, user) {

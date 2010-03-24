@@ -13,7 +13,7 @@ div.form { padding: 5px; }
 span.error { font-size: 1.3em; padding-top: 9px; padding-left: 10px; color: #D00000; }
 
 div.previous{ float: left; }
-div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 7px;}
+div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 3px; padding: 2px; border-bottom-left-radius: 2px 2px; border-bottom-right-radius: 2px 2px; border-top-left-radius: 2px 2px; border-top-right-radius: 2px 2px;}
 div.next{ float: left; }
 
 span.status{ position: absolute; width: 50em; padding-left: 26px; background-repeat:no-repeat; background-color:transparent; }
@@ -59,13 +59,21 @@ div.account_title{color: transparent; height: 45px; width: 145px; float:left; ba
 div.account_input{float: left; padding-top: 10px; padding-left: 10px;}
 
 #twitter { border-bottom:2px solid #00DEEE; }
+/*#twitter .status_holder{ border:1px solid #00DEEE; }*/
 #lastfm { border-bottom:2px solid #D20039; }
+/*#lastfm .status_holder{ border:1px solid #D20039; }*/
 #github { border-bottom:2px solid #000000; }
+/*#github .status_holder{ border:1px solid #000000; }*/
 #wordr { border-bottom:2px solid #B60A02; }
+/*#wordr .status_holder{ border:1px solid #B60A02; }*/
 #tumblr { border-bottom:2px solid #37516A; }
+/*#tumblr .status_holder{ border:1px solid #37516A; }*/
 #flickr { border-bottom:2px solid #FD2A7D; }
+/*#flickr .status_holder{ border:1px solid #FD2A7D; }*/
 #birth { border-bottom:2px solid #AAAAAA; }
+/*#birth .status_holder{ border:1px solid #AAAAAA; }*/
 #lives { border-bottom:2px solid #AAAAAA; }
+/*#lives .status_holder{ border:1px solid #AAAAAA; }*/
 
 #svg { height: 500px; z-index: -1; }
 #slider { top: 0px; margin-top: 10px; width: 637px; position: absolute; }

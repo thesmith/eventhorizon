@@ -28,6 +28,31 @@ function updatePage(urlAppend, from, direction) {
         } else {
           $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
         }
+        $("#" + status.domain + " .status_holder").qtip({
+      	  content: $("#" + status.domain + " .status").html(),
+            position: {
+               corner: {
+                  tooltip: 'bottomMiddle', // Use the corner...
+                  target: 'bottomMiddle' // ...and opposite corner
+               }
+            },
+            show: {
+               when: false, // Don't specify a show event
+               ready: true // Show the tooltip when ready
+            },
+            hide: false, // Don't specify a hide event
+            style: {
+               border: {
+                  width: 2,
+                  radius: 2
+               },
+               padding: 0, 
+               width: 650,
+               textAlign: 'center',
+               tip: true, // Give it a speech bubble tip with automatic corner detection
+               name: 'light' // Style it according to the preset 'light' style
+            }
+         });
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
                 + "/previous");
