@@ -1,4 +1,4 @@
-li{ list-style:none; height: 4em; }
+li{ list-style:none; height: 5em; }
 img { vertical-align: middle; }
 input { border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; border: 1px solid rgb(143, 143, 143); font-size: 1.3em; padding: 5px; width: 320px; }
 label { font-size: 1.3em; padding-top: 9px; float: left; width: 6em; }
@@ -16,7 +16,7 @@ div.previous{ float: left; }
 div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 3px; padding: 2px; border-bottom-left-radius: 2px 2px; border-bottom-right-radius: 2px 2px; border-top-left-radius: 2px 2px; border-top-right-radius: 2px 2px;}
 div.next{ float: left; }
 
-span.status{ position: absolute; width: 50em; padding-left: 26px; background-repeat:no-repeat; background-color:transparent; }
+span.status{ font-size: 1.4em; width: 50em; padding-left: 26px; background-repeat:no-repeat; background-color:transparent; }
 
 a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }

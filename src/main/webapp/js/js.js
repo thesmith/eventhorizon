@@ -12,47 +12,37 @@ function updatePage(urlAppend, from, direction) {
       $.each(data.statuses, function(i, status) {
         var currentDate = eventhorizonDates[status.domain];
         eventhorizonDates[status.domain] = urlDate(new Date(status.created));
-        var directionOut = '+50em';
-        var directionBack = '-100em';
-        if (direction == 'next') {
-          directionOut = '-50em';
-          directionBack = '+100em';
-        }
+        $("#" + status.domain + " .status_holder").hide();
+        $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
         
-        if ((direction == 'next' || direction == 'previous') && (currentDate != eventhorizonDates[status.domain])) {
-          $("#" + status.domain + " .status").animate({"left": directionOut}, periodSpeed(status.period), null, 
-              function() {
-                $(this).html(status.status).removeClass('yonks month week today').addClass(status.period)
-                    .css('left', directionBack).animate({"left": "+0em"}, periodSpeed(status.period));
-          });
-        } else {
-          $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
-        }
-        $("#" + status.domain + " .status_holder").qtip({
-      	  content: $("#" + status.domain + " .status").html(),
-            position: {
-               corner: {
-                  tooltip: 'bottomMiddle', // Use the corner...
-                  target: 'bottomMiddle' // ...and opposite corner
-               }
-            },
-            show: {
-               when: false, // Don't specify a show event
-               ready: true // Show the tooltip when ready
-            },
-            hide: false, // Don't specify a hide event
-            style: {
-               border: {
-                  width: 2,
-                  radius: 2
-               },
-               padding: 0, 
-               width: 650,
-               textAlign: 'center',
-               tip: true, // Give it a speech bubble tip with automatic corner detection
-               name: 'light' // Style it according to the preset 'light' style
-            }
-         });
+        $("#" + status.domain).qtip({
+          content: $("#" + status.domain + " .status_holder").html(),
+          position: {
+             corner: {
+                tooltip: 'bottomMiddle',
+                target: 'bottomMiddle'
+             }
+          },
+          show: {
+             when: false, // Don't specify a show event
+             ready: true // Show the tooltip when ready
+          },
+          hide: false, // Don't specify a hide event
+          style: {
+             border: {
+               width: 2,
+               radius: 2
+             },
+             padding: 0, 
+             width: 650,
+             textAlign: 'center',
+             tip: true,
+             classes: {
+               content: 'status'
+             },
+             name: 'light' // Style it according to the preset 'light' style
+          }
+        });
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
                 + "/previous");
@@ -70,7 +60,7 @@ function updatePage(urlAppend, from, direction) {
     }
     
     $.each(data.emptyDomains, function(i, domain) {
-    	$('#' + domain + " .status").html('');
+      $('#' + domain + " .status").html('');
     });
   });
   $("#dotdot").html("<img src='/gfx/ajax-loader.gif' />");
