@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import thesmith.eventhorizon.model.Account;
 import thesmith.eventhorizon.model.Snapshot;
 import thesmith.eventhorizon.model.Status;
+import thesmith.eventhorizon.model.StatusCreatedSort;
 import thesmith.eventhorizon.model.User;
 import thesmith.eventhorizon.service.impl.UserServiceImpl;
 
@@ -212,11 +214,27 @@ public class IndexController extends BaseController {
     Set<String> emptyDomains = emptyDomains(accounts.keySet(), statuses);
 
     model.addAttribute("statuses", statuses);
+    model.addAttribute("first", this.firstDate(Lists.newArrayList(statuses)));
+    model.addAttribute("last", this.lastDate(Lists.newArrayList(statuses)));
     model.addAttribute("emptyDomains", emptyDomains);
     model.addAttribute("personId", personId);
     model.addAttribute("gravatar", userService.getGravatar(personId));
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
+  }
+  
+  private Date firstDate(List<Status> statuses) {
+    if (statuses.size() < 1)
+      return null;
+    Collections.sort(statuses, new StatusCreatedSort());
+    return statuses.get(statuses.size()-1).getCreated();
+  }
+  
+  private Date lastDate(List<Status> statuses) {
+    if (statuses.size() < 1)
+      return null;
+    Collections.sort(statuses, new StatusCreatedSort());
+    return statuses.get(0).getCreated();
   }
 
   private Set<String> emptyDomains(Set<String> domains, List<Status> statuses) {
