@@ -50,6 +50,9 @@
   </#list>
   <li id="dotdot">And so on...</li>
 </ul>
+<div id="horizon">
+  <div id="blank-horizon" />
+</div>
 </div>
 </@layout.layout>
 

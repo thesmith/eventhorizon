@@ -6,11 +6,14 @@ function updatePage(urlAppend, from, direction) {
     } else {
       var user = getUser(document.location.toString().split("#")[0]);
     }
+    
+    $(".qtip").remove();
+    
     var protocol = window.location.protocol
     var first = new Date(data.first);
     var from = new Date(data.from);
     var span = from.getTime() - first.getTime();
-    var width = $(window).width() - 40;
+    var width = $(window).width() - 240;
     var scale = width / span;
 
     if (data.statuses) {
@@ -20,13 +23,13 @@ function updatePage(urlAppend, from, direction) {
         $("#" + status.domain + " .status_holder").hide();
         $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
         
-        var position = ((status.created - first.getTime()) * scale) + 20;
+        var position = ((status.created - first.getTime()) * scale) + 40;
         var tooltip = 'bottomLeft';
         if (position > 250) {
-        	tooltip = 'bottomMiddle';
+          tooltip = 'bottomMiddle';
         }
         if (position > (width - 250)) {
-        	tooltip = 'bottomRight';
+          tooltip = 'bottomRight';
         }
         
         $("#" + status.domain).qtip({
@@ -48,7 +51,7 @@ function updatePage(urlAppend, from, direction) {
                width: 2,
                radius: 2
              },
-             padding: 0, 
+             padding: 1, 
              width: { max: 650 },
              textAlign: 'center',
              tip: true,
