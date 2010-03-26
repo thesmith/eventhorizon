@@ -25,11 +25,8 @@ function updatePage(urlAppend, from, direction) {
         
         var position = ((status.created - first.getTime()) * scale) + 40;
         var tooltip = 'bottomLeft';
-        if (position > 250) {
+        if (position > 260) {
           tooltip = 'bottomMiddle';
-        }
-        if (position > (width - 250)) {
-          tooltip = 'bottomRight';
         }
         
         $("#" + status.domain).qtip({
@@ -61,6 +58,12 @@ function updatePage(urlAppend, from, direction) {
              name: 'light' // Style it according to the preset 'light' style
           }
         });
+        
+        var api = $("#" + status.domain).qtip("api");
+        var wrapper = api.elements.wrapper;
+        var wrapperWidth = wrapper.width();
+        var outerPoint = position + 
+        
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
                 + "/previous");
