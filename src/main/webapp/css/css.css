@@ -6,7 +6,7 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 #container { text-align: left; font-size: 1.3em; }
 #mast { background-color: white; z-index: 2; text-align:center; height: 52px; font-size: 2.3em; padding-bottom: 2px; padding-top: 2px; width: 600px; margin-left: auto; margin-right: 2em; border: 2px solid darkgrey; margin-top: 1em; margin-bottom: 1em; border-bottom-left-radius: 2px 2px; border-bottom-right-radius: 2px 2px; border-top-left-radius: 2px 2px; border-top-right-radius: 2px 2px; }
 #userbar { font-size: 1.5em; position: absolute; text-align: left; margin-left: 1em; top: 50px; }
-#cta { font-size: 1.6em; display: block; margin: 3em; }
+#cta { font-size: 1.6em; display: block; margin-top: 3em; }
 #cta a{ background-color:#3392ce; background-image:url(/gfx/submitbg.png); background-repeat:repeat-x; background-position:0 center; border:1px solid #2c8ecc; color:white; padding-left: 10px; padding-right: 10px; font-size:2.6em; cursor:pointer; border-bottom-left-radius: 10px 10px; border-bottom-right-radius: 10px 10px; border-top-left-radius: 10px 10px; border-top-right-radius: 10px 10px; }
 #cta a:hover{ background-position: -450px 50%; }
 #users a{ border:1px solid #2c8ecc; margin: 5px; padding: 17px 0px 20px; }
@@ -34,6 +34,7 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 .subframe { overflow: hidden; display: block; margin: 1px 0; }
 .special { position: relative; }
 .centered { width: 450px; margin-left: auto; margin-right: auto; }
+.padded { padding: 13px; }
 
 /* ====================================================== */
 

@@ -1,4 +1,4 @@
-<@layout.layout "Your Accounts" "Your Accounts <span class='decorator'>or</span> <a href='/status'>Events</a>" "${viewer!}" "" "${userHost}">
+<@layout.layout "Your Accounts" "Your Accounts <span class='decorator'>or</span> <a href='/status'>Events</a>" "${viewer!}" "" "${userHost}" "padded">
 <div class="centered" style="width: 630px;">
 <ul>
   <#list domains as domain>

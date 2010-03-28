@@ -1,15 +1,17 @@
-<#macro layout title="" heading=title viewer="" secureHost="" userHost="/${viewer}/">
+<#macro layout title="" heading=title viewer="" secureHost="" userHost="/${viewer}/" titleClass="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link type="text/css" href="/css/smoothness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
-    <script src="http://www.google.com/jsapi?key=ABQIAAAAhiGdEXzHhdDNmDGsCDlyOhRJGDANg_M7ijjcDquvF9DF5eqohBSUACyW8I3yQjW8s7sG3ahS8KaMHg" type="text/javascript"></script>
+    <!-- <script src="http://www.google.com/jsapi?key=ABQIAAAAhiGdEXzHhdDNmDGsCDlyOhRJGDANg_M7ijjcDquvF9DF5eqohBSUACyW8I3yQjW8s7sG3ahS8KaMHg" type="text/javascript"></script>
     <script language="Javascript" type="text/javascript">
     //<![CDATA[
       google.load("jquery", "1.4.1");
       google.load("jqueryui", "1.7.2");
     //]]>
-    </script>
+    </script> -->
+    <script type="text/javascript" src="/js/jquery.js"></script> 
+    <script type="text/javascript" src="/js/jquery-ui.js"></script> 
     <script type="text/javascript" src="/js/js.js"></script> 
     <script type="text/javascript" src="/js/date.js"></script>
     <script type="text/javascript" src="/js/jquery.svg.js"></script>
@@ -29,7 +31,7 @@
     <div id="container">
       <div id="primary" class="full">
         <div id="mast"> 
-          <h1>${heading}</h1> 
+          <h1 class="${titleClass}">${heading}</h1> 
         </div>
         <#nested/>
       </div>

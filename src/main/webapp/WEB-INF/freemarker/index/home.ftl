@@ -1,4 +1,4 @@
-<@layout.layout "EventHorizon" "EventHorizon" "${viewer!}" "${secureHost!}" "${userHost!}">
+<@layout.layout "EventHorizon" "EventHorizon" "${viewer!}" "${secureHost!}" "${userHost!}" "padded">
 
 <div id="users">
 	<#list userLinks?keys as userLink>

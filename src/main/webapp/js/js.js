@@ -13,20 +13,26 @@ function updatePage(urlAppend, from, direction) {
     var first = new Date(data.first);
     var from = new Date(data.from);
     var span = from.getTime() - first.getTime();
-    var width = $(window).width() - 240;
-    var scale = width / span;
+    var width = $(window).width();
+    var scale = (width-240) / span;
 
     if (data.statuses) {
       $.each(data.statuses, function(i, status) {
+        var created = new Date(status.created);
         var currentDate = eventhorizonDates[status.domain];
-        eventhorizonDates[status.domain] = urlDate(new Date(status.created));
+        eventhorizonDates[status.domain] = urlDate(created);
         $("#" + status.domain + " .status_holder").hide();
         $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
         
-        var position = ((status.created - first.getTime()) * scale) + 40;
+        var position = ((created.getTime() - first.getTime()) * scale) + 40;
         var tooltip = 'bottomLeft';
         if (position > 260) {
           tooltip = 'bottomMiddle';
+        }
+        
+        var style = 'lightgrey';
+        if (from.getTime() == created.getTime()) {
+          style = 'darkgrey';
         }
         
         $("#" + status.domain).qtip({
@@ -46,7 +52,8 @@ function updatePage(urlAppend, from, direction) {
           style: {
              border: {
                width: 2,
-               radius: 2
+               radius: 2,
+               color: style
              },
              padding: 1, 
              width: { max: 650 },
@@ -55,14 +62,18 @@ function updatePage(urlAppend, from, direction) {
              classes: {
                content: 'status'
              },
-             name: 'light' // Style it according to the preset 'light' style
+             name: 'light'
           }
         });
         
         var api = $("#" + status.domain).qtip("api");
+        var dimensions = api.getDimensions();
         var wrapper = api.elements.wrapper;
-        var wrapperWidth = wrapper.width();
-        var outerPoint = position + 
+        var wrapperWidth = dimensions.width;
+        var outerPoint = position + (wrapperWidth / 2);
+        if (outerPoint > (width-40)) {
+          wrapper.css('left', (0-(outerPoint-width+40)));
+        }
         
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
