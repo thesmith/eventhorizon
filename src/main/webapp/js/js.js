@@ -68,12 +68,27 @@ function updatePage(urlAppend, from, direction) {
         
         var api = $("#" + status.domain).qtip("api");
         var dimensions = api.getDimensions();
+        var tooltip = api.elements.tooltip;
         var wrapper = api.elements.wrapper;
         var wrapperWidth = dimensions.width;
         var outerPoint = position + (wrapperWidth / 2);
         if (outerPoint > (width-40)) {
           wrapper.css('left', (0-(outerPoint-width+40)));
         }
+        tooltip.hover(
+	    function () {
+	        if ($("#" + status.domain + " .status").html()) {
+	          $("#" + status.domain + " .previous").css("opacity", "1");
+	          $("#" + status.domain + " .next").css("opacity", "1");
+	        }
+	      },
+	      function () {
+	        if ($("#" + status.domain + " .status").html()) {
+	          $("#" + status.domain + " .previous").css("opacity", "0");
+	          $("#" + status.domain + " .next").css("opacity", "0");
+	        }
+	      }
+	    );
         
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain

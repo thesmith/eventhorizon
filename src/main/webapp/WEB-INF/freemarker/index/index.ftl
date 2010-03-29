@@ -19,8 +19,8 @@
         $("#${status.domain}").hover(
           function () {
             if ($("#${status.domain} .status").html()) {
-              $("#${status.domain} .previous").css("opacity", "0.9");
-              $("#${status.domain} .next").css("opacity", "0.9");
+              $("#${status.domain} .previous").css("opacity", "1");
+              $("#${status.domain} .next").css("opacity", "1");
             }
           },
           function () {

@@ -12,7 +12,7 @@ div.row { padding: 2px; }
 div.form { padding: 5px; }
 span.error { font-size: 1.3em; padding-top: 9px; padding-left: 10px; color: #D00000; }
 
-div.previous{ float: left; }
+div.previous{ float:left; }
 div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 3px; padding: 2px; border-bottom-left-radius: 2px 2px; border-bottom-right-radius: 2px 2px; border-top-left-radius: 2px 2px; border-top-right-radius: 2px 2px;}
 div.next{ float: left; }
 
