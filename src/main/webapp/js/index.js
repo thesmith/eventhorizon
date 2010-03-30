@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  $(".previous").css({"opacity": "0", "margin": "1em 2px 2px", "position": "absolute"});
-  $(".next").css({"opacity": "0", "margin": "1em 2px 2px", "position": "absolute", "right": "0px"});
+  $(".previous").css({"opacity": "0"});
+  $(".next").css({"opacity": "0"});
   $(".status_holder").hide();
 
   var host = window.location.host;

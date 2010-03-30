@@ -7,8 +7,6 @@ function updatePage(urlAppend, from, direction) {
       var user = getUser(document.location.toString().split("#")[0]);
     }
     
-    $(".qtip").remove();
-    
     var protocol = window.location.protocol
     var first = new Date(data.first);
     var from = new Date(data.from);
@@ -23,72 +21,6 @@ function updatePage(urlAppend, from, direction) {
         eventhorizonDates[status.domain] = urlDate(created);
         $("#" + status.domain + " .status_holder").hide();
         $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
-        
-        var position = ((created.getTime() - first.getTime()) * scale) + 40;
-        var tooltip = 'bottomLeft';
-        if (position > 260) {
-          tooltip = 'bottomMiddle';
-        }
-        
-        var style = 'lightgrey';
-        if (from.getTime() == created.getTime()) {
-          style = 'darkgrey';
-        }
-        
-        $("#" + status.domain).qtip({
-          content: $("#" + status.domain + " .status_holder").html(),
-          position: {
-             corner: {
-                tooltip: tooltip,
-                target: 'bottomLeft'
-             },
-             adjust: {x: position}
-          },
-          show: {
-             when: false, // Don't specify a show event
-             ready: true // Show the tooltip when ready
-          },
-          hide: false, // Don't specify a hide event
-          style: {
-             border: {
-               width: 2,
-               radius: 2,
-               color: style
-             },
-             padding: 1, 
-             width: { max: 650 },
-             textAlign: 'center',
-             tip: true,
-             classes: {
-               content: 'status'
-             },
-             name: 'light'
-          }
-        });
-        
-        var api = $("#" + status.domain).qtip("api");
-        var dimensions = api.getDimensions();
-        var tooltip = api.elements.tooltip;
-        var wrapper = api.elements.wrapper;
-        var wrapperWidth = dimensions.width;
-        var outerPoint = position + (wrapperWidth / 2);
-        if (outerPoint > (width-40)) {
-          wrapper.css('left', (0-(outerPoint-width+40)));
-        }
-        tooltip.hover(
-	    function () {
-	        if ($("#" + status.domain + " .status").html()) {
-	          $("#" + status.domain + " .previous").css("opacity", "1");
-	          $("#" + status.domain + " .next").css("opacity", "1");
-	        }
-	      },
-	      function () {
-	        if ($("#" + status.domain + " .status").html()) {
-	          $("#" + status.domain + " .previous").css("opacity", "0");
-	          $("#" + status.domain + " .next").css("opacity", "0");
-	        }
-	      }
-	    );
         
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
@@ -105,10 +37,6 @@ function updatePage(urlAppend, from, direction) {
       window.location.replace(currentUrl);
       $("#dotdot").html("And so on..");
     }
-    
-    $.each(data.emptyDomains, function(i, domain) {
-      $('#' + domain + " .status").html('');
-    });
   });
   $("#dotdot").html("<img src='/gfx/ajax-loader.gif' />");
 }

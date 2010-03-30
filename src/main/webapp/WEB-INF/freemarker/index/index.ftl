@@ -44,7 +44,7 @@
     </script>
     <li id="${status.domain}">
       <div class="previous"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/previous" class="image"><img src="/gfx/previous.png" title="previous" /></a></div>
-      <div class="status_holder"><span class="status ${status.domain} ${status.period}">${status.status}</span></div>
+      <p class="status ${status.domain} ${status.period}">${status.status}</p>
       <div class="next"><a href="/${status.personId}/${(status.created)?string("yyyy/MM/dd/HH/mm/ss")}/${status.domain}/next" class="image"><img src="/gfx/next.png" title="next" /></a></div>
     </li>
   </#list>

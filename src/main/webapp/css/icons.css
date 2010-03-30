@@ -12,40 +12,34 @@ div.row { padding: 2px; }
 div.form { padding: 5px; }
 span.error { font-size: 1.3em; padding-top: 9px; padding-left: 10px; color: #D00000; }
 
-div.previous{ float:left; }
-div.status_holder{ height: 3em; overflow: hidden; position: relative; float: left; width: 53em; margin-top: 3px; padding: 2px; border-bottom-left-radius: 2px 2px; border-bottom-right-radius: 2px 2px; border-top-left-radius: 2px 2px; border-top-right-radius: 2px 2px;}
-div.next{ float: left; }
+div.previous{ margin: 1em 2px 2px; float: left; }
+div.next{ margin: 1em 2px 2px; right: 0px; float: left; }
 
-span.status{ font-size: 1.4em; width: 50em; padding-left: 26px; background-repeat:no-repeat; background-color:transparent; }
+p.status{ float: left; padding-left: 26px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; max-width: 50em; background-repeat:no-repeat; background-color:transparent; border: 2px solid lightgrey; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 
 a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }
 
-/*span.today{ opacity: 1; }
-span.week{ opacity: 0.9; }
-span.month{ opacity: 0.75; }
-span.yonks{ opacity: 0.5; }*/
-
-span.me{background-image:url('../gfx/london.png');}
-span.bbc{background-image:url('../gfx/id.png');}
-span.thing13{background-image:url('../gfx/thing13.png');}
-span.tumblr{background-image:url('../gfx/tumblr.png');}
-span.bookmark{background-image:url('../gfx/delicious.png');}
-span.flickr{background-image:url('../gfx/flickr.png');}
-span.lastfm{background-image:url('../gfx/lastfm.png');}
-span.twitter{background-image:url('../gfx/twitter.png');}
-span.later{background-image:url('../gfx/instapaper.png');}
-span.fb{background-image:url('../gfx/facebook.png');}
-span.guardian{background-image:url('../gfx/guardian.png');}
-span.greader{background-image:url('../gfx/greader.png');}
-span.pop{background-image:url('../gfx/radiopop.png');}
-span.dopplr{background-image:url('../gfx/dopplr.png');}
-span.tshirt{background-image:url('../gfx/tshirt.png');}
-span.iplayer{background-image:url('../gfx/iplayer.gif');}
-span.wordr{background-image:url('../gfx/wordr.png');}
-span.github{background-image:url('../gfx/github.png');}
-span.birth{background-image:url('../gfx/city.png');}
-span.lives{background-image:url('../gfx/city.png');}
+p.me{background-image:url('../gfx/london.png');}
+p.bbc{background-image:url('../gfx/id.png');}
+p.thing13{background-image:url('../gfx/thing13.png');}
+p.tumblr{background-image:url('../gfx/tumblr.png');}
+p.bookmark{background-image:url('../gfx/delicious.png');}
+p.flickr{background-image:url('../gfx/flickr.png');}
+p.lastfm{background-image:url('../gfx/lastfm.png');}
+p.twitter{background-image:url('../gfx/twitter.png');}
+p.later{background-image:url('../gfx/instapaper.png');}
+p.fb{background-image:url('../gfx/facebook.png');}
+p.guardian{background-image:url('../gfx/guardian.png');}
+p.greader{background-image:url('../gfx/greader.png');}
+p.pop{background-image:url('../gfx/radiopop.png');}
+p.dopplr{background-image:url('../gfx/dopplr.png');}
+p.tshirt{background-image:url('../gfx/tshirt.png');}
+p.iplayer{background-image:url('../gfx/iplayer.gif');}
+p.wordr{background-image:url('../gfx/wordr.png');}
+p.github{background-image:url('../gfx/github.png');}
+p.birth{background-image:url('../gfx/city.png');}
+p.lives{background-image:url('../gfx/city.png');}
 
 span.decorator { color: #808080; }
 

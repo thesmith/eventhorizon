@@ -50,7 +50,7 @@ strong {  font-weight: bold; }
 p { margin: 1em; }
 
 #primary ul { list-style-type: disc; list-style-position: outside; }
-#primary li { margin: 0 0 0 0; }
+#primary li { margin: 0 0 0 0; display: block; }
 
 pre { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin: 0; padding: 0; }
 pre code { padding: 0.52em 1em; font-family: monaco, courier, sans-serif; font-size: 0.9em; line-height: 2em; display: block; background: #222; color: #fff; margin: 1px; }
