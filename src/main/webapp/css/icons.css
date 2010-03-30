@@ -1,4 +1,4 @@
-li{ list-style:none; height: 6em; }
+li{ list-style:none; height: 6em; position: relative; }
 img { vertical-align: middle; }
 input { border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; border: 1px solid rgb(143, 143, 143); font-size: 1.3em; padding: 5px; width: 320px; }
 label { font-size: 1.3em; padding-top: 9px; float: left; width: 6em; }
@@ -12,10 +12,11 @@ div.row { padding: 2px; }
 div.form { padding: 5px; }
 span.error { font-size: 1.3em; padding-top: 9px; padding-left: 10px; color: #D00000; }
 
-div.previous{ margin: 1em 2px 2px; float: left; }
-div.next{ margin: 1em 2px 2px; right: 0px; float: left; }
+div.previous{ margin: 1em 2px 2px; position: absolute; left: 0px; bottom: 0px; }
+div.next{ margin: 1em 2px 2px; right: 0px; position: absolute; bottom: 0px; }
+span.tip { position: absolute; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid lightgrey; border-bottom: 0px; bottom: -30px; left: 48%;}
 
-p.status{ float: left; padding-left: 26px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; max-width: 50em; background-repeat:no-repeat; background-color:transparent; border: 2px solid lightgrey; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+p.status{ margin: 0px; position: absolute; bottom: 8px; left: 30%; padding-left: 26px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; max-width: 50em; background-repeat:no-repeat; background-color:transparent; border: 2px solid lightgrey; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 
 a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }

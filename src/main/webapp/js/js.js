@@ -20,7 +20,7 @@ function updatePage(urlAppend, from, direction) {
         var currentDate = eventhorizonDates[status.domain];
         eventhorizonDates[status.domain] = urlDate(created);
         $("#" + status.domain + " .status_holder").hide();
-        $("#" + status.domain + " .status").html(status.status).removeClass('yonks month week today').addClass(status.period);
+        $("#" + status.domain + " .status").html(status.status+"<span class='tip'>&nbsp</span>").removeClass('yonks month week today').addClass(status.period);
         
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
