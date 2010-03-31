@@ -19,8 +19,26 @@ function updatePage(urlAppend, from, direction) {
         var created = new Date(status.created);
         var currentDate = eventhorizonDates[status.domain];
         eventhorizonDates[status.domain] = urlDate(created);
-        $("#" + status.domain + " .status_holder").hide();
-        $("#" + status.domain + " .status").html(status.status+"<span class='tip'>&nbsp</span>").removeClass('yonks month week today').addClass(status.period);
+        
+        var targetStatus = $("#" + status.domain + " .status");
+        targetStatus.html(status.status+"<span class='tip'>&nbsp</span>").removeClass('yonks month week today').addClass(status.period);
+        var position = ((created.getTime() - first.getTime()) * scale) + 40;
+        var targetWidth = targetStatus.width();
+        var middle = targetWidth / 2;
+        var center = position - middle;
+        var outerPoint = position + middle;
+        
+        var statusShift = 0;
+        if (center < 40) {
+          statusShift = 40 - center;
+          center = center + statusShift;
+        } else if (outerPoint > (width-40)) {
+          statusShift = 0 - outerPoint - width - 40;
+          center = center + statusShift;
+        }
+        	
+        targetStatus.children('.tip').css('left', (middle - statusShift) + 'px');
+        targetStatus.css('left', center+'px');
         
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
