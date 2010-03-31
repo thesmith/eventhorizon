@@ -32,12 +32,14 @@ function updatePage(urlAppend, from, direction) {
         if (center < 40) {
           statusShift = 40 - center;
           center = center + statusShift;
-        } else if (outerPoint > (width-40)) {
-          statusShift = 0 - outerPoint - width - 40;
-          center = center + statusShift;
+          middle = middle - statusShift;
+        } else if (outerPoint+100 > width) {
+          statusShift = outerPoint + 100 - width;
+          center = center - statusShift;
+          middle = middle + statusShift - 15;
         }
-        	
-        targetStatus.children('.tip').css('left', (middle - statusShift) + 'px');
+          
+        targetStatus.children('.tip').css('left', middle + 'px');
         targetStatus.css('left', center+'px');
         
         $("#" + status.domain + " .previous a").attr("href",
