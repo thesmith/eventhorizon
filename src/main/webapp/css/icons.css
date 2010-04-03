@@ -15,9 +15,10 @@ span.error { font-size: 1.3em; padding-top: 9px; padding-left: 10px; color: #D00
 div.previous{ margin: 1em 2px 2px; position: absolute; left: 0px; bottom: 0px; }
 div.next{ margin: 1em 2px 2px; right: 0px; position: absolute; bottom: 0px; }
 span.tip { position: absolute; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid lightgrey; border-bottom: 0px; bottom: -30px; left: 48%;}
+span.active { border-top: 10px solid darkgrey; }
 
-p.status{ margin: 0px; position: absolute; bottom: 8px; left: 30%; padding-left: 26px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; max-width: 50em; background-repeat:no-repeat; background-color:transparent; border: 2px solid lightgrey; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
-
+p.status{ z-index: 2; margin: 0px; position: absolute; bottom: 8px; left: 30%; padding-left: 26px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px; max-width: 50em; background-repeat:no-repeat; background-color:white; border: 2px solid lightgrey; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+p.active{ border: 2px solid darkgrey; }
 a.image { color: transparent; padding: 0px 0px; border-bottom: 0px; }
 a.image:hover { background: transparent; }
 
