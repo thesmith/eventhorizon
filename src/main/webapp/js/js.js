@@ -10,7 +10,7 @@ function updatePage(urlAppend, from, direction) {
     var protocol = window.location.protocol
     var first = new Date(data.first);
     var from = new Date(data.from);
-    var span = from.getTime() - first.getTime();
+    var span = parseFloat(data.exponentialRange);
     if (span == 0) {
       span = 1;
     }
@@ -27,7 +27,7 @@ function updatePage(urlAppend, from, direction) {
         targetStatus.css('width', '');
         targetStatus.html(status.status + "<span class='tip'>&nbsp</span>")
             .removeClass('yonks month week today active').addClass(status.period);
-        var position = (((created.getTime() + 1) - first.getTime()) * scale) + 40;
+        var position = (Math.exp(((created.getTime() + 1) - first.getTime()) / 1000000000) * scale) + 40;
         var targetWidth = targetStatus.width();
         targetStatus.css('width', targetWidth);
         var middle = targetWidth / 2;

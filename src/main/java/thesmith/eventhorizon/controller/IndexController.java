@@ -223,6 +223,20 @@ public class IndexController extends BaseController {
     model.addAttribute("gravatar", userService.getGravatar(personId));
     model.addAttribute("from", from);
     model.addAttribute("secureHost", secureHost());
+    model.addAttribute("exponentialRange", this.exponentialRange(Lists.newArrayList(statuses)));
+  }
+  
+  private double exponentialRange(List<Status> statuses) {
+    if (statuses.size() < 1)
+      return 0.0;
+    Collections.sort(statuses, new StatusCreatedSort());
+    
+    double firstDate = Long.valueOf(statuses.get(statuses.size()-1).getCreated().getTime()).doubleValue();
+    double lastDate = Long.valueOf(statuses.get(0).getCreated().getTime()).doubleValue();
+    if (firstDate == lastDate)
+      return 0.0;
+    
+    return Math.exp((lastDate - firstDate) / 1000000000);
   }
   
   private Date firstDate(List<Status> statuses) {
