@@ -11,8 +11,7 @@ body { text-align: center; font-family: georgia; line-height: 2em; font-size:62.
 #cta a:hover{ background-position: -450px 50%; }
 #users a{ border:1px solid #2c8ecc; margin: 5px; padding: 17px 0px 20px; }
 
-#horizon { position: absolute; top: 0px; right: 200px; height: 100%; width: 2px; background-color: darkgrey; }
-#blank-horizon { margin-top: 31px; height: 56px; background-color: white; }
+#horizon { position: absolute; top: 88px; right: 200px; height: 100%; width: 2px; background-color: darkgrey; }
 
 /* ====================================================== */
 

@@ -1,6 +1,7 @@
 $(document).ready(function() {
   $(".previous").css({"opacity": "0"});
   $(".next").css({"opacity": "0"});
+  $(".status").css({"left": "-100em"});
 
   var host = window.location.host;
   var url = document.location.toString();
