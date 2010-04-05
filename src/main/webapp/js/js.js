@@ -1,19 +1,19 @@
 function updatePage(urlAppend, from, direction) {
-  $.getJSON('/' + urlAppend + '?from=' + from,
-  function(data) {
+  $.getJSON('/' + urlAppend + '?from=' + from + '&timezone=' + encodeURIComponent(getTimezone()), function(data) {
     var host = window.location.host
     if (host.match(".eventhorizon.me")) {
       var user = host.replace(".eventhorizon.me", "");
     } else {
       var user = getUser(document.location.toString().split("#")[0]);
     }
-
+    
     var protocol = window.location.protocol
     var first = new Date(data.first);
     var from = new Date(data.from);
     var span = from.getTime() - first.getTime();
-    if (span == 0)
+    if (span == 0) {
       span = 1;
+    }
     var width = $(window).width();
     var scale = (width - 240) / span;
 
@@ -24,9 +24,12 @@ function updatePage(urlAppend, from, direction) {
         eventhorizonDates[status.domain] = urlDate(created);
 
         var targetStatus = $("#" + status.domain + " .status");
-        targetStatus.html(status.status + "<span class='tip'>&nbsp</span>").removeClass('yonks month week today active').addClass(status.period);
+        targetStatus.css('width', '');
+        targetStatus.html(status.status + "<span class='tip'>&nbsp</span>")
+            .removeClass('yonks month week today active').addClass(status.period);
         var position = (((created.getTime() + 1) - first.getTime()) * scale) + 40;
         var targetWidth = targetStatus.width();
+        targetStatus.css('width', targetWidth);
         var middle = targetWidth / 2;
         var center = position - middle;
         var outerPoint = position + middle;
@@ -41,14 +44,24 @@ function updatePage(urlAppend, from, direction) {
           center = center - statusShift;
           middle = middle + statusShift - 15;
         }
-
         targetStatus.children('.tip').css('left', middle + 'px').removeClass('active');
-        targetStatus.css('left', center + 'px');
         if (created.getTime() == from.getTime()) {
           targetStatus.addClass('active');
           targetStatus.children('.tip').addClass('active');
         }
         targetStatus.show();
+        
+        if (direction == 'next' || direction == 'previous') {
+          var shiftOff = (direction == 'next' ? '150em' : '-150em');
+          var shiftAcross = (direction == 'next' ? '-150em' : '150em');
+          targetStatus.animate({'left': shiftOff}, 1000, null, function() {
+            $(this).animate({'left': shiftAcross}, 0, null, function() {
+              $(this).animate({'left': center+'px'}, 1000);
+            });
+          });
+        } else {
+          targetStatus.css('left', center + 'px');
+        }
 
         $("#" + status.domain + " .previous a").attr("href",
             urlBase(protocol, host, user) + "/" + eventhorizonDates[status.domain] + "/" + status.domain
@@ -86,6 +99,14 @@ function periodSpeed(period) {
   } else {
     return 800;
   }
+}
+
+function getTimezone() {  
+  var tzo = new Date().getTimezoneOffset() * -1;  //returns timezone offset in minutes  
+  function pad(num, digits) {  
+    num = String(num); while (num.length < digits) { num="0"+num; }; return num;  
+  }
+  return "GMT" + (tzo > 0 ? "+" : "") + pad(Math.floor(tzo/60), 2) + ":" + pad(tzo%60, 2);  
 }
 
 function urlBase(protocol, host, user) {

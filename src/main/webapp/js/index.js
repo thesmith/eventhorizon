@@ -1,7 +1,6 @@
 $(document).ready(function() {
   $(".previous").css({"opacity": "0"});
   $(".next").css({"opacity": "0"});
-  $(".status_holder").hide();
 
   var host = window.location.host;
   var url = document.location.toString();

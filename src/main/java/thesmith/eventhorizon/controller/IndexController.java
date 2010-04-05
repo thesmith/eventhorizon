@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,14 +94,14 @@ public class IndexController extends BaseController {
 
   @RequestMapping(value = "/{personId}/{domain}/previous", method = RequestMethod.GET)
   public String previous(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
-      @RequestParam("from") String from, ModelMap model) {
+      @RequestParam("from") String from, @RequestParam("timezone") String timezone, ModelMap model) {
     try {
       Account account = accountService.account(personId, domain);
-      Status status = statusService.previous(account, this.parseDate(from));
+      Status status = statusService.previous(account, this.parseDate(from, timezone));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
       else
-        this.setModel(personId, this.parseDate(from), model);
+        this.setModel(personId, this.parseDate(from, timezone), model);
 
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -112,14 +113,14 @@ public class IndexController extends BaseController {
 
   @RequestMapping(value = "/{personId}/{domain}/next", method = RequestMethod.GET)
   public String next(@PathVariable("personId") String personId, @PathVariable("domain") String domain,
-      @RequestParam("from") String from, ModelMap model) {
+      @RequestParam("from") String from, @RequestParam("timezone") String timezone, ModelMap model) {
     try {
       Account account = accountService.account(personId, domain);
-      Status status = statusService.next(account, this.parseDate(from));
+      Status status = statusService.next(account, this.parseDate(from, timezone));
       if (null != status)
         this.setModel(personId, status.getCreated(), model);
       else
-        this.setModel(personId, this.parseDate(from), model);
+        this.setModel(personId, this.parseDate(from, timezone), model);
 
     } catch (ParseException e) {
       if (logger.isWarnEnabled())
@@ -130,11 +131,12 @@ public class IndexController extends BaseController {
   }
 
   @RequestMapping(value = "/{personId}/now", method = RequestMethod.GET)
-  public String now(@PathVariable("personId") String personId, @RequestParam("from") String from, ModelMap model,
+  public String now(@PathVariable("personId") String personId, @RequestParam("from") String from,
+      @RequestParam("timezone") String timezone, ModelMap model,
       HttpServletRequest request) {
     if (null != from && from.length() > 0) {
       try {
-        this.setModel(personId, this.parseDate(from), model);
+        this.setModel(personId, this.parseDate(from, timezone), model);
 
       } catch (ParseException e) {
         if (logger.isWarnEnabled())
@@ -264,12 +266,14 @@ public class IndexController extends BaseController {
     return status;
   }
 
-  private Date parseDate(String from) throws ParseException {
+  private Date parseDate(String from, String timezone) throws ParseException {
     if (from.startsWith("/"))
       from = from.substring(1);
     if (from.endsWith("/"))
       from = from.substring(0, from.length());
 
-    return urlFormat.parse(from);
+    urlFormat.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+    Date date = urlFormat.parse(from);
+    return date;
   }
 }
