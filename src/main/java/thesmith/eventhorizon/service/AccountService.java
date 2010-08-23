@@ -12,7 +12,6 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
  * 
  * @author bens
  */
-@SuppressWarnings("deprecation")
 public interface AccountService {
   /** All available domains */
   public static enum DOMAIN {
@@ -72,7 +71,7 @@ public interface AccountService {
   }
 
   /** Domains that are freestyle */
-  public static final List<String> FREESTYLE_DOMAINS = Lists.immutableList(DOMAIN.birth.toString(), DOMAIN.lives
+  public static final List<String> FREESTYLE_DOMAINS = Lists.newArrayList(DOMAIN.birth.toString(), DOMAIN.lives
       .toString());
 
   /**
